@@ -1,0 +1,15 @@
+{
+  "name": "invoice-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+      "build:css": "stylus src/styles/*style*.stylus -o docs/assets/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "stylus": "^0.62.0"
+  }
+}

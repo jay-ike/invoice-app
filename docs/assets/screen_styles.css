@@ -1,0 +1,37 @@
+:root {
+  --system-color-softBlue: #7b5cfa;
+  --system-color-lightBlue: #9175ff;
+  --system-color-softRed: #ec5555;
+  --system-color-lightRed: #f99;
+  --system-color-limeGreen: #33d7a0;
+  --system-color-pureOrange: #ff9100;
+  --system-color-grayishBlue: #373b53;
+  --system-color-lightGrayishBlue: #fbfbfe;
+  --system-color-darkBlue: #0d0e17;
+  --system-color-lightPurple: #e0e4fa;
+  --system-color-darkPurple: #1e2139;
+  --system-color-fillPrimary: var(--page-bg, #f9f9fb);
+  --system-color-blank: var(--color-blank, #fff);
+  --system-color-labelText: var(--color-labelText, #7e88c4);
+  --system-color-captionText: var(--color-captionText, #888eaf);
+  --system-color-text: var(--color-text, var(--system-color-darkBlue));
+}
+[data-apearence="dark"] {
+  --color-text: var(--system-color-lightGrayishBlue);
+  --color-blank: var(--system-color-darkPurple);
+  --color-labelText: var(--system-color-lightPurple);
+  --page-bg: #141624;
+}
+body {
+  color: var(--system-color-text);
+  accent-color: var(--system-color-softBlue);
+  caret-color: var(--system-color-softBlue);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: var(--system-color-lightGrayishBlue);
+    --color-blank: var(--system-color-darkPurple);
+    --color-labelText: var(--system-color-lightPurple);
+    --page-bg: #141624;
+  }
+}

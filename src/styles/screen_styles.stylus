@@ -1,0 +1,38 @@
+darkShade()
+    --color-text: var(--system-color-lightGrayishBlue)
+    --color-blank: var(--system-color-darkPurple)
+    --color-labelText: var(--system-color-lightPurple)
+    --page-bg: hsl(233 30 11)
+
+
+:root
+    --system-color-softBlue: hsl(252 94 67)
+    --system-color-lightBlue: hsl(252 100 73)
+    --system-color-softRed: hsl(0 80 63)
+    --system-color-lightRed: hsl(0 100 80)
+    --system-color-limeGreen: hsl(160 67 52)
+    --system-color-pureOrange: hsl(34 100 50)
+    --system-color-grayishBlue: hsl(231 20 27)
+    --system-color-lightGrayishBlue: hsl(231 67 99)
+    --system-color-darkBlue: hsl(231 28 7)
+    --system-color-lightPurple: hsl(231 73 93)
+    --system-color-darkPurple: hsl(233 31 17)
+
+    --system-color-fillPrimary: var(--page-bg, hsl(240 27 98))
+    --system-color-blank: var(--color-blank, #fff)
+    --system-color-labelText: var(--color-labelText, hsl(231 37 63))
+    --system-color-captionText: var(--color-captionText, hsl(231 20 61))
+    --system-color-text: var(--color-text, var(--system-color-darkBlue))
+
+
+[data-apearence="dark"]
+    darkShade()
+
+body
+    color: var(--system-color-text)
+    accent-color: var(--system-color-softBlue)
+    caret-color: var(--system-color-softBlue)
+
+@media(prefers-color-scheme: dark)
+    :root
+        darkShade()
