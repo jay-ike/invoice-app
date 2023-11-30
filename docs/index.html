@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Invoice Application</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./assets/styles/resets.css">
+        <link href="./assets/styles/screen_styles.css" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            <div role="img" aria-label="Application Logo">
+            </div>
+            <nav>
+                <button aria-label="Theme switcher">
+                    <svg></svg>
+                </button>
+                <img src="" alt="your avatar">
+            </nav>
+        </header>
+        <main>
+            <section>
+                <div>
+                    <dl>
+                        <dt>Invoices</dt>
+                        <dd>No invoices</dd>
+                    </dl>
+                    <details>
+                        <summary>Filter</summary>
+                        <form action="">
+                           <div class="inv-option">
+                                <span>
+                                    <input type="checkbox" name="draftSelected" id="o-draft">
+                                    <svg></svg>
+                                </span>
+                                <label for="o-draft">Draft</label>
+                            </div>
+                           <div class="inv-option">
+                                <span>
+                                    <input type="checkbox" name="paidSelected" id="o-paid">
+                                    <svg></svg>
+                                </span>
+                                <label for="o-paid">Paid</label>
+                            </div>
+                           <div class="inv-option">
+                                <span>
+                                    <input type="checkbox" name="pendingSelected" id="o-pending">
+                                    <svg></svg>
+                                </span>
+                                <label for="o-pending">Pending</label>
+                            </div>
+
+                        </form>
+                    </details>
+                    <button>New</button>
+                </div>
+                <div class="invoices"></div>
+                <div>
+                    <svg></svg>
+                    <h3>There is nothing here</h3>
+                    <p>Create an invoice by clicking the <strong>New</strong> button and get started</p>
+                </div>
+            </section>
+        </main>
+
+    </body>
+</html>

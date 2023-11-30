@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "build:css": "stylus src/styles/*style*.stylus -o docs/assets/"
+      "build:css": "stylus src/styles/*style*.styl -o docs/assets/styles/"
   },
   "keywords": [],
   "author": "",
