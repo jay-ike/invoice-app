@@ -24,8 +24,18 @@
 }
 body {
   color: var(--system-color-text);
+  background-color: var(--system-color-fillPrimary);
   accent-color: var(--system-color-softBlue);
   caret-color: var(--system-color-softBlue);
+}
+.stack > * + * {
+  margin-block-start: var(--space, 1.5em);
+}
+.segragator {
+  display: flex;
+  flex-direction: var(--direction, row);
+  align-items: var(--alignment, center);
+  justify-content: space-between;
 }
 @media (prefers-color-scheme: dark) {
   :root {
