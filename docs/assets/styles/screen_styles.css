@@ -9,39 +9,256 @@
   --system-color-lightGrayishBlue: #fbfbfe;
   --system-color-darkBlue: #0d0e17;
   --system-color-lightPurple: #e0e4fa;
+  --system-color-softPurple: #7e88c4;
   --system-color-darkPurple: #1e2139;
   --system-color-fillPrimary: var(--page-bg, #f9f9fb);
   --system-color-blank: var(--color-blank, #fff);
-  --system-color-labelText: var(--color-labelText, #7e88c4);
+  --system-color-labelText: var(--color-labelText, var(--system-color-softPurple));
   --system-color-captionText: var(--color-captionText, #888eaf);
   --system-color-text: var(--color-text, var(--system-color-darkBlue));
+  --system-color-shadow: var(--color-shadow, #dcdfef);
+  --system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
+  --system-heading-large: 2.25rem;
+  --system-heading-medium: 1.5rem;
+  --system-heading-small: 0.9375rem;
+  --system-text-body: 0.8125rem;
+}
+@font-face {
+  font-family: "Spartan";
+  src: url("../LeagueSpartan-VariableFont_wght.ttf") format("truetype");
+  font-variant-ligatures: common-ligatures discretionary-ligatures historical-ligatures;
+  font-feature-settings: "zero";
 }
 [data-apearence="dark"] {
   --color-text: var(--system-color-lightGrayishBlue);
   --color-blank: var(--system-color-darkPurple);
   --color-labelText: var(--system-color-lightPurple);
+  --color-shadow: rgba(0,0,0,0.1);
   --page-bg: #141624;
+  --color-checkboxFill: var(--page-bg);
 }
 body {
+  font-family: Spartan;
+  line-height: 1.5;
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--system-color-text);
   background-color: var(--system-color-fillPrimary);
   accent-color: var(--system-color-softBlue);
   caret-color: var(--system-color-softBlue);
 }
+.heading-l {
+  font-weight: bold;
+  font-size: var(--system-heading-large);
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+.heading-m {
+  font-weight: bold;
+  font-size: var(--system-heading-medium);
+  line-height: 1.1;
+  letter-spacing: -0.75px;
+}
+.heading-s {
+  font-weight: bold;
+  font-size: var(--system-heading-small);
+  line-height: 1;
+  letter-spacing: -0.25px;
+}
+.sm-hide {
+  display: none;
+}
+.no-gap {
+  --space: 0;
+}
+.subtitle-text {
+  color: var(--color-labelText, #888eaf);
+}
+.btn {
+  display: inline-flex;
+  gap: var(--items-space, 0.5em);
+  align-items: center;
+  border-radius: 1.5rem;
+  font-weight: 900;
+  font-size: var(--system-heading-small);
+}
+.btn:focus,
+.btn:hover {
+  background-color: var(--color-fill-hover, transparent);
+}
+.btn-primary {
+  --color-fill: var(--system-color-softBlue);
+  --color-fill-hover: var(--system-color-lightBlue);
+  --color-text: #fff;
+}
+.relative {
+  position: relative;
+}
+[data-icon="arrow_down"] {
+  --min-padding: 0.75em 1.5em 0.75em 0;
+  --space: 0.1em;
+  cursor: pointer;
+}
+[data-icon="arrow_down"]::after {
+  content: "";
+  inline-size: 1em;
+  aspect-ratio: 0.6;
+  background-color: var(--system-color-softBlue);
+  clip-path: url("#arrow_down");
+  transform: var(--transformation, none);
+}
+[open] [data-icon="arrow_down"] {
+  --transformation: rotateZ(180deg);
+}
+[data-icon="add-circle"] {
+  --min-padding: 0.75em 1.5em 0.75em 0.5em;
+}
+[data-icon="add-circle"]::before {
+  content: "";
+  inline-size: 2em;
+  aspect-ratio: 1;
+  background-color: currentColor;
+  clip-path: url("#add-circle");
+}
 .stack > * + * {
   margin-block-start: var(--space, 1.5em);
 }
+.row {
+  display: flex;
+  align-items: var(--alignment, center);
+  gap: var(--space, 1.5em);
+}
+.grow-2 {
+  flex-grow: 2;
+}
 .segragator {
   display: flex;
-  flex-direction: var(--direction, row);
   align-items: var(--alignment, center);
+  flex-direction: var(--direction, row);
   justify-content: space-between;
+}
+.box {
+  padding: var(--min-padding, 1.5em);
+  background-color: var(--color-fill, transparent);
+  color: var(--color-text, currentColor);
+}
+#logo {
+  width: 72px;
+  aspect-ratio: 1;
+  border-radius: 0 1.5em 1.5em 0;
+  position: relative;
+  background-color: var(--system-color-softBlue);
+}
+#logo::after {
+  content: "";
+  position: absolute;
+  inline-size: 40%;
+  aspect-ratio: 1;
+  background-color: transparent;
+  inset: 0;
+  margin: auto;
+  background-image: conic-gradient(from -15deg at center, transparent 30deg, #fff 30deg);
+  border-radius: 50%;
+}
+#logo::before {
+  content: "";
+  inline-size: 100%;
+  aspect-ratio: 2;
+  background-color: var(--system-color-lightBlue);
+  position: absolute;
+  inset-block-end: 0;
+  border-radius: 1.5em 0 1.5em 0;
+}
+#status-form {
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 0.5em;
+  box-shadow: 0 10 20px 0 var(--system-color-shadow);
+  background-color: var(--system-color-blank);
+  position: absolute;
+  inset-block-start: 110%;
+  inset-inline-start: -50%;
+  min-inline-size: 12rem;
+  opacity: 0;
+}
+[open] #status-form {
+  opacity: 1;
+}
+.inv-option {
+  --space: 1em;
+  cursor: pointer;
+}
+.inv-option:focus,
+.inv-option:hover {
+  --checkbox-border: 2px solid var(--system-color-softBlue);
+}
+.status-option {
+  --icon-fill: none;
+  display: inline-block;
+  position: relative;
+  isolation: isolate;
+  inline-size: 1.5rem;
+  aspect-ratio: 1;
+}
+.status-option > * {
+  position: absolute;
+  inline-size: 100%;
+  aspect-ratio: 1;
+}
+.status-option > svg {
+  background-color: var(--fill, var(--system-color-checkboxFill));
+  border-radius: 0.25rem;
+  z-index: -1;
+  stroke: #fff;
+  stroke-dashoffset: 1;
+  stroke-dasharray: 1;
+  padding: 0.15em;
+  border: var(--checkbox-border, none);
+}
+.status-option > input:checked + svg {
+  --fill: var(--system-color-softBlue);
+  stroke-dashoffset: 0;
+}
+.status-option > input[type="checkbox"] {
+  margin: 0;
+  opacity: 0;
+}
+.banner {
+  --alignment: stretch;
+  --icon-fill: var(--system-color-softPurple);
+  background-color: var(--system-color-darkPurple);
+}
+.banner .theme-switch {
+  border-right: 1px solid var(--system-color-grayishBlue);
+  margin-inline-end: 1.5em;
+}
+.banner > nav {
+  padding: 0 1.5em;
+}
+.invoices:empty {
+  display: none;
+}
+.empty {
+  --min-padding: 2em 1.5em 0;
+  display: none;
+  text-align: center;
+}
+.empty > p {
+  max-inline-size: 25ch;
+  white-space: pre-wrap;
+}
+.invoices:empty + .empty {
+  display: grid;
+  place-content: center;
+  place-items: center;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --color-text: var(--system-color-lightGrayishBlue);
     --color-blank: var(--system-color-darkPurple);
     --color-labelText: var(--system-color-lightPurple);
+    --color-shadow: rgba(0,0,0,0.1);
     --page-bg: #141624;
+    --color-checkboxFill: var(--page-bg);
   }
 }

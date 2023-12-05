@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "build:css": "stylus src/styles/*style*.styl -o docs/assets/styles/"
+      "build:css": "stylus src/styles/*style*.styl -o docs/assets/styles/",
+      "watch:css": "stylus --watch src/styles/*style*.styl -o docs/assets/styles/"
   },
   "keywords": [],
   "author": "",

@@ -16,6 +16,9 @@ body,
 h1,
 h2,
 h3,
+dl,
+dt,
+dd,
 p {
     margin:0;
 }
@@ -30,6 +33,10 @@ ul,
 ol {
     margin: 0;
     padding: 0;
+}
+
+summary {
+    list-style: none;
 }
 
 button {

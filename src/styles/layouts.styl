@@ -1,11 +1,22 @@
 
+flex()
+    display: flex
+    align-items: var(--alignment, center)
 .stack > * + *
     margin-block-start: var(--space, 1.5em)
 
+.row
+    flex()
+    gap: var(--space, 1.5em)
+.grow-2
+    flex-grow: 2
+
 .segragator
-    display: flex
+    flex()
     flex-direction: var(--direction, row)
-    align-items: var(--alignment, center)
     justify-content: space-between
 
-
+.box
+    padding: var(--min-padding, 1.5em)
+    background-color: var(--color-fill, transparent)
+    color: var(--color-text, currentColor)
