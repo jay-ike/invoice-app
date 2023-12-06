@@ -57,8 +57,11 @@ body {
   caret-color: var(--system-color-softBlue);
 }
 section {
-  --min-padding: 1.5em clamp(0.5em, 4cqi, 1.5em);
-  container: "section"/inline-size;
+  --color-fill: var(--system-color-fillPrimary);
+  --min-padding: 1.5em clamp(0.5em, 4cqi, 1.5em) 0.5em;
+  overflow: hidden auto;
+  max-block-size: calc(100lvb - 7rem);
+  container: section/inline-size;
 }
 .heading-l {
   --f-size: var(--system-heading-large);
@@ -82,6 +85,11 @@ section {
 .sm-hide {
   display: none;
 }
+.sticky-top {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+}
 .no-gap {
   --space: 0;
 }
@@ -104,6 +112,14 @@ section {
   --color-fill: var(--system-color-softBlue);
   --color-fill-hover: var(--system-color-lightBlue);
   --color-text: #fff;
+}
+.extend-click {
+  position: relative;
+}
+.extend-click::before {
+  content: "";
+  inset: 0;
+  position: absolute;
 }
 .relative {
   position: relative;
@@ -263,9 +279,6 @@ section {
 .invoices:empty {
   display: none;
 }
-.invoices {
-  --min-padding: 1.5em 0;
-}
 .empty {
   --min-padding: 2em 1.5em 0;
   display: none;
@@ -285,12 +298,14 @@ section {
   --f-size: 1rem;
   --f-size-diff: 0.2;
   --f-size-fluid: 4cqi;
+  --space: 1rem;
   display: grid;
   grid-template: var(--invoice-grid);
   font-weight: bold;
   background-color: var(--system-color-blank);
   border-radius: 0.5rem;
-  container: "invoice"/inline-size;
+  align-items: center;
+  container: invoice/inline-size;
 }
 .invoice__summary > :nth-child(2),
 .invoice__summary > :nth-child(3) {
@@ -305,16 +320,16 @@ section {
   color: var(--system-color-captionText);
 }
 .invoice__summary> :nth-child(2) {
-  grid-area: name;
+  grid-area: date;
 }
 .invoice__summary > :nth-child(3) {
-  grid-area: date;
+  grid-area: name;
 }
 .invoice__summary > :nth-child(4) {
   grid-area: total;
 }
 .invoice__summary > .box {
-  --min-padding: 0.75rem clamp(0.5rem, 5cqi, 1.5rem);
+  --min-padding: var(--box-padding, 0.75rem clamp(0.5rem, 5cqi, 1.5rem));
   color: var(--color-text, currentColor);
   text-transform: capitalize;
   background-color: var(--color-fill, transparent);
@@ -331,6 +346,30 @@ section {
   aspect-ratio: 1;
   background-color: currentColor;
   border-radius: 50%;
+}
+@media screen and (min-width: 480px) {
+  :root {
+    --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr 0.8fr 0.75fr 1.5em;
+  }
+  .sm-hide {
+    display: initial;
+  }
+  .invoice__summary {
+    --min-padding: 1em clamp(0.5em, 2cqi, 1.5em);
+    --box-padding: 0.625em clamp(0.5em, 2cqi, 1em);
+    --f-size-fluid: 2cqi;
+    --f-size-diff: 0.3;
+    gap: 0.5em;
+  }
+  .invoice__summary::after {
+    content: "";
+    inline-size: 1.5em;
+    aspect-ratio: 1;
+    background-color: var(--system-color-softBlue);
+    clip-path: url("#arrow_left");
+    transform: rotateZ(180deg);
+    grid-area: arrow;
+  }
 }
 @media (prefers-color-scheme: dark) {
   :root {
