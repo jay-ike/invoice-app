@@ -18,10 +18,15 @@
   --system-color-text: var(--color-text, var(--system-color-darkBlue));
   --system-color-shadow: var(--color-shadow, #dcdfef);
   --system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
+  --system-color-warningFill: var(--color-warningFill, #fef4e7);
+  --system-color-successFill: var(--color-successFill, #f5fefb);
+  --system-color-info: var(--color-info, #384071);
+  --system-color-infoFill: var(--color-infoFill, #eaebf0);
   --system-heading-large: 2.25rem;
   --system-heading-medium: 1.5rem;
   --system-heading-small: 0.9375rem;
   --system-text-body: 0.8125rem;
+  --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status"/1fr 0.5fr 1fr;
 }
 @font-face {
   font-family: "Spartan";
@@ -36,6 +41,10 @@
   --color-shadow: rgba(0,0,0,0.1);
   --page-bg: #141624;
   --color-checkboxFill: var(--page-bg);
+  --color-info: #f9fafa;
+  --color-infoFill: rgba(250,250,250,0.15);
+  --color-warningFill: rgba(243,242,242,0.15);
+  --color-successFill: rgba(242,243,242,0.15);
 }
 body {
   font-family: Spartan;
@@ -47,7 +56,12 @@ body {
   accent-color: var(--system-color-softBlue);
   caret-color: var(--system-color-softBlue);
 }
+section {
+  --min-padding: 1.5em clamp(0.5em, 4cqi, 1.5em);
+  container: "section"/inline-size;
+}
 .heading-l {
+  --f-size: var(--system-heading-large);
   font-weight: bold;
   font-size: var(--system-heading-large);
   line-height: 1.1;
@@ -111,7 +125,7 @@ body {
   --transformation: rotateZ(180deg);
 }
 [data-icon="add-circle"] {
-  --min-padding: 0.75em 1.5em 0.75em 0.5em;
+  --min-padding: 0.75em clamp(0.5em, 2vw, 1.5em) 0.75em 0.5em;
 }
 [data-icon="add-circle"]::before {
   content: "";
@@ -119,6 +133,18 @@ body {
   aspect-ratio: 1;
   background-color: currentColor;
   clip-path: url("#add-circle");
+}
+[data-state="pending"] {
+  --color-text: var(--system-color-pureOrange);
+  --color-fill: var(--system-color-warningFill);
+}
+[data-state="paid"] {
+  --color-text: var(--system-color-limeGreen);
+  --color-fill: var(--system-color-successFill);
+}
+[data-state="draft"] {
+  --color-text: var(--system-color-info);
+  --color-fill: var(--system-color-infoFill);
 }
 .stack > * + * {
   margin-block-start: var(--space, 1.5em);
@@ -170,7 +196,6 @@ body {
   border-radius: 1.5em 0 1.5em 0;
 }
 #status-form {
-  font-size: 1rem;
   font-weight: bold;
   border-radius: 0.5em;
   box-shadow: 0 10 20px 0 var(--system-color-shadow);
@@ -238,6 +263,9 @@ body {
 .invoices:empty {
   display: none;
 }
+.invoices {
+  --min-padding: 1.5em 0;
+}
 .empty {
   --min-padding: 2em 1.5em 0;
   display: none;
@@ -252,6 +280,58 @@ body {
   place-content: center;
   place-items: center;
 }
+.invoice__summary {
+  --min-padding: 1rem 1.5rem;
+  --f-size: 1rem;
+  --f-size-diff: 0.2;
+  --f-size-fluid: 4cqi;
+  display: grid;
+  grid-template: var(--invoice-grid);
+  font-weight: bold;
+  background-color: var(--system-color-blank);
+  border-radius: 0.5rem;
+  container: "invoice"/inline-size;
+}
+.invoice__summary > :nth-child(2),
+.invoice__summary > :nth-child(3) {
+  font-weight: 500;
+  color: var(--system-color-labelText);
+}
+.invoice__summary > :first-child {
+  grid-area: ref;
+}
+.invoice__summary > :first-child::before {
+  content: "#";
+  color: var(--system-color-captionText);
+}
+.invoice__summary> :nth-child(2) {
+  grid-area: name;
+}
+.invoice__summary > :nth-child(3) {
+  grid-area: date;
+}
+.invoice__summary > :nth-child(4) {
+  grid-area: total;
+}
+.invoice__summary > .box {
+  --min-padding: 0.75rem clamp(0.5rem, 5cqi, 1.5rem);
+  color: var(--color-text, currentColor);
+  text-transform: capitalize;
+  background-color: var(--color-fill, transparent);
+  grid-area: status;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  gap: var(--items-space, 0.5em);
+  align-items: center;
+}
+.invoice__summary > .box::before {
+  content: "";
+  display: inline-block;
+  inline-size: 0.5rem;
+  aspect-ratio: 1;
+  background-color: currentColor;
+  border-radius: 50%;
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --color-text: var(--system-color-lightGrayishBlue);
@@ -260,5 +340,15 @@ body {
     --color-shadow: rgba(0,0,0,0.1);
     --page-bg: #141624;
     --color-checkboxFill: var(--page-bg);
+    --color-info: #f9fafa;
+    --color-infoFill: rgba(250,250,250,0.15);
+    --color-warningFill: rgba(243,242,242,0.15);
+    --color-successFill: rgba(242,243,242,0.15);
+  }
+}
+
+@supports(font-size: 1cqi) {
+  :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
+      font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
   }
 }

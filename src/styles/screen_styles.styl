@@ -7,6 +7,10 @@ decoElt(size, ratio, fill)
     inline-size: size
     aspect-ratio: ratio
     background-color: fill
+inlineFlex(gap=.5em)
+    display: inline-flex
+    gap: var(--items-space, gap)
+    align-items: center
 
 darkShade()
     --color-text: var(--system-color-lightGrayishBlue)
@@ -15,6 +19,10 @@ darkShade()
     --color-shadow: rgba(0, 0, 0, 0.1)
     --page-bg: hsl(233 30 11)
     --color-checkboxFill: var(--page-bg)
+    --color-info: hsl(231, 11, 98)
+    --color-infoFill: hsla(231, 5, 98, 0.15)
+    --color-warningFill: hsla(34, 5, 95, 0.15)
+    --color-successFill: hsla(159, 5, 95, 0.15)
 
 
 :root
@@ -38,11 +46,17 @@ darkShade()
     --system-color-text: var(--color-text, var(--system-color-darkBlue))
     --system-color-shadow: var(--color-shadow, hsl(231 38 90))
     --system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple))
+    --system-color-warningFill: var(--color-warningFill, hsl(34, 90, 95))
+    --system-color-successFill: var(--color-successFill, hsl(159, 90, 98))
+    --system-color-info: var(--color-info, hsl(231, 34, 33))
+    --system-color-infoFill: var(--color-infoFill, hsl(231, 15, 93))
 
     --system-heading-large: 2.25rem
     --system-heading-medium: 1.5rem
     --system-heading-small: 0.9375rem
     --system-text-body: 0.8125rem
+
+    --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status" / 1fr .5fr 1fr;
 
 
 @font-face
@@ -63,7 +77,11 @@ body
     background-color: var(--system-color-fillPrimary)
     accent-color: var(--system-color-softBlue)
     caret-color: var(--system-color-softBlue)
+section
+    --min-padding 1.5em clamp(.5em, 4cqi, 1.5em)
+    container: "section" / inline-size
 .heading-l
+    --f-size: var(--system-heading-large)
     heading(bold, var(--system-heading-large), 1.1, -1px)
 .heading-m
     heading(bold, var(--system-heading-medium), 1.1, -0.75px)
@@ -78,9 +96,7 @@ body
 .subtitle-text
     color: var(--color-labelText, hsl(231, 20, 61))
 .btn
-    display: inline-flex
-    gap: var(--items-space, .5em)
-    align-items: center
+    inlineFlex()
     border-radius: 1.5rem
     font-weight: 900
     font-size: var(--system-heading-small)
@@ -108,11 +124,21 @@ body
         --transformation: rotateZ(180deg)
 
 [data-icon="add-circle"]
-    --min-padding: .75em 1.5em .75em .5em
+    --min-padding: .75em clamp(.5em, 2vw, 1.5em) .75em .5em
     &::before
         content: ""
         decoElt(2em, 1, currentColor)
         clip-path: url(#add-circle)
+
+[data-state="pending"]
+    --color-text: var(--system-color-pureOrange)
+    --color-fill: var(--system-color-warningFill)
+[data-state="paid"]
+    --color-text: var(--system-color-limeGreen)
+    --color-fill: var(--system-color-successFill)
+[data-state="draft"]
+    --color-text: var(--system-color-info)
+    --color-fill: var(--system-color-infoFill)
 
 @require "./layouts.styl"
 
@@ -138,7 +164,6 @@ body
         border-radius: 1.5em 0 1.5em 0
 
 #status-form
-    font-size: 1rem
     font-weight: bold
     border-radius: .5em
     box-shadow: 0 10 20px 0 var(--system-color-shadow)
@@ -198,6 +223,8 @@ body
 
 .invoices:empty
     display: none
+.invoices
+    --min-padding: 1.5em 0
 .empty
     --min-padding: 2em 1.5em 0
     display: none
@@ -210,6 +237,54 @@ body
         place-content: center
         place-items: center
 
+.invoice__summary
+    --min-padding: 1rem 1.5rem
+    --f-size: 1rem
+    --f-size-diff: 0.2
+    --f-size-fluid: 4cqi
+    display: grid
+    grid-template: var(--invoice-grid)
+    font-weight: bold
+    background-color: var(--system-color-blank)
+    border-radius: .5rem
+    container: "invoice" / inline-size
+    & > :nth-child(2),
+    & > :nth-child(3)
+        font-weight: 500
+        color: var(--system-color-labelText)
+    & > :first-child
+        grid-area: ref
+        &::before
+            content: "#"
+            color: var(--system-color-captionText)
+    &> :nth-child(2)
+        grid-area: name
+    & > :nth-child(3)
+        grid-area: date
+    & > :nth-child(4)
+        grid-area: total
+    & > .box
+        --min-padding: .75rem clamp(.5rem, 5cqi, 1.5rem)
+        color: var(--color-text, currentColor)
+        text-transform: capitalize
+        background-color: var(--color-fill, transparent)
+        grid-area: status
+        border-radius: .5rem
+        inlineFlex()
+        &::before
+            content: ""
+            display: inline-block
+            decoElt(.5rem, 1, currentColor)
+            border-radius: 50%
+
 @media(prefers-color-scheme: dark)
     :root
         darkShade()
+
+@css {
+@supports(font-size: 1cqi) {
+    :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
+        font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
+    }
+}
+}
