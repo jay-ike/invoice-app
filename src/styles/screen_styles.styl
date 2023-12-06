@@ -82,6 +82,7 @@ section
     --min-padding 1.5em clamp(.5em, 4cqi, 1.5em) .5em
     overflow: hidden auto
     max-block-size: calc(100lvb - 7rem)
+    min-block-size: 50lvb
     container: section / inline-size
 .heading-l
     --f-size: var(--system-heading-large)
@@ -91,6 +92,8 @@ section
 .heading-s
     heading(bold, var(--system-heading-small), 1, -0.25px)
 
+.self-center
+    place-self: center
 .sm-hide
     display: none
 .sticky-top
@@ -221,16 +224,17 @@ section
         margin: 0
         opacity: 0
 
-
+.theme-switch
+    border-inline-end: 1px solid var(--system-color-grayishBlue)
+    &:hover,
+    &:focus
+        --icon-fill: var(--system-color-lightPurple)
 .banner
     --alignment: stretch
     --icon-fill: var(--system-color-softPurple)
+    --min-padding: 0 1.5em
     background-color: var(--system-color-darkPurple)
-    .theme-switch
-        border-right: 1px solid var(--system-color-grayishBlue)
-        margin-inline-end: 1.5em
-    & > nav
-        padding: 0 1.5em
+
 
 .invoices:empty
     display: none
@@ -306,6 +310,19 @@ section
             transform: rotateZ(180deg)
             grid-area: arrow
 
+@media screen and (min-width: 768px)
+    .banner
+        --direction: column
+        --min-padding: 1.5em 0
+        grid-area: nav
+        .theme-switch
+            border-inline: none
+            border-block-end: 1px solid var(--system-color-grayishBlue)
+    body
+        display: grid
+        grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px) / 72px 1fr min(730px, 4fr) 1fr
+        & > main
+            grid-area: main
 
 @media(prefers-color-scheme: dark)
     :root
