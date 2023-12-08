@@ -6,7 +6,7 @@ heading(weight, size, height, spacing)
 decoElt(size, ratio, fill)
     inline-size: size
     aspect-ratio: ratio
-    background-color: fill
+    background-color: var(--deco-fill, fill)
 inlineFlex(gap=.5em)
     display: inline-flex
     gap: var(--items-space, gap)
@@ -16,6 +16,8 @@ darkShade()
     --color-text: var(--system-color-lightGrayishBlue)
     --color-blank: var(--system-color-darkPurple)
     --color-labelText: var(--system-color-lightPurple)
+    --color-labelFill: var(--system-color-grayishBlue)
+    --color-labelHover: white
     --color-shadow: rgba(0, 0, 0, 0.1)
     --page-bg: hsl(233 30 11)
     --color-checkboxFill: var(--page-bg)
@@ -23,6 +25,10 @@ darkShade()
     --color-infoFill: hsla(231, 5, 98, 0.15)
     --color-warningFill: hsla(34, 5, 95, 0.15)
     --color-successFill: hsla(159, 5, 95, 0.15)
+    --color-editText: var(--system-color-softPurple)
+
+    --fill-items-box: hsl(233, 30, 21)
+    --fill-amount-box: hsl(228, 29, 7)
 
 
 :root
@@ -43,6 +49,8 @@ darkShade()
     --system-color-blank: var(--color-blank, #fff)
     --system-color-labelText: var(--color-labelText, var(--system-color-softPurple))
     --system-color-captionText: var(--color-captionText, hsl(231 20 61))
+    --system-color-labelFill: var(--color-labelFill, var(--system-color-lightGrayishBlue))
+    --system-color-labelHover: var(--color-labelHover, var(--system-color-lightPurple))
     --system-color-text: var(--color-text, var(--system-color-darkBlue))
     --system-color-shadow: var(--color-shadow, hsl(231 38 90))
     --system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple))
@@ -81,9 +89,7 @@ section
     --color-fill: var(--system-color-fillPrimary)
     --min-padding 1.5em clamp(.5em, 4cqi, 1.5em) .5em
     overflow: hidden auto
-    max-block-size: calc(100lvb - 7rem)
-    min-block-size: 50lvb
-    container: section / inline-size
+    block-size: calc(100lvb - max(7rem, 72px))
 .heading-l
     --f-size: var(--system-heading-large)
     heading(bold, var(--system-heading-large), 1.1, -1px)
@@ -97,25 +103,42 @@ section
 .sm-hide
     display: none
 .sticky-top
+    --min-padding: var(--sticky-padding, inherit)
     position: sticky
     inset-block-start: 0
     z-index: 2
+    background-color: var(--sticky-fill, var(--color-fill))
 .no-gap
     --space: 0
 .subtitle-text
     color: var(--color-labelText, hsl(231, 20, 61))
-.btn
-    inlineFlex()
-    border-radius: 1.5rem
+.btn,
+.btn-primary,
+.btn-edit,
+.btn-danger
+    --radius: 1.5rem
     font-weight: 900
-    font-size: var(--system-heading-small)
+    text-transform: capitalize
+    font-size: clamp(.75em, 4vmin, 1.5em)
+    min-inline-size: 4.5rem
     &:focus,
     &:hover
         background-color: var(--color-fill-hover, transparent)
+.btn.back
+    background-color: transparent
+    color: var(--system-color-text)
+.btn-primary, .btn-danger
+    --color-text: white
 .btn-primary
     --color-fill: var(--system-color-softBlue)
     --color-fill-hover: var(--system-color-lightBlue)
-    --color-text: white
+.btn-danger
+    --color-fill: var(--system-color-softRed)
+    --color-fill-hover: var(--system-color-lightRed)
+.btn-edit
+    --color-text: var(--color-editText, var(--system-color-labelText))
+    --color-fill: var(--system-color-labelFill)
+    --color-fill-hover: var(--system-color-labelHover)
 .extend-click
     position: relative
     &::before
@@ -124,7 +147,20 @@ section
         position: absolute
 .relative
     position: relative
+.label-text, label
+    color: var(--system-color-labelText)
+    font-weight: var(--label-weight, inherit)
+.content-bold
+    color: var(--system-color-text)
+    font-weight: bold
 
+.btn[data-icon]
+    inlineFlex()
+[data-icon="arrow_left"]
+    &::before
+        content: ""
+        decoElt(1.5rem, 1, var(--system-color-softBlue))
+        clip-path: url(#arrow_left)
 [data-icon="arrow_down"]
     --min-padding: .75em 1.5em .75em 0
     --space: 0.1em
@@ -154,6 +190,12 @@ section
     --color-text: var(--system-color-info)
     --color-fill: var(--system-color-infoFill)
 
+[data-prefix]::before
+    content: var(--prefix, attr(data-prefix))
+    color: var(--prefix-color, var(--system-color-captionText))
+[data-suffix]::after
+    content: var(--suffix, attr(data-suffix))
+    color: var(--suffix-color, currentColor)
 @require "./layouts.styl"
 
 #logo
@@ -168,7 +210,7 @@ section
         decoElt(40%, 1, transparent)
         inset: 0
         margin: auto
-        background-image: conic-gradient(from -15deg at center, transparent 30deg, white 30deg)
+        background-image: conic-gradient(from -30deg at center, transparent 60deg, white 60deg)
         border-radius: 50%
     &::before
         content: ""
@@ -241,7 +283,7 @@ section
 .empty
     --min-padding: 2em 1.5em 0
     display: none
-    text-align: center
+    auto 1fr
     & > p
         max-inline-size: 25ch
         white-space: pre-wrap
@@ -252,45 +294,93 @@ section
 
 .invoice__summary
     --min-padding: 1rem 1.5rem
+    --status-padding: var(--box-padding, .75rem clamp(.5rem, 5cqi, 1.5rem))
     --f-size: 1rem
     --f-size-diff: 0.2
     --f-size-fluid: 4cqi
     --space: 1rem
-    display: grid
-    grid-template: var(--invoice-grid)
+
+@layer grid-utils
+	.invoice-grid,
+	.invoice__summary
+	    display: grid
+	    grid-template: var(--invoice-grid)
+	    align-items: var(--item-alignment, var(--alignment, center))
+	    container: invoice / inline-size
+	    & > :first-child
+	        grid-area: ref
+	    &> :nth-child(2)
+	        grid-area: date
+	    & > :nth-child(3)
+	        grid-area: name
+	    & > :nth-child(4)
+	        grid-area: total
+	    & > :nth-child(5)
+	        grid-area: status
+
+.invoice__details
+    --min-padding: 1em clamp(0.5em, 4cqi, 1.5em)
+    --sticky-padding: 1em 0
+    --invoice-grid: "ref ." "date total" "name total" "status status" / 1fr 1fr
+    padding: 0 clamp(0.5em, 4vmin, 1.5em)
+    &::after
+        content: ""
+        display: block
+        block-size: max(3.5em, 7vb)
+
+.invoice__table
+    --prefix-color: currentColor
+    text-transform: capitalize
+
+.invoice__item
+    --invoice-grid: "ref ref total" "date name total" / auto 1fr
+    --space: 1em
+    gap: 1ch
+
+.invoice__desc
+    --alignment: start
+    --direction: column
+    --space: .75em
+    gap: 1em
+.blank-box
+    --radius: .5rem
+    --color-fill: var(--system-color-blank)
+.items-box
+    --radius: .5rem .5rem 0 0
+    --color-fill: var(--fill-items-box, hsl(231, 67, 99))
+.amount-box
+    --radius: 0 0 .5rem .5rem
+    --color-fill: var(--fill-amount-box, hsl(233, 30, 21))
+    --system-color-text: white
+    color: white
+
+.status-box
+    --radius: .5rem
+    --min-padding: var(--status-padding)
+    text-transform: capitalize
     font-weight: bold
-    background-color: var(--system-color-blank)
-    border-radius: .5rem
-    align-items: center
-    container: invoice / inline-size
-    & > :nth-child(2),
-    & > :nth-child(3)
-        font-weight: 500
-        color: var(--system-color-labelText)
+    inlineFlex()
+    &::before
+        content: ""
+        display: inline-block
+        decoElt(.5rem, 1, currentColor)
+        border-radius: 50%
+
+.invoice__status
+    --status-padding: .75rem clamp(.5em, 2cqi, 1.5em)
+    --space: .5em
+    color: var(--system-color-captionText)
+    text-transform: capitalize
     & > :first-child
-        grid-area: ref
-        &::before
-            content: "#"
-            color: var(--system-color-captionText)
-    &> :nth-child(2)
-        grid-area: date
-    & > :nth-child(3)
-        grid-area: name
-    & > :nth-child(4)
-        grid-area: total
-    & > .box
-        --min-padding: var(--box-padding, .75rem clamp(.5rem, 5cqi, 1.5rem))
-        color: var(--color-text, currentColor)
-        text-transform: capitalize
-        background-color: var(--color-fill, transparent)
-        grid-area: status
-        border-radius: .5rem
-        inlineFlex()
-        &::before
-            content: ""
-            display: inline-block
-            decoElt(.5rem, 1, currentColor)
-            border-radius: 50%
+        justify-content: space-between
+    & > .actions
+        position: fixed
+        inset-block-end: 0
+        inset-inline: 0
+        container: action / inline-size
+        z-index: 2
+        justify-content: center
+
 @media screen and (min-width: 480px)
     :root
         --invoice-grid: "ref date name total status arrow" / 8ch 1fr 1fr .8fr .75fr 1.5em

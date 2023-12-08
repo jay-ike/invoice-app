@@ -24,6 +24,8 @@
             </nav>
         </header>
         <main>
+
+            <!--
             <section>
                 <div class="box row no-gap sticky-top">
                     <dl class="grow-2">
@@ -63,15 +65,15 @@
 
                         </form>
                     </details>
-                    <button data-icon="add-circle" class="btn btn-primary box">New <span class="sm-hide">Invoice</span></button>
+                    <button data-icon="add-circle" class="btn-primary box">New <span class="sm-hide">Invoice</span></button>
                 </div>
-                <div class="invoices stack box">
-                    <dl class="box invoice__summary extend-click">
-                        <dt>RT3080</dt>
-                        <dd><span class="subtitle-text">Due</span> 19 Aug 2021</dd>
-                        <dd>Melissa Clarke</dd>
+                <div class="invoices stack box content-bold">
+                    <dl class="blank-box invoice__summary extend-click">
+                        <dt data-prefix="#">RT3080</dt>
+                        <dd class="label-text" data-prefix="Due ">19 Aug 2021</dd>
+                        <dd class="label-text">Melissa Clarke</dd>
                         <dd>$ 4,032.33</dd>
-                        <dd class="box" data-state="pending">pending</dd>
+                        <dd class="box status-box" data-state="pending">pending</dd>
                     </dl>
                 </div>
                 <div class="empty box stack">
@@ -80,6 +82,86 @@
                     <p class="subtitle-text">Create an invoice by clicking the <strong>New</strong> button and get started</p>
                 </div>
             </section>
+            -->
+
+            <section class="stack box invoice__details">
+                <div class="sticky-top box"><button class="btn back" data-icon="arrow_left">Go back</button></div>
+                <div class="invoice__status blank-box box">
+                    <dl class="row">
+                        <dt>status</dt>
+                        <dd class="box status-box" data-state="pending">pending</dd>
+                    </dl>
+                    <div class="row box actions">
+                        <button class="box btn-edit">edit</button>
+                        <button class="box btn-danger">delete</button>
+                        <button class="box btn-primary">mark as paid</button>
+
+                    </div>
+                </div>
+                <div class="blank-box box stack">
+                    <dl class="invoice-grid invoice__desc label-text">
+                        <div class="row">
+                            <div>
+                                <dt class="content-bold" data-prefix="#">XM9141</dt>
+                                <dd>Graphic design</dd>
+                            </div>
+                            <div>
+                                <dt>19 Union Terrace</dt>
+                                <dd>London</dd>
+                                <dd>31 EZ</dd>
+                                <dd>United Kingdom</dd>
+                            </div>
+                        </div>
+                        <div>
+                            <dt>Invoice Date</dt>
+                            <dd class="content-bold">21 Aug 2023</dd>
+                        </div>
+                        <div>
+                            <dt>Payment Due</dt>
+                            <dd class="content-bold">20 Sept 2023</dd>
+                        </div>
+                        <div>
+                            <dt>Bill To</dt>
+                            <dd class="content-bold">Alex Grim</dd>
+                            <dd>84 Church Way</dd>
+                            <dd>Bradford</dd>
+                            <dd>BD1 9PB</dd>
+                            <dd>United Kingdom</dd>
+                        </div>
+                        <div>
+                            <dt>Sent To</dt>
+                            <dd class="content-bold">alexgrim@gmail.com</dd>
+                        </div>
+                    </dl>
+                    <div class="invoice__table">
+                        <div class="box items-box stack" role="grid">
+                            <dl  role="rowheader" class="invoice-grid invoice__item sm-hide label-text">
+                                <dt role="columnheader">item Name</dt>
+                                <dd role="columnheader">qty.</dd>
+                                <dd role="columnheader">price</dd>
+                                <dd role="columnheader">total</dd>
+                            </dl>
+                            <dl  role="row" class="invoice-grid invoice__item content-bold">
+                                <dt role="gridcell">Banner Design</dt>
+                                <dd role="gridcell" data-suffix=" x " class="label-text">1</dd>
+                                <dd role="gridcell" data-prefix="$ " class="label-text">156.0</dd>
+                                <dd role="gridcell" data-prefix="$ ">156.0</dd>
+                            </dl>
+                            <dl  role="row" class="invoice-grid invoice__item content-bold">
+                                <dt role="gridcell">Email Design</dt>
+                                <dd role="gridcell" data-suffix=" x " class="label-text">2</dd>
+                                <dd role="gridcell" data-prefix="$ " class="label-text">400.0</dd>
+                                <dd role="gridcell" data-prefix="$ ">800.0</dd>
+                            </dl>
+                        </div>
+                        <dl class="box amount-box segragator">
+                            <dt>grand total</dt>
+                            <dd class="content-bold" data-prefix="$ ">956.0</dd>
+                        </dl>
+                    </div>
+                </div>
+            </section>
+
         </main>
         <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" version="1.1">
             <symbol viewBox="0 0 24 24" id="trash" fill="none">

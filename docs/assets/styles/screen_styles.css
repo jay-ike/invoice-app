@@ -15,6 +15,8 @@
   --system-color-blank: var(--color-blank, #fff);
   --system-color-labelText: var(--color-labelText, var(--system-color-softPurple));
   --system-color-captionText: var(--color-captionText, #888eaf);
+  --system-color-labelFill: var(--color-labelFill, var(--system-color-lightGrayishBlue));
+  --system-color-labelHover: var(--color-labelHover, var(--system-color-lightPurple));
   --system-color-text: var(--color-text, var(--system-color-darkBlue));
   --system-color-shadow: var(--color-shadow, #dcdfef);
   --system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
@@ -38,6 +40,8 @@
   --color-text: var(--system-color-lightGrayishBlue);
   --color-blank: var(--system-color-darkPurple);
   --color-labelText: var(--system-color-lightPurple);
+  --color-labelFill: var(--system-color-grayishBlue);
+  --color-labelHover: #fff;
   --color-shadow: rgba(0,0,0,0.1);
   --page-bg: #141624;
   --color-checkboxFill: var(--page-bg);
@@ -45,6 +49,9 @@
   --color-infoFill: rgba(250,250,250,0.15);
   --color-warningFill: rgba(243,242,242,0.15);
   --color-successFill: rgba(242,243,242,0.15);
+  --color-editText: var(--system-color-softPurple);
+  --fill-items-box: #252946;
+  --fill-amount-box: #0d0f17;
 }
 body {
   font-family: Spartan;
@@ -60,9 +67,7 @@ section {
   --color-fill: var(--system-color-fillPrimary);
   --min-padding: 1.5em clamp(0.5em, 4cqi, 1.5em) 0.5em;
   overflow: hidden auto;
-  max-block-size: calc(100lvb - 7rem);
-  min-block-size: 50lvb;
-  container: section/inline-size;
+  block-size: calc(100lvb - max(7rem, 72px));
 }
 .heading-l {
   --f-size: var(--system-heading-large);
@@ -90,9 +95,11 @@ section {
   display: none;
 }
 .sticky-top {
+  --min-padding: var(--sticky-padding, inherit);
   position: sticky;
   inset-block-start: 0;
   z-index: 2;
+  background-color: var(--sticky-fill, var(--color-fill));
 }
 .no-gap {
   --space: 0;
@@ -100,22 +107,46 @@ section {
 .subtitle-text {
   color: var(--color-labelText, #888eaf);
 }
-.btn {
-  display: inline-flex;
-  gap: var(--items-space, 0.5em);
-  align-items: center;
-  border-radius: 1.5rem;
+.btn,
+.btn-primary,
+.btn-edit,
+.btn-danger {
+  --radius: 1.5rem;
   font-weight: 900;
-  font-size: var(--system-heading-small);
+  text-transform: capitalize;
+  font-size: clamp(0.75em, 4vmin, 1.5em);
+  min-inline-size: 4.5rem;
 }
 .btn:focus,
-.btn:hover {
+.btn-primary:focus,
+.btn-edit:focus,
+.btn-danger:focus,
+.btn:hover,
+.btn-primary:hover,
+.btn-edit:hover,
+.btn-danger:hover {
   background-color: var(--color-fill-hover, transparent);
+}
+.btn.back {
+  background-color: transparent;
+  color: var(--system-color-text);
+}
+.btn-primary,
+.btn-danger {
+  --color-text: #fff;
 }
 .btn-primary {
   --color-fill: var(--system-color-softBlue);
   --color-fill-hover: var(--system-color-lightBlue);
-  --color-text: #fff;
+}
+.btn-danger {
+  --color-fill: var(--system-color-softRed);
+  --color-fill-hover: var(--system-color-lightRed);
+}
+.btn-edit {
+  --color-text: var(--color-editText, var(--system-color-labelText));
+  --color-fill: var(--system-color-labelFill);
+  --color-fill-hover: var(--system-color-labelHover);
 }
 .extend-click {
   position: relative;
@@ -128,6 +159,27 @@ section {
 .relative {
   position: relative;
 }
+.label-text,
+label {
+  color: var(--system-color-labelText);
+  font-weight: var(--label-weight, inherit);
+}
+.content-bold {
+  color: var(--system-color-text);
+  font-weight: bold;
+}
+.btn[data-icon] {
+  display: inline-flex;
+  gap: var(--items-space, 0.5em);
+  align-items: center;
+}
+[data-icon="arrow_left"]::before {
+  content: "";
+  inline-size: 1.5rem;
+  aspect-ratio: 1;
+  background-color: var(--deco-fill, var(--system-color-softBlue));
+  clip-path: url("#arrow_left");
+}
 [data-icon="arrow_down"] {
   --min-padding: 0.75em 1.5em 0.75em 0;
   --space: 0.1em;
@@ -137,7 +189,7 @@ section {
   content: "";
   inline-size: 1em;
   aspect-ratio: 0.6;
-  background-color: var(--system-color-softBlue);
+  background-color: var(--deco-fill, var(--system-color-softBlue));
   clip-path: url("#arrow_down");
   transform: var(--transformation, none);
 }
@@ -151,7 +203,7 @@ section {
   content: "";
   inline-size: 2em;
   aspect-ratio: 1;
-  background-color: currentColor;
+  background-color: var(--deco-fill, currentColor);
   clip-path: url("#add-circle");
 }
 [data-state="pending"] {
@@ -165,6 +217,14 @@ section {
 [data-state="draft"] {
   --color-text: var(--system-color-info);
   --color-fill: var(--system-color-infoFill);
+}
+[data-prefix]::before {
+  content: var(--prefix, attr(data-prefix));
+  color: var(--prefix-color, var(--system-color-captionText));
+}
+[data-suffix]::after {
+  content: var(--suffix, attr(data-suffix));
+  color: var(--suffix-color, currentColor);
 }
 .stack > * + * {
   margin-block-start: var(--space, 1.5em);
@@ -188,6 +248,7 @@ section {
   padding: var(--min-padding, 1.5em);
   background-color: var(--color-fill, transparent);
   color: var(--color-text, currentColor);
+  border-radius: var(--radius, 0);
 }
 #logo {
   width: 72px;
@@ -201,17 +262,17 @@ section {
   position: absolute;
   inline-size: 40%;
   aspect-ratio: 1;
-  background-color: transparent;
+  background-color: var(--deco-fill, transparent);
   inset: 0;
   margin: auto;
-  background-image: conic-gradient(from -15deg at center, transparent 30deg, #fff 30deg);
+  background-image: conic-gradient(from -30deg at center, transparent 60deg, #fff 60deg);
   border-radius: 50%;
 }
 #logo::before {
   content: "";
   inline-size: 100%;
   aspect-ratio: 2;
-  background-color: var(--system-color-lightBlue);
+  background-color: var(--deco-fill, var(--system-color-lightBlue));
   position: absolute;
   inset-block-end: 0;
   border-radius: 1.5em 0 1.5em 0;
@@ -288,7 +349,7 @@ section {
 .empty {
   --min-padding: 2em 1.5em 0;
   display: none;
-  text-align: center;
+  auto: 1fr;
 }
 .empty > p {
   max-inline-size: 25ch;
@@ -301,57 +362,114 @@ section {
 }
 .invoice__summary {
   --min-padding: 1rem 1.5rem;
+  --status-padding: var(--box-padding, 0.75rem clamp(0.5rem, 5cqi, 1.5rem));
   --f-size: 1rem;
   --f-size-diff: 0.2;
   --f-size-fluid: 4cqi;
   --space: 1rem;
-  display: grid;
-  grid-template: var(--invoice-grid);
-  font-weight: bold;
-  background-color: var(--system-color-blank);
-  border-radius: 0.5rem;
-  align-items: center;
-  container: invoice/inline-size;
 }
-.invoice__summary > :nth-child(2),
-.invoice__summary > :nth-child(3) {
-  font-weight: 500;
-  color: var(--system-color-labelText);
+@layer grid-utils {
+  .invoice-grid,
+  .invoice__summary {
+    display: grid;
+    grid-template: var(--invoice-grid);
+    align-items: var(--item-alignment, var(--alignment, center));
+    container: invoice/inline-size;
+  }
+  .invoice-grid > :first-child,
+  .invoice__summary > :first-child {
+    grid-area: ref;
+  }
+  .invoice-grid> :nth-child(2),
+  .invoice__summary> :nth-child(2) {
+    grid-area: date;
+  }
+  .invoice-grid > :nth-child(3),
+  .invoice__summary > :nth-child(3) {
+    grid-area: name;
+  }
+  .invoice-grid > :nth-child(4),
+  .invoice__summary > :nth-child(4) {
+    grid-area: total;
+  }
+  .invoice-grid > :nth-child(5),
+  .invoice__summary > :nth-child(5) {
+    grid-area: status;
+  }
 }
-.invoice__summary > :first-child {
-  grid-area: ref;
+.invoice__details {
+  --min-padding: 1em clamp(0.5em, 4cqi, 1.5em);
+  --sticky-padding: 1em 0;
+  --invoice-grid: "ref ." "date total" "name total" "status status"/1fr 1fr;
+  padding: 0 clamp(0.5em, 4vmin, 1.5em);
 }
-.invoice__summary > :first-child::before {
-  content: "#";
-  color: var(--system-color-captionText);
+.invoice__details::after {
+  content: "";
+  display: block;
+  block-size: 7vb;
 }
-.invoice__summary> :nth-child(2) {
-  grid-area: date;
-}
-.invoice__summary > :nth-child(3) {
-  grid-area: name;
-}
-.invoice__summary > :nth-child(4) {
-  grid-area: total;
-}
-.invoice__summary > .box {
-  --min-padding: var(--box-padding, 0.75rem clamp(0.5rem, 5cqi, 1.5rem));
-  color: var(--color-text, currentColor);
+.invoice__table {
+  --prefix-color: currentColor;
   text-transform: capitalize;
-  background-color: var(--color-fill, transparent);
-  grid-area: status;
-  border-radius: 0.5rem;
+}
+.invoice__item {
+  --invoice-grid: "ref ref total" "date name total"/auto 1fr;
+  --space: 1em;
+  gap: 1ch;
+}
+.invoice__desc {
+  --alignment: start;
+  --direction: column;
+  --space: 0.75em;
+  gap: 1em;
+}
+.blank-box {
+  --radius: 0.5rem;
+  --color-fill: var(--system-color-blank);
+}
+.items-box {
+  --radius: 0.5rem 0.5rem 0 0;
+  --color-fill: var(--fill-items-box, #fbfbfe);
+}
+.amount-box {
+  --radius: 0 0 0.5rem 0.5rem;
+  --color-fill: var(--fill-amount-box, #252946);
+  --system-color-text: #fff;
+  color: #fff;
+}
+.status-box {
+  --radius: 0.5rem;
+  --min-padding: var(--status-padding);
+  text-transform: capitalize;
+  font-weight: bold;
   display: inline-flex;
   gap: var(--items-space, 0.5em);
   align-items: center;
 }
-.invoice__summary > .box::before {
+.status-box::before {
   content: "";
   display: inline-block;
   inline-size: 0.5rem;
   aspect-ratio: 1;
-  background-color: currentColor;
+  background-color: var(--deco-fill, currentColor);
   border-radius: 50%;
+}
+.invoice__status {
+  --status-padding: 0.75rem clamp(0.5em, 2cqi, 1.5em);
+  --space: 0.5em;
+  color: var(--system-color-captionText);
+  text-transform: capitalize;
+}
+.invoice__status > :first-child {
+  justify-content: space-between;
+}
+.invoice__status > .actions {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  container: action/inline-size;
+  z-index: 2;
+  justify-content: center;
 }
 @media screen and (min-width: 480px) {
   :root {
@@ -371,7 +489,7 @@ section {
     content: "";
     inline-size: 1.5em;
     aspect-ratio: 1;
-    background-color: var(--system-color-softBlue);
+    background-color: var(--deco-fill, var(--system-color-softBlue));
     clip-path: url("#arrow_left");
     transform: rotateZ(180deg);
     grid-area: arrow;
@@ -400,6 +518,8 @@ section {
     --color-text: var(--system-color-lightGrayishBlue);
     --color-blank: var(--system-color-darkPurple);
     --color-labelText: var(--system-color-lightPurple);
+    --color-labelFill: var(--system-color-grayishBlue);
+    --color-labelHover: #fff;
     --color-shadow: rgba(0,0,0,0.1);
     --page-bg: #141624;
     --color-checkboxFill: var(--page-bg);
@@ -407,6 +527,9 @@ section {
     --color-infoFill: rgba(250,250,250,0.15);
     --color-warningFill: rgba(243,242,242,0.15);
     --color-successFill: rgba(242,243,242,0.15);
+    --color-editText: var(--system-color-softPurple);
+    --fill-items-box: #252946;
+    --fill-amount-box: #0d0f17;
   }
 }
 
