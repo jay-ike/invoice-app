@@ -91,7 +91,7 @@ section {
 .self-center {
   place-self: center;
 }
-.sm-hide {
+.sm-hide.sm-hide {
   display: none;
 }
 .sticky-top {
@@ -114,7 +114,7 @@ section {
   --radius: 1.5rem;
   font-weight: 900;
   text-transform: capitalize;
-  font-size: clamp(0.75em, 4vmin, 1.5em);
+  font-size: clamp(0.75em, 4cqi, 1em);
   min-inline-size: 4.5rem;
 }
 .btn:focus,
@@ -167,6 +167,11 @@ label {
 .content-bold {
   color: var(--system-color-text);
   font-weight: bold;
+}
+.inline-row {
+  display: inline-flex;
+  gap: var(--items-space, 0.5em);
+  align-items: center;
 }
 .btn[data-icon] {
   display: inline-flex;
@@ -368,34 +373,32 @@ label {
   --f-size-fluid: 4cqi;
   --space: 1rem;
 }
-@layer grid-utils {
-  .invoice-grid,
-  .invoice__summary {
-    display: grid;
-    grid-template: var(--invoice-grid);
-    align-items: var(--item-alignment, var(--alignment, center));
-    container: invoice/inline-size;
-  }
-  .invoice-grid > :first-child,
-  .invoice__summary > :first-child {
-    grid-area: ref;
-  }
-  .invoice-grid> :nth-child(2),
-  .invoice__summary> :nth-child(2) {
-    grid-area: date;
-  }
-  .invoice-grid > :nth-child(3),
-  .invoice__summary > :nth-child(3) {
-    grid-area: name;
-  }
-  .invoice-grid > :nth-child(4),
-  .invoice__summary > :nth-child(4) {
-    grid-area: total;
-  }
-  .invoice-grid > :nth-child(5),
-  .invoice__summary > :nth-child(5) {
-    grid-area: status;
-  }
+.invoice-grid,
+.invoice__summary {
+  display: grid;
+  grid-template: var(--invoice-grid);
+  align-items: var(--item-alignment, var(--alignment, center));
+  container: invoice/inline-size;
+}
+.invoice-grid > :first-child,
+.invoice__summary > :first-child {
+  grid-area: ref;
+}
+.invoice-grid> :nth-child(2),
+.invoice__summary> :nth-child(2) {
+  grid-area: date;
+}
+.invoice-grid > :nth-child(3),
+.invoice__summary > :nth-child(3) {
+  grid-area: name;
+}
+.invoice-grid > :nth-child(4),
+.invoice__summary > :nth-child(4) {
+  grid-area: total;
+}
+.invoice-grid > :nth-child(5),
+.invoice__summary > :nth-child(5) {
+  grid-area: status;
 }
 .invoice__details {
   --min-padding: 1em clamp(0.5em, 4cqi, 1.5em);
@@ -461,15 +464,17 @@ label {
   text-transform: capitalize;
 }
 .invoice__status > :first-child {
-  justify-content: space-between;
+  justify-content: var(--inline-alignment, space-between);
 }
-.invoice__status > .actions {
+.invoice__actions {
   position: fixed;
   inset-block-end: 0;
   inset-inline: 0;
   container: action/inline-size;
   z-index: 2;
+  display: flex;
   justify-content: center;
+  gap: clamp(0.5em, 4vmin, 1em);
 }
 @media screen and (min-width: 480px) {
   :root {
@@ -477,6 +482,21 @@ label {
   }
   .sm-hide {
     display: initial;
+  }
+  .invoice-grid.sm-hide {
+    display: grid;
+  }
+  .invoice__desc {
+    --invoice-grid: "ref ref ref" "date total status" "name total ."/1fr 1fr 1fr;
+  }
+  .invoice__desc > :first-child {
+    --direction: row;
+    justify-content: space-between;
+  }
+  .invoice__item {
+    --invoice-grid: "ref date name total"/1.5fr 0.5fr 1fr 1fr;
+    --suffix: "";
+    text-align: end;
   }
   .invoice__summary {
     --min-padding: 1em clamp(0.5em, 2cqi, 1.5em);
@@ -494,6 +514,19 @@ label {
     transform: rotateZ(180deg);
     grid-area: arrow;
   }
+  .invoice__status {
+    --inline-alignment: start;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5em;
+  }
+  .invoice__actions {
+    padding: 0;
+    z-index: 0;
+    position: initial;
+    justify-content: end;
+    flex-grow: 2;
+  }
 }
 @media screen and (min-width: 768px) {
   .banner {
@@ -507,7 +540,7 @@ label {
   }
   body {
     display: grid;
-    grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr 4fr 1fr;
+    grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(688px, 4fr) 1fr;
   }
   body > main {
     grid-area: main;

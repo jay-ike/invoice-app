@@ -100,7 +100,7 @@ section
 
 .self-center
     place-self: center
-.sm-hide
+.sm-hide.sm-hide
     display: none
 .sticky-top
     --min-padding: var(--sticky-padding, inherit)
@@ -119,7 +119,7 @@ section
     --radius: 1.5rem
     font-weight: 900
     text-transform: capitalize
-    font-size: clamp(.75em, 4vmin, 1.5em)
+    font-size: clamp(.75em, 4cqi, 1em)
     min-inline-size: 4.5rem
     &:focus,
     &:hover
@@ -153,6 +153,8 @@ section
 .content-bold
     color: var(--system-color-text)
     font-weight: bold
+.inline-row
+    inlineFlex()
 
 .btn[data-icon]
     inlineFlex()
@@ -277,7 +279,6 @@ section
     --min-padding: 0 1.5em
     background-color: var(--system-color-darkPurple)
 
-
 .invoices:empty
     display: none
 .empty
@@ -300,23 +301,22 @@ section
     --f-size-fluid: 4cqi
     --space: 1rem
 
-@layer grid-utils
-	.invoice-grid,
-	.invoice__summary
-	    display: grid
-	    grid-template: var(--invoice-grid)
-	    align-items: var(--item-alignment, var(--alignment, center))
-	    container: invoice / inline-size
-	    & > :first-child
-	        grid-area: ref
-	    &> :nth-child(2)
-	        grid-area: date
-	    & > :nth-child(3)
-	        grid-area: name
-	    & > :nth-child(4)
-	        grid-area: total
-	    & > :nth-child(5)
-	        grid-area: status
+.invoice-grid,
+.invoice__summary
+	display: grid
+	grid-template: var(--invoice-grid)
+	align-items: var(--item-alignment, var(--alignment, center))
+	container: invoice / inline-size
+	& > :first-child
+	    grid-area: ref
+	&> :nth-child(2)
+	    grid-area: date
+	& > :nth-child(3)
+	    grid-area: name
+	& > :nth-child(4)
+	    grid-area: total
+	& > :nth-child(5)
+	    grid-area: status
 
 .invoice__details
     --min-padding: 1em clamp(0.5em, 4cqi, 1.5em)
@@ -372,14 +372,17 @@ section
     color: var(--system-color-captionText)
     text-transform: capitalize
     & > :first-child
-        justify-content: space-between
-    & > .actions
-        position: fixed
-        inset-block-end: 0
-        inset-inline: 0
-        container: action / inline-size
-        z-index: 2
-        justify-content: center
+        justify-content: var(--inline-alignment, space-between)
+
+.invoice__actions
+	position: fixed
+	inset-block-end: 0
+	inset-inline: 0
+	container: action / inline-size
+	z-index: 2
+	display: flex
+	justify-content: center
+	gap: clamp(0.5em, 4vmin, 1em)
 
 @media screen and (min-width: 480px)
     :root
@@ -387,6 +390,18 @@ section
 
     .sm-hide
         display: initial
+
+    .invoice-grid.sm-hide
+        display: grid
+    .invoice__desc
+        --invoice-grid: "ref ref ref" "date total status" "name total ." / 1fr 1fr 1fr
+        & > :first-child
+            --direction: row
+            justify-content: space-between
+    .invoice__item
+        --invoice-grid: "ref date name total" / 1.5fr .5fr 1fr 1fr
+        --suffix: ""
+        text-align: end
     .invoice__summary
         --min-padding: 1em clamp(0.5em, 2cqi, 1.5em)
         --box-padding: .625em clamp(0.5em, 2cqi, 1em)
@@ -399,6 +414,19 @@ section
             clip-path: url(#arrow_left)
             transform: rotateZ(180deg)
             grid-area: arrow
+    .invoice__status
+        --inline-alignment: start
+        display: flex
+        justify-content: space-between
+        gap: .5em
+    .invoice__actions
+        padding: 0
+        z-index: 0
+        position: initial
+        justify-content: end
+        flex-grow: 2
+
+
 
 @media screen and (min-width: 768px)
     .banner
@@ -410,7 +438,7 @@ section
             border-block-end: 1px solid var(--system-color-grayishBlue)
     body
         display: grid
-        grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px) / 72px 1fr min(730px, 4fr) 1fr
+        grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px) / 72px 1fr minmax(688px, 4fr) 1fr
         & > main
             grid-area: main
 
