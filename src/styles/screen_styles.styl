@@ -73,6 +73,25 @@ darkShade()
     font-variant-ligatures: common-ligatures discretionary-ligatures historical-ligatures
     font-feature-settings: "zero"
 
+@layer utils
+	.invoice-grid,
+	.invoice__summary
+		display: grid
+		grid-template: var(--invoice-grid)
+		align-items: var(--item-alignment, var(--alignment, center))
+		container: invoice / inline-size
+		& > :first-child
+		    grid-area: ref
+		&> :nth-child(2)
+		    grid-area: date
+		& > :nth-child(3)
+		    grid-area: name
+		& > :nth-child(4)
+		    grid-area: total
+		& > :nth-child(5)
+		    grid-area: status
+	.sm-hide
+	    display: none
 [data-apearence="dark"]
     darkShade()
 
@@ -100,8 +119,6 @@ section
 
 .self-center
     place-self: center
-.sm-hide.sm-hide
-    display: none
 .sticky-top
     --min-padding: var(--sticky-padding, inherit)
     position: sticky
@@ -148,7 +165,7 @@ section
 .relative
     position: relative
 .label-text, label
-    color: var(--system-color-labelText)
+    color: var(--label-color, var(--system-color-labelText))
     font-weight: var(--label-weight, inherit)
 .content-bold
     color: var(--system-color-text)
@@ -236,6 +253,7 @@ section
 
 .inv-option
     --space: 1em
+    --label-color: var(--system-color-text)
     cursor: pointer
     &:focus,
     &:hover
@@ -296,27 +314,11 @@ section
 .invoice__summary
     --min-padding: 1rem 1.5rem
     --status-padding: var(--box-padding, .75rem clamp(.5rem, 5cqi, 1.5rem))
-    --f-size: 1rem
+    --f-size: 1em
     --f-size-diff: 0.2
     --f-size-fluid: 4cqi
     --space: 1rem
-
-.invoice-grid,
-.invoice__summary
-	display: grid
-	grid-template: var(--invoice-grid)
-	align-items: var(--item-alignment, var(--alignment, center))
-	container: invoice / inline-size
-	& > :first-child
-	    grid-area: ref
-	&> :nth-child(2)
-	    grid-area: date
-	& > :nth-child(3)
-	    grid-area: name
-	& > :nth-child(4)
-	    grid-area: total
-	& > :nth-child(5)
-	    grid-area: status
+    --label-weight: 500
 
 .invoice__details
     --min-padding: 1em clamp(0.5em, 4cqi, 1.5em)
@@ -349,10 +351,12 @@ section
     --radius: .5rem .5rem 0 0
     --color-fill: var(--fill-items-box, hsl(231, 67, 99))
 .amount-box
+    --f-size: 1.5em
     --radius: 0 0 .5rem .5rem
     --color-fill: var(--fill-amount-box, hsl(233, 30, 21))
     --system-color-text: white
     color: white
+    container: amount / inline-size
 
 .status-box
     --radius: .5rem
@@ -402,6 +406,8 @@ section
         --invoice-grid: "ref date name total" / 1.5fr .5fr 1fr 1fr
         --suffix: ""
         text-align: end
+        & > :first-child
+            text-align: start
     .invoice__summary
         --min-padding: 1em clamp(0.5em, 2cqi, 1.5em)
         --box-padding: .625em clamp(0.5em, 2cqi, 1em)
@@ -433,6 +439,7 @@ section
         --direction: column
         --min-padding: 1.5em 0
         grid-area: nav
+        border-radius: 0 1.5em 1.5em 0
         .theme-switch
             border-inline: none
             border-block-end: 1px solid var(--system-color-grayishBlue)
