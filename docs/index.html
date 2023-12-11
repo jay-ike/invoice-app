@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./assets/styles/resets.css">
         <link href="./assets/styles/screen_styles.css" rel="stylesheet">
+        <link rel="icon" type="image/ico" href="./assets/favicon.ico">
     </head>
     <body>
         <header class="segragator banner">
@@ -160,8 +161,51 @@
                 </section>
             </step-by-step>
 
+            <section class="drawer box stack">
+               <h2 class="heading-l">new invoice</h2>
+               <form action="">
+                   <step-by-step out-indicator="step-out">
+                    <fieldset class="input-step stack">
+                        <legend>bill from</legend>
+                        <div><input type="text" id="bf-street" name="senderAddress"><label for="bf-street">street address</label></div>
+                        <div><input type="text" id="bf-city" name="senderCity"><label for="bf-city">city</label></div>
+                        <div><input type="text" id="bf-post-code" name="senderPostCode"><label for="bf-post-code">post code</label></div>
+                        <div><input type="text" id="bf-country" name="senderCountry"><label for="bf-country">country</label></div>
+                    </fieldset>
+                    <fieldset class="input-step stack">
+                        <legend>bill to</legend>
+                        <div><input type="text" id="bt-name" name="clientName" required><label for="bt-name">client's name</label></div>
+                        <div><input type="email" id="bt-email" name="clientMail" required pattern="^[a-zA-Z0-9\._%\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"><label for="bt-email">client's email</label></div>
+                        <div><input type="text" id="bt-street" name="clientAddress"><label for="bt-street">street address</label></div>
+                        <div><input type="text" id="bt-city" name="clientCity"><label for="bt-city">city</label></div>
+                        <div><input type="text" id="bt-post-code" name="clientPostCode"><label for="bt-post-code">post code</label></div>
+                        <div><input type="text" id="bt-country" name="clientCountry"><label for="bt-country">country</label></div>
+                    </fieldset>
+                    <fieldset class="input-step stack">
+                        <legend></legend>
+                        <div>
+                            <date-picker month-format="short" switch-year>
+                                <input type="text" id="inv-date" name="invoiceDate" required>
+                            </date-picker>
+                            <label for="inv-date">invoice date</label>
+                        </div>
+                        <div>
+                            <input type="number" list="terms-list" name="paymentTerms" id="inv-terms">
+                            <label for="inv-terms">payment terms</label>
+                            <datalist id="terms-list">
+                                <options class="blank-box" value="1" label="net 1 day">
+                                <options class="blank-box" value="7" label="net 7 days">
+                                <options class="blank-box" value="14" label="net 14 days">
+                                <options class="blank-box" value="30" label="net 30 days">
+                            </datalist>
+                        </div>
+                        <div><input type="text" id="inv-desc" name="description" required><label for="inv-desc">project description</label></div>
+                    </fieldset>
+                   </step-by-step>
+               </form>
+            </section>
         </main>
-        <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" version="1.1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" version="1.1" aria-hidden>
             <symbol viewBox="0 0 24 24" id="trash" fill="none">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M 9.5 2.9 C 9.9 2.4 10.5 2 11.2 2 H 13 C 13.7 2 14.3 2.4 14.7 2.9 L 15.6 4.3 H 19.4 C 19.8 4.3 20.2 4.6 20.2 5 C 20.2 5.5 19.8 5.8 19.4 5.8 H 4.8 C 4.4 5.8 4 5.5 4 5 C 4 4.6 4.4 4.3 4.8 4.3 H 8.6 L 9.5 2.9 Z M 15.1 22.2 H 9.1 C 6.8 22.2 5 20.4 5 18.1 V 7.1 H 19.2 V 18.1 C 19.2 20.4 17.3 22.2 15.1 22.2 Z M 10.1 10.3 C 10.5 10.3 10.8 10.7 10.8 11.1 V 18.1 C 10.8 18.6 10.5 18.9 10.1 18.9 C 9.7 18.9 9.3 18.6 9.3 18.1 L 9.3 11.1 C 9.3 10.7 9.7 10.3 10.1 10.3 Z M 14.1 10.3 C 14.5 10.3 14.9 10.7 14.9 11.1 V 18.1 C 14.9 18.6 14.5 18.9 14.1 18.9 C 13.7 18.9 13.4 18.6 13.4 18.1 V 11.1 C 13.4 10.7 13.7 10.3 14.1 10.3 Z" fill="currentColor" style="fill:var(--icon-fill, currentColor)" id="path1"/>
             </symbol>

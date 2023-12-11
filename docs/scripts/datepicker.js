@@ -1,5 +1,13 @@
 /*jslint browser*/
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const days = [
+    {abbreviation: "Monday", name: "Mon"},
+    {abbreviation: "Tuesday", name: "Tue"},
+    {abbreviation: "Wednesday", name: "Wed"},
+    {abbreviation: "Thursday", name: "Thu"},
+    {abbreviation: "Friday", name: "Fri"},
+    {abbreviation: "Saturday", name: "Sat"},
+    {abbreviation: "Sunday", name: "Sun"}
+];
 const defaultActions = [
     "previous year",
     "previous month",
@@ -95,10 +103,14 @@ function buildActions(hasYearActions) {
 function buildCalendarGrid({actionBuilder, getDayNames}) {
     const grid = document.createElement("div");
     let actions = actionBuilder();
-    let names = getDayNames().map(function (name) {
+    let names = getDayNames().map(function ({abbreviation, name}) {
+        let abbr;
         let result = document.createElement("div");
+        abbr = document.createElement("abbr");
+        abbr.setAttribute("title", abbreviation);
+        abbr.textContent = name;
         result.classList.add("day-name", "flow-row");
-        result.textContent = name;
+        result.appendChild(abbr);
         return result;
     });
     let numbers = new Array(42).fill(0).map(function () {
@@ -110,7 +122,7 @@ function buildCalendarGrid({actionBuilder, getDayNames}) {
     grid.classList.add("calendar-grid");
     grid.appendChild(actions);
     names.concat(numbers).forEach((elt) => grid.appendChild(elt));
-    grid.tabIndex = 0;
+    grid.setAttribute("lang", "en")
     return grid;
 }
 
