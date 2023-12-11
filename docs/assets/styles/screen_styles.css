@@ -278,7 +278,8 @@ label {
   align-items: var(--alignment, center);
   justify-content: space-between;
 }
-.box {
+:is(.blank-box,
+.box) {
   padding: var(--min-padding, 1.5em);
   background-color: var(--color-fill, transparent);
   color: var(--color-text, currentColor);
@@ -481,6 +482,20 @@ label {
   display: flex;
   justify-content: center;
   gap: clamp(0.5em, 4vmin, 1em);
+}
+step-by-step {
+  position: relative;
+  display: block;
+  overflow: hidden auto;
+}
+step-by-step > * {
+  transform: translateX(calc((var(--i) - var(--current)) * 100%));
+}
+step-by-step > .step-out {
+  position: fixed;
+  z-index: -1;
+  visibility: hidden;
+  opacity: 0;
 }
 @media screen and (min-width: 480px) {
   :root {

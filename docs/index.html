@@ -14,7 +14,7 @@
             <nav class="box row">
                 <button aria-label="Theme switcher" class="box theme-switch">
                     <svg width="32px" height="32px">
-                        <use href="#night_mode" />
+                        <use href="#night_mode"></use>
                     </svg>
                 </button>
                 <svg width="32px" height="32px" class="self-center">
@@ -24,143 +24,141 @@
             </nav>
         </header>
         <main>
+            <step-by-step out-indicator="step-out">
+                <section>
+                    <div class="box row no-gap sticky-top">
+                        <dl class="grow-2">
+                            <dt class="heading-l">Invoices</dt>
+                            <dd class="subtitle-text">No invoices</dd>
+                        </dl>
+                        <details class="relative">
+                            <summary class="box btn heading-s" data-icon="arrow_down">Filter <span class="sm-hide">by status</span></summary>
+                            <form id="status-form" class="stack box" action="">
+                                <div class="inv-option row">
+                                    <span class="status-option">
+                                        <input type="checkbox" name="draftSelected" id="o-draft">
+                                        <svg>
+                                            <use href="#checked">
+                                        </svg>
+                                    </span>
+                                    <label for="o-draft">Draft</label>
+                                </div>
+                                <div class="inv-option row">
+                                    <span class="status-option">
+                                        <input type="checkbox" name="paidSelected" id="o-paid">
+                                        <svg>
+                                            <use href="#checked">
+                                        </svg>
+                                    </span>
+                                    <label for="o-paid">Paid</label>
+                                </div>
+                                <div class="inv-option row">
+                                    <span class="status-option">
+                                        <input type="checkbox" name="pendingSelected" id="o-pending">
+                                        <svg>
+                                            <use href="#checked">
+                                        </svg>
+                                    </span>
+                                    <label for="o-pending">Pending</label>
+                                </div>
 
-            <!--
-            <section>
-                <div class="box row no-gap sticky-top">
-                    <dl class="grow-2">
-                        <dt class="heading-l">Invoices</dt>
-                        <dd class="subtitle-text">No invoices</dd>
-                    </dl>
-                    <details class="relative">
-                        <summary class="box btn heading-s" data-icon="arrow_down">Filter <span class="sm-hide">by status</span></summary>
-                        <form id="status-form" class="stack box" action="">
-                           <div class="inv-option row">
-                                <span class="status-option">
-                                    <input type="checkbox" name="draftSelected" id="o-draft">
-                                    <svg>
-                                        <use href="#checked">
-                                    </svg>
-                                </span>
-                                <label for="o-draft">Draft</label>
-                            </div>
-                           <div class="inv-option row">
-                                <span class="status-option">
-                                    <input type="checkbox" name="paidSelected" id="o-paid">
-                                    <svg>
-                                        <use href="#checked">
-                                    </svg>
-                                </span>
-                                <label for="o-paid">Paid</label>
-                            </div>
-                           <div class="inv-option row">
-                                <span class="status-option">
-                                    <input type="checkbox" name="pendingSelected" id="o-pending">
-                                    <svg>
-                                        <use href="#checked">
-                                    </svg>
-                                </span>
-                                <label for="o-pending">Pending</label>
-                            </div>
-
-                        </form>
-                    </details>
-                    <button data-icon="add-circle" class="btn-primary box">New <span class="sm-hide">Invoice</span></button>
-                </div>
-                <div class="invoices stack box content-bold">
-                    <dl class="blank-box invoice__summary extend-click">
-                        <dt data-prefix="#">RT3080</dt>
-                        <dd class="label-text" data-prefix="Due ">19 Aug 2021</dd>
-                        <dd class="label-text">Melissa Clarke</dd>
-                        <dd>$ 4,032.33</dd>
-                        <dd class="box status-box" data-state="pending">pending</dd>
-                    </dl>
-                </div>
-                <div class="empty box stack">
-                    <img src="./assets/Email campaign_Flatline 2.svg" alt="An Illustration of a woman in purple shirt holding a speaker for an email campaign" width="194px" height="160px">
-                    <h3 style="--space: 2em;" class="heading-m">There is nothing here</h3>
-                    <p class="subtitle-text">Create an invoice by clicking the <strong>New</strong> button and get started</p>
-                </div>
-            </section>
-            -->
-
-            <section class="stack box invoice__details">
-                <div class="sticky-top box"><button class="btn back" data-icon="arrow_left">Go back</button></div>
-                <div class="invoice__status blank-box box">
-                    <dl class="row">
-                        <dt>status</dt>
-                        <dd class="box status-box" data-state="pending">pending</dd>
-                    </dl>
-                    <div class="box invoice__actions">
-                        <button class="box btn-edit">edit</button>
-                        <button class="box btn-danger">delete</button>
-                        <button class="box btn-primary">mark as paid</button>
-
+                            </form>
+                        </details>
+                        <button data-icon="add-circle" class="btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
-                </div>
-                <div class="blank-box box stack">
-                    <dl class="invoice-grid invoice__desc label-text">
-                        <div class="row">
-                            <div>
-                                <dt class="content-bold" data-prefix="#">XM9141</dt>
-                                <dd>Graphic design</dd>
-                            </div>
-                            <div>
-                                <dt>19 Union Terrace</dt>
-                                <dd>London</dd>
-                                <dd>31 EZ</dd>
-                                <dd>United Kingdom</dd>
-                            </div>
-                        </div>
-                        <div>
-                            <dt>Invoice Date</dt>
-                            <dd class="content-bold">21 Aug 2023</dd>
-                        </div>
-                        <div>
-                            <dt>Payment Due</dt>
-                            <dd class="content-bold">20 Sept 2023</dd>
-                        </div>
-                        <div>
-                            <dt>Bill To</dt>
-                            <dd class="content-bold">Alex Grim</dd>
-                            <dd>84 Church Way</dd>
-                            <dd>Bradford</dd>
-                            <dd>BD1 9PB</dd>
-                            <dd>United Kingdom</dd>
-                        </div>
-                        <div>
-                            <dt>Sent To</dt>
-                            <dd class="content-bold">alexgrim@gmail.com</dd>
-                        </div>
-                    </dl>
-                    <div class="invoice__table">
-                        <div class="box items-box stack" role="grid">
-                            <dl  role="rowheader" class="invoice-grid invoice__item sm-hide label-text">
-                                <dt role="columnheader">item Name</dt>
-                                <dd role="columnheader">qty.</dd>
-                                <dd role="columnheader">price</dd>
-                                <dd role="columnheader">total</dd>
-                            </dl>
-                            <dl  role="row" class="invoice-grid invoice__item content-bold">
-                                <dt role="gridcell">Banner Design</dt>
-                                <dd role="gridcell" data-suffix=" x " class="label-text">1</dd>
-                                <dd role="gridcell" data-prefix="$ " class="label-text">156.0</dd>
-                                <dd role="gridcell" data-prefix="$ ">156.0</dd>
-                            </dl>
-                            <dl  role="row" class="invoice-grid invoice__item content-bold">
-                                <dt role="gridcell">Email Design</dt>
-                                <dd role="gridcell" data-suffix=" x " class="label-text">2</dd>
-                                <dd role="gridcell" data-prefix="$ " class="label-text">400.0</dd>
-                                <dd role="gridcell" data-prefix="$ ">800.0</dd>
-                            </dl>
-                        </div>
-                        <dl class="box amount-box segragator">
-                            <dt>grand total</dt>
-                            <dd class="content-bold" data-prefix="$ ">956.0</dd>
+                    <div class="invoices stack box content-bold">
+                        <dl class="blank-box invoice__summary extend-click">
+                            <dt data-prefix="#">RT3080</dt>
+                            <dd class="label-text" data-prefix="Due ">19 Aug 2021</dd>
+                            <dd class="label-text">Melissa Clarke</dd>
+                            <dd>$ 4,032.33</dd>
+                            <dd class="box status-box" data-state="pending">pending</dd>
                         </dl>
                     </div>
-                </div>
-            </section>
+                    <div class="empty box stack">
+                        <img src="./assets/Email campaign_Flatline 2.svg" alt="An Illustration of a woman in purple shirt holding a speaker for an email campaign" width="194px" height="160px">
+                        <h3 style="--space: 2em;" class="heading-m">There is nothing here</h3>
+                        <p class="subtitle-text">Create an invoice by clicking the <strong>New</strong> button and get started</p>
+                    </div>
+                </section>
+                <section class="stack box invoice__details">
+                    <div class="sticky-top box"><button class="btn back" data-icon="arrow_left">Go back</button></div>
+                    <div class="invoice__status blank-box">
+                        <dl class="row">
+                            <dt>status</dt>
+                            <dd class="box status-box" data-state="pending">pending</dd>
+                        </dl>
+                        <div class="box invoice__actions">
+                            <button class="box btn-edit">edit</button>
+                            <button class="box btn-danger">delete</button>
+                            <button class="box btn-primary">mark as paid</button>
+
+                        </div>
+                    </div>
+                    <div class="blank-box stack">
+                        <dl class="invoice-grid invoice__desc label-text">
+                            <div class="row">
+                                <div>
+                                    <dt class="content-bold" data-prefix="#">XM9141</dt>
+                                    <dd>Graphic design</dd>
+                                </div>
+                                <div>
+                                    <dt>19 Union Terrace</dt>
+                                    <dd>London</dd>
+                                    <dd>31 EZ</dd>
+                                    <dd>United Kingdom</dd>
+                                </div>
+                            </div>
+                            <div>
+                                <dt>Invoice Date</dt>
+                                <dd class="content-bold">21 Aug 2023</dd>
+                            </div>
+                            <div>
+                                <dt>Payment Due</dt>
+                                <dd class="content-bold">20 Sept 2023</dd>
+                            </div>
+                            <div>
+                                <dt>Bill To</dt>
+                                <dd class="content-bold">Alex Grim</dd>
+                                <dd>84 Church Way</dd>
+                                <dd>Bradford</dd>
+                                <dd>BD1 9PB</dd>
+                                <dd>United Kingdom</dd>
+                            </div>
+                            <div>
+                                <dt>Sent To</dt>
+                                <dd class="content-bold">alexgrim@gmail.com</dd>
+                            </div>
+                        </dl>
+                        <div class="invoice__table">
+                            <div class="box items-box stack" role="grid">
+                                <dl  role="rowheader" class="invoice-grid invoice__item sm-hide label-text">
+                                    <dt role="columnheader">item Name</dt>
+                                    <dd role="columnheader">qty.</dd>
+                                    <dd role="columnheader">price</dd>
+                                    <dd role="columnheader">total</dd>
+                                </dl>
+                                <dl  role="row" class="invoice-grid invoice__item content-bold">
+                                    <dt role="gridcell">Banner Design</dt>
+                                    <dd role="gridcell" data-suffix=" x " class="label-text">1</dd>
+                                    <dd role="gridcell" data-prefix="$ " class="label-text">156.0</dd>
+                                    <dd role="gridcell" data-prefix="$ ">156.0</dd>
+                                </dl>
+                                <dl  role="row" class="invoice-grid invoice__item content-bold">
+                                    <dt role="gridcell">Email Design</dt>
+                                    <dd role="gridcell" data-suffix=" x " class="label-text">2</dd>
+                                    <dd role="gridcell" data-prefix="$ " class="label-text">400.0</dd>
+                                    <dd role="gridcell" data-prefix="$ ">800.0</dd>
+                                </dl>
+                            </div>
+                            <dl class="box amount-box segragator">
+                                <dt>grand total</dt>
+                                <dd class="content-bold" data-prefix="$ ">956.0</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </section>
+            </step-by-step>
 
         </main>
         <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" version="1.1">
@@ -200,5 +198,6 @@
                 </clipPath>
             </defs>
         </svg>
+        <script type="module" src="/scripts/index.js"></script>
     </body>
 </html>

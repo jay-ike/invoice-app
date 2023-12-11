@@ -388,6 +388,18 @@ section
 	justify-content: center
 	gap: clamp(0.5em, 4vmin, 1em)
 
+step-by-step
+    position: relative
+    display: block
+    overflow: hidden auto
+    & > *
+       transform: translateX(calc((var(--i) - var(--current)) * 100%))
+    & > .step-out
+        position: fixed
+        z-index: -1
+        visibility: hidden
+        opacity: 0
+
 @media screen and (min-width: 480px)
     :root
         --invoice-grid: "ref date name total status arrow" / 8ch 1fr 1fr .8fr .75fr 1.5em
