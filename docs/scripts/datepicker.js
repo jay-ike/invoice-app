@@ -14,20 +14,6 @@ const defaultActions = [
     "next month",
     "next year"
 ];
-const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-];
 const dateAttributeMap = Object.freeze({
     "day-format": "day",
     "month-format": "month",
@@ -79,9 +65,11 @@ function buildActions(hasYearActions) {
     let currentMonth = document.createElement("div");
     let actions = defaultActions;
     const result = document.createElement("div");
+    let middle;
     if (hasYearActions === false) {
         actions = defaultActions.slice(1, 3);
     }
+    middle = Math.floor(actions.length / 2);
     currentMonth.classList.add("month-display");
     currentMonth.dataset.display = "currentMonth";
     result.classList.add("actions");
@@ -93,8 +81,8 @@ function buildActions(hasYearActions) {
         btn.classList.add("inline-padding", "control");
         return btn;
     });
-    actions = actions.slice(0, 2).concat([currentMonth]).concat(
-        actions.slice(2)
+    actions = actions.slice(0, middle).concat([currentMonth]).concat(
+        actions.slice(middle)
     );
     actions.forEach((action) => result.appendChild(action));
     return result;
@@ -122,7 +110,8 @@ function buildCalendarGrid({actionBuilder, getDayNames}) {
     grid.classList.add("calendar-grid");
     grid.appendChild(actions);
     names.concat(numbers).forEach((elt) => grid.appendChild(elt));
-    grid.setAttribute("lang", "en")
+    grid.setAttribute("lang", "en");
+    grid.tabIndex = 0;
     return grid;
 }
 
@@ -284,10 +273,10 @@ class Datepicker extends HTMLElement {
         return ["data-show"];
     }
 
-    #getFormatter(config) {
-        const options = config.dateOptions;
+    #getFormatter({locale, dateOptions}) {
+        const options = dateOptions;
         options.weekday = options.weekday ?? undefined;
-        return new Intl.DateTimeFormat(config.locale ?? undefined, options);
+        return new Intl.DateTimeFormat(locale ?? undefined, options);
     }
 
     attributeChangedCallback (ignore, oldValue, newValue) {
@@ -309,12 +298,14 @@ class Datepicker extends HTMLElement {
     }
 
     #renderCalendar() {
+        const formatter = this.#getFormatter({
+            dateOptions: {month: "short", year: "numeric"}
+        });
         const selectedDate = this.#selectedDate;
         let firstDay = parseDate(this.#displayedDate).with({date: 1});
         let dates = this.querySelectorAll("button.date");
         let days = generateDays(firstDay, this.#config.sundayFirst);
-        this.#currentMonth.textContent = monthNames[firstDay.getMonth()];
-        this.#currentMonth.textContent += " " + firstDay.getFullYear();
+        this.#currentMonth.textContent = formatter.format(firstDay);
         dates.forEach(function (date, index) {
             let day = days[index];
             if (day === undefined) {

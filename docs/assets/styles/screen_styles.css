@@ -82,6 +82,7 @@
   --color-warningFill: rgba(243,242,242,0.15);
   --color-successFill: rgba(242,243,242,0.15);
   --color-editText: var(--system-color-softPurple);
+  --input-bd-clr: #252946;
   --fill-items-box: #252946;
   --fill-amount-box: #0d0f17;
 }
@@ -90,6 +91,8 @@ body {
   line-height: 1.5;
   font-size: 1rem;
   font-weight: 500;
+  font-variant-ligatures: common-ligatures;
+  font-variant-numeric: slashed-zero;
   color: var(--system-color-text);
   background-color: var(--system-color-fillPrimary);
   accent-color: var(--system-color-softBlue);
@@ -378,6 +381,7 @@ label {
   --icon-fill: var(--system-color-softPurple);
   --min-padding: 0 1.5em;
   background-color: var(--system-color-darkPurple);
+  z-index: 2;
 }
 .invoices:empty {
   display: none;
@@ -497,6 +501,84 @@ step-by-step > .step-out {
   visibility: hidden;
   opacity: 0;
 }
+[data-drawer="show"] {
+  --x-offset: 0px;
+}
+.drawer {
+  --translateY: var(--y-offset, 72px);
+  position: fixed;
+  transform: translate(var(--x-offset, -100%), var(--translateY));
+  block-size: calc(100% - var(--translateY));
+  inset-block-start: 0;
+  isolation: isolate;
+  text-transform: capitalize;
+}
+.input-step {
+  --space: 1.25rem;
+  container: input-step/inline-size;
+  padding: 0.5rem;
+  min-block-size: 70vb;
+}
+.input-step > legend {
+  font-size: clamp(1.2em, 4cqi, 1.5em);
+  color: var(--system-color-softBlue);
+}
+.input-step > div {
+  display: flex;
+  flex-flow: column-reverse nowrap;
+}
+.input-step input {
+  min-inline-size: 100%;
+  font-weight: bold;
+  color: var(--system-color-text);
+  padding: var(--input-padding, 0.75em 1.25em);
+  background-color: var(--system-color-blank);
+  border: 1px solid var(--input-bd-clr, var(--system-color-lightPurple));
+  border-radius: 0.25em;
+}
+.input-step input:hover {
+  --input-bd-clr: var(--system-color-softBlue);
+}
+date-picker {
+  position: relative;
+  isolation: isolate;
+  font-weight: bold;
+}
+date-picker[data-show] {
+  --calendar-display: grid;
+}
+date-picker [disabled] {
+  opacity: 0.6;
+}
+date-picker [data-action="previous month"]::before,
+date-picker [data-action="next month"]::before {
+  content: "";
+  inline-size: 1.5rem;
+  aspect-ratio: 1;
+  background-color: var(--deco-fill, var(--system-color-softBlue));
+  clip-path: url("#arrow_left");
+  display: inline-block;
+}
+date-picker [data-action="next month"]::before {
+  transform: rotateZ(180deg);
+}
+date-picker .today {
+  --label-color: var(--system-color-limeGreen);
+}
+date-picker .selected {
+  --label-color: var(--system-color-softBlue);
+}
+date-picker button {
+  font-weight: inherit;
+  background-color: transparent;
+  color: var(--label-color, var(--color-labelText, #0d0f17));
+}
+date-picker .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  grid-column: -1/1;
+}
 @media screen and (min-width: 480px) {
   :root {
     --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr 0.8fr 0.75fr 1.5em;
@@ -586,6 +668,7 @@ step-by-step > .step-out {
     --color-warningFill: rgba(243,242,242,0.15);
     --color-successFill: rgba(242,243,242,0.15);
     --color-editText: var(--system-color-softPurple);
+    --input-bd-clr: #252946;
     --fill-items-box: #252946;
     --fill-amount-box: #0d0f17;
   }
@@ -595,4 +678,17 @@ step-by-step > .step-out {
   :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
       font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
   }
+}
+.drawer {
+  inline-size: min(616px, 100%);
+}
+date-picker > .calendar-grid {
+  display: var(--calendar-display, none);
+  grid-template-columns: repeat(7, auto);
+  position: absolute;
+  inset-block-start: var(--bottom, calc(100% + .5rem));
+  background-color: var(--system-color-blank);
+  border-radius: .5rem;
+  padding: .35em .75em 1em;
+  gap: .25em;
 }
