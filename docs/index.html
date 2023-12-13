@@ -165,14 +165,14 @@
                <h2 class="heading-l">new invoice</h2>
                <form action="">
                    <step-by-step out-indicator="step-out">
-                    <fieldset class="input-step stack">
+                    <fieldset class="input-step stack" name="senderInfos">
                         <legend>bill from</legend>
                         <div><input type="text" id="bf-street" name="senderAddress"><label for="bf-street">street address</label></div>
                         <div><input type="text" id="bf-city" name="senderCity"><label for="bf-city">city</label></div>
                         <div><input type="text" id="bf-post-code" name="senderPostCode"><label for="bf-post-code">post code</label></div>
                         <div><input type="text" id="bf-country" name="senderCountry"><label for="bf-country">country</label></div>
                     </fieldset>
-                    <fieldset class="input-step stack">
+                    <fieldset class="input-step stack" name="clientInfos">
                         <legend>bill to</legend>
                         <div><input type="text" id="bt-name" name="clientName" required><label for="bt-name">client's name</label></div>
                         <div><input type="email" id="bt-email" name="clientMail" required pattern="^[a-zA-Z0-9\._%\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"><label for="bt-email">client's email</label></div>
@@ -181,7 +181,7 @@
                         <div><input type="text" id="bt-post-code" name="clientPostCode"><label for="bt-post-code">post code</label></div>
                         <div><input type="text" id="bt-country" name="clientCountry"><label for="bt-country">country</label></div>
                     </fieldset>
-                    <fieldset class="input-step stack">
+                    <fieldset class="input-step stack" name="terms">
                         <legend>payment terms</legend>
                         <div>
                             <date-picker month-format="short">
@@ -203,6 +203,11 @@
                     </fieldset>
                    </step-by-step>
                </form>
+               <div class="row">
+					<button class="box btn-edit cancel" lang="en" data-prefix="discard" aria-label="cancel the ongoing operation"></button>
+					<button class="box btn-draft">save as draft</button>
+					<button class="box btn-primary proceed" lang="en" data-prefix="save & send" aria-label="proceed the ongoing operation"></button>
+               </div>
             </section>
         </main>
         <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" version="1.1" aria-hidden>

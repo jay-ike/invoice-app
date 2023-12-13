@@ -101,7 +101,7 @@ body {
 section {
   --color-fill: var(--system-color-fillPrimary);
   --min-padding: 1.5em clamp(0.5em, 4cqi, 1.5em) 0.5em;
-  overflow: hidden auto;
+  overflow: hidden var(--y-overflow, auto);
   block-size: calc(100lvb - max(7rem, 72px));
 }
 .heading-l {
@@ -139,24 +139,28 @@ section {
 .subtitle-text {
   color: var(--color-labelText, #888eaf);
 }
-.btn,
-.btn-primary,
+:is(.btn,
 .btn-edit,
-.btn-danger {
+.btn-primary,
+.btn-danger,
+.btn-draft) {
   --radius: 1.5rem;
   font-weight: 900;
   text-transform: capitalize;
   font-size: clamp(0.75em, 4cqi, 1em);
   min-inline-size: 4.5rem;
+  min-block-size: 3rem;
 }
-.btn:focus,
-.btn-primary:focus,
+:is(.btn:focus,
 .btn-edit:focus,
+.btn-primary:focus,
 .btn-danger:focus,
-.btn:hover,
-.btn-primary:hover,
+.btn-draft):focus,
+:is(.btn:hover,
 .btn-edit:hover,
-.btn-danger:hover {
+.btn-primary:hover,
+.btn-danger:hover,
+.btn-draft):hover {
   background-color: var(--color-fill-hover, transparent);
 }
 .btn.back {
@@ -179,6 +183,11 @@ section {
   --color-text: var(--color-editText, var(--system-color-labelText));
   --color-fill: var(--system-color-labelFill);
   --color-fill-hover: var(--system-color-labelHover);
+}
+.btn-draft {
+  --color-text: var(--color-labelText, var(--system-color-captionText));
+  --color-fill: #373b53;
+  --color-fill-hover: var(--fill-items-box, #0d0f17);
 }
 .extend-click {
   position: relative;
@@ -205,7 +214,7 @@ label {
   gap: var(--items-space, 0.5em);
   align-items: center;
 }
-.btn[data-icon] {
+[data-icon] {
   display: inline-flex;
   gap: var(--items-space, 0.5em);
   align-items: center;
@@ -291,7 +300,7 @@ label {
 #logo {
   width: 72px;
   aspect-ratio: 1;
-  border-radius: 0 1.5em 1.5em 0;
+  border-radius: 0 1.25em 1.25em 0;
   position: relative;
   background-color: var(--system-color-softBlue);
 }
@@ -313,16 +322,17 @@ label {
   background-color: var(--deco-fill, var(--system-color-lightBlue));
   position: absolute;
   inset-block-end: 0;
-  border-radius: 1.5em 0 1.5em 0;
+  border-radius: 1.25em 0 1.25em 0;
 }
 #status-form {
+  --min-padding: 1.5em;
   font-weight: bold;
   border-radius: 0.5em;
   box-shadow: 0 10 20px 0 var(--system-color-shadow);
   background-color: var(--system-color-blank);
   position: absolute;
   inset-block-start: 110%;
-  inset-inline-start: -50%;
+  inset-inline-start: -5%;
   min-inline-size: 12rem;
   opacity: 0;
 }
@@ -381,6 +391,7 @@ label {
   --icon-fill: var(--system-color-softPurple);
   --min-padding: 0 1.5em;
   background-color: var(--system-color-darkPurple);
+  position: relative;
   z-index: 2;
 }
 .invoices:empty {
@@ -506,12 +517,35 @@ step-by-step > .step-out {
 }
 .drawer {
   --translateY: var(--y-offset, 72px);
+  --y-overflow: hidden;
   position: fixed;
   transform: translate(var(--x-offset, -100%), var(--translateY));
   block-size: calc(100% - var(--translateY));
   inset-block-start: 0;
+  inset-inline-start: 0;
   isolation: isolate;
   text-transform: capitalize;
+  inline-size: 100%;
+  z-index: 1;
+}
+.drawer > form {
+  max-block-size: 70%;
+  overflow: hidden auto;
+}
+.drawer > .row {
+  --prefix-color: currentColor;
+  --min-padding: 0.75em clamp(0.5em, 3cqi, 1.5em);
+  --space: 0.5rem;
+  justify-content: end;
+  container: actions/inline-size;
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  padding: 1em clamp(0.5em, 4cqi, 1.25em);
+  background-color: var(--system-color-fillPrimary);
+}
+.drawer > .row > .btn-draft {
+  margin-inline-start: auto;
 }
 .input-step {
   --space: 1.25rem;
@@ -563,7 +597,7 @@ date-picker [data-action="next month"]::before {
   transform: rotateZ(180deg);
 }
 date-picker .today {
-  --label-color: var(--system-color-limeGreen);
+  --label-color: var(--system-color-softRed);
 }
 date-picker .selected {
   --label-color: var(--system-color-softBlue);
@@ -581,7 +615,7 @@ date-picker .actions {
 }
 @media screen and (min-width: 480px) {
   :root {
-    --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr 0.8fr 0.75fr 1.5em;
+    --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr minmax(auto, 0.5fr) auto 1.5em;
   }
   .sm-hide {
     display: initial;
@@ -607,8 +641,8 @@ date-picker .actions {
   .invoice__summary {
     --min-padding: 1em clamp(0.5em, 2cqi, 1.5em);
     --box-padding: 0.625em clamp(0.5em, 2cqi, 1em);
-    --f-size-fluid: 2cqi;
-    --f-size-diff: 0.3;
+    --f-size-fluid: 2.5cqi;
+    --f-size-diff: 0.2;
     gap: 0.5em;
   }
   .invoice__summary::after {
@@ -633,24 +667,41 @@ date-picker .actions {
     justify-content: end;
     flex-grow: 2;
   }
+  .drawer {
+    inline-size: clamp(480px, 69vi, 616px);
+    border-radius: 0 1.25em 1.25em 0;
+  }
+  [data-drawer="show"] main::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-color: rgba(13,14,23,0.4);
+  }
 }
 @media screen and (min-width: 768px) {
   .banner {
     --direction: column;
     --min-padding: 1.5em 0;
     grid-area: nav;
-    border-radius: 0 1.5em 1.5em 0;
+    border-radius: 0 1.25em 1.25em 0;
   }
   .banner .theme-switch {
     border-inline: none;
     border-block-end: 1px solid var(--system-color-grayishBlue);
   }
   body {
+    --y-offset: 0px;
     display: grid;
     grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(688px, 4fr) 1fr;
   }
   body > main {
     grid-area: main;
+  }
+  .drawer {
+    --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em);
+  }
+  .drawer > .row {
+    padding: inherit;
   }
 }
 @media (prefers-color-scheme: dark) {
@@ -678,9 +729,6 @@ date-picker .actions {
   :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
       font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
   }
-}
-.drawer {
-  inline-size: min(616px, 100%);
 }
 date-picker > .calendar-grid {
   display: var(--calendar-display, none);

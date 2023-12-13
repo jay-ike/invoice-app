@@ -115,7 +115,7 @@ body
 section
     --color-fill: var(--system-color-fillPrimary)
     --min-padding 1.5em clamp(.5em, 4cqi, 1.5em) .5em
-    overflow: hidden auto
+    overflow: hidden var(--y-overflow, auto)
     block-size: calc(100lvb - max(7rem, 72px))
 .heading-l
     --f-size: var(--system-heading-large)
@@ -137,15 +137,13 @@ section
     --space: 0
 .subtitle-text
     color: var(--color-labelText, hsl(231, 20, 61))
-.btn,
-.btn-primary,
-.btn-edit,
-.btn-danger
+:is(.btn, .btn-edit, .btn-primary, .btn-danger, .btn-draft)
     --radius: 1.5rem
     font-weight: 900
     text-transform: capitalize
     font-size: clamp(.75em, 4cqi, 1em)
     min-inline-size: 4.5rem
+    min-block-size: 3rem
     &:focus,
     &:hover
         background-color: var(--color-fill-hover, transparent)
@@ -164,6 +162,10 @@ section
     --color-text: var(--color-editText, var(--system-color-labelText))
     --color-fill: var(--system-color-labelFill)
     --color-fill-hover: var(--system-color-labelHover)
+.btn-draft
+    --color-text: var(--color-labelText, var(--system-color-captionText))
+    --color-fill: hsl(231, 20, 27)
+    --color-fill-hover: var(--fill-items-box, hsl(228, 29, 7))
 .extend-click
     position: relative
     &::before
@@ -181,7 +183,7 @@ section
 .inline-row
     inlineFlex()
 
-.btn[data-icon]
+[data-icon]
     inlineFlex()
 [data-icon="arrow_left"]
     &::before
@@ -226,7 +228,7 @@ section
 #logo
     width: 72px
     aspect-ratio: 1
-    border-radius: 0 1.5em 1.5em 0
+    border-radius: 0 1.25em 1.25em 0
     position: relative
     background-color: var(--system-color-softBlue)
     &::after
@@ -242,16 +244,17 @@ section
         decoElt(100%, 2, var(--system-color-lightBlue))
         position: absolute
         inset-block-end: 0
-        border-radius: 1.5em 0 1.5em 0
+        border-radius: 1.25em 0 1.25em 0
 
 #status-form
+    --min-padding: 1.5em
     font-weight: bold
     border-radius: .5em
     box-shadow: 0 10 20px 0 var(--system-color-shadow)
     background-color: var(--system-color-blank)
     position: absolute
     inset-block-start: 110%
-    inset-inline-start: -50%
+    inset-inline-start: -5%
     min-inline-size: 12rem
     opacity: 0
     [open] &
@@ -302,6 +305,7 @@ section
     --icon-fill: var(--system-color-softPurple)
     --min-padding: 0 1.5em
     background-color: var(--system-color-darkPurple)
+    position: relative
     z-index: 2
 
 .invoices:empty
@@ -411,12 +415,32 @@ step-by-step
     --x-offset: 0px
 .drawer
     --translateY: var(--y-offset, 72px)
+    --y-overflow: hidden
     position: fixed
     transform: translate(var(--x-offset, -100%), var(--translateY))
     block-size: calc(100% - var(--translateY))
     inset-block-start: 0
+    inset-inline-start: 0
     isolation: isolate
     text-transform: capitalize
+    inline-size: 100%
+    z-index: 1
+    & > form
+        max-block-size: 70%
+        overflow: hidden auto
+    & > .row
+        --prefix-color: currentColor
+        --min-padding: .75em clamp(0.5em, 3cqi, 1.5em)
+        --space: 0.5rem
+        justify-content: end
+        container: actions / inline-size
+        position: absolute
+        inset-inline: 0
+        inset-block-end: 0
+        padding: 1em clamp(0.5em, 4cqi, 1.25em)
+        background-color: var(--system-color-fillPrimary)
+        & > .btn-draft
+            margin-inline-start: auto
 .input-step
     --space: 1.25rem
     container: input-step / inline-size
@@ -454,7 +478,7 @@ date-picker
     & [data-action="next month"]::before
         transform: rotateZ(180deg)
     .today
-        --label-color: var(--system-color-limeGreen)
+        --label-color: var(--system-color-softRed)
     .selected
         --label-color: var(--system-color-softBlue)
     button
@@ -469,7 +493,7 @@ date-picker
 
 @media screen and (min-width: 480px)
     :root
-        --invoice-grid: "ref date name total status arrow" / 8ch 1fr 1fr .8fr .75fr 1.5em
+        --invoice-grid: "ref date name total status arrow" / 8ch 1fr 1fr minmax(auto, .5fr) auto 1.5em
 
     .sm-hide
         display: initial
@@ -490,8 +514,8 @@ date-picker
     .invoice__summary
         --min-padding: 1em clamp(0.5em, 2cqi, 1.5em)
         --box-padding: .625em clamp(0.5em, 2cqi, 1em)
-        --f-size-fluid: 2cqi
-        --f-size-diff: 0.3
+        --f-size-fluid: 2.5cqi
+        --f-size-diff: 0.2
         gap: .5em
         &::after
             content: ""
@@ -511,22 +535,34 @@ date-picker
         justify-content: end
         flex-grow: 2
 
-
+    .drawer
+        inline-size: clamp(480px, 69vi, 616px)
+        border-radius: 0 1.25em 1.25em 0
+    [data-drawer="show"] main::after
+        content: ""
+        position: fixed
+        inset: 0
+        background-color: hsla(231 28 7, 0.4)
 
 @media screen and (min-width: 768px)
     .banner
         --direction: column
         --min-padding: 1.5em 0
         grid-area: nav
-        border-radius: 0 1.5em 1.5em 0
+        border-radius: 0 1.25em 1.25em 0
         .theme-switch
             border-inline: none
             border-block-end: 1px solid var(--system-color-grayishBlue)
     body
+        --y-offset: 0px
         display: grid
         grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px) / 72px 1fr minmax(688px, 4fr) 1fr
         & > main
             grid-area: main
+    .drawer
+        --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em)
+        & > .row
+            padding: inherit
 
 @media(prefers-color-scheme: dark)
     :root
@@ -537,9 +573,6 @@ date-picker
     :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
         font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
     }
-}
-.drawer {
-    inline-size: min(616px, 100%);
 }
 date-picker > .calendar-grid {
     display: var(--calendar-display, none);
