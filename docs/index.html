@@ -161,9 +161,23 @@
                 </section>
             </step-by-step>
 
-            <section class="drawer box stack">
+            <section class="drawer box column">
                <h2 class="heading-l" aria-label="purpose of the action" data-prefix="new invoice"><span data-prefix="#" data-suffix="" class="invoice__ref"></span></h2>
-               <form action="">
+               <ul class="step-indicator">
+                <li>
+                    <p>your informations</p>
+                </li>
+                <li>
+                    <p>your client informations</p>
+                </li>
+                <li>
+                    <p>terms of payments</p>
+                </li>
+                <li>
+                    <p>the billing items</p>
+                </li>
+               </ul>
+               <form action="" class="grow-2">
                    <step-by-step out-indicator="step-out">
                     <fieldset class="input-step stack" name="senderInfos">
                         <legend>bill from</legend>
@@ -203,7 +217,7 @@
                     </fieldset>
                    </step-by-step>
                </form>
-               <div class="row">
+               <div>
 					<button class="box btn-edit cancel" lang="en" data-prefix="discard" aria-label="cancel the ongoing operation"></button>
 					<button class="box btn-draft">save as draft</button>
 					<button class="box btn-primary proceed" lang="en" data-prefix="save & send" aria-label="proceed the ongoing operation"></button>

@@ -22,7 +22,7 @@ img {
     padding: 0;
 }
 
-summary {
+:is(summary, ul) {
     list-style: none;
 }
 

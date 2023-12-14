@@ -401,6 +401,7 @@ label {
   --alignment: stretch;
   --icon-fill: var(--system-color-softPurple);
   --min-padding: 0 1.5em;
+  --row-align: stretch;
   background-color: var(--system-color-darkPurple);
   position: relative;
   z-index: 2;
@@ -553,19 +554,16 @@ step-by-step > .step-out {
   max-block-size: 70%;
   overflow: hidden auto;
 }
-.drawer > .row {
+.drawer > div {
   --prefix-color: currentColor;
   --min-padding: 0.75em clamp(0.5em, 3cqi, 1.5em);
-  --space: 0.5rem;
+  display: flex;
+  gap: 0.5em;
   justify-content: end;
   container: actions/inline-size;
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
-  padding: 1em clamp(0.5em, 4cqi, 1.25em);
   background-color: var(--system-color-fillPrimary);
 }
-.drawer > .row > .btn-draft {
+.drawer .btn-draft {
   margin-inline-start: auto;
   display: var(--drafter-display, initial);
 }
@@ -584,7 +582,6 @@ step-by-step > .step-out {
   --space: 1.25rem;
   container: input-step/inline-size;
   padding: 0.5rem;
-  min-block-size: 70vb;
 }
 .input-step > legend {
   font-size: clamp(1.2em, 4cqi, 1.5em);
@@ -645,6 +642,55 @@ date-picker .actions {
   justify-content: space-between;
   align-items: center;
   grid-column: -1/1;
+}
+.step-indicator {
+  --deco-size: 1.7em;
+  --bdr-width: 2px;
+  --deco-width-fistHalf: calc(50% - 0.85em - 2px);
+  --deco-color: #f00;
+}
+.step-indicator p {
+  text-align: center;
+  display: none;
+}
+.step-indicator > * {
+  padding-block-end: 2em;
+  counter-increment: indicator;
+  position: relative;
+}
+.step-indicator > *:first-child {
+  --deco-img: linear-gradient(to right, transparent calc(1.7em + 2px), var(--deco-color) 0);
+  --deco-margin: 0 auto;
+}
+.step-indicator > *:last-child {
+  --deco-img: linear-gradient(to left, transparent calc(1.7em + 4px), var(--deco-color) 0);
+  --deco-margin: auto 0;
+}
+.step-indicator > *:not(:last-child,
+.step-indicator > * :first-child) {
+  padding-inline: 0.5em;
+}
+.step-indicator > *::after {
+  content: counters(indicator, ".");
+  position: absolute;
+  display: inline-grid;
+  place-content: center;
+  border: var(--bdr-width) solid #f00;
+  border-radius: 50%;
+  inline-size: var(--deco-size);
+  aspect-ratio: 1;
+  inset-inline: 0;
+  inset-block-end: 0;
+  margin-inline: var(--deco-margin, auto);
+}
+.step-indicator > *::before {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  block-size: 2px;
+  inset-block-end: calc(0.85em - 1px);
+  inset-inline: 0;
+  background-image: var(--deco-img, linear-gradient(to right, var(--deco-color) calc(50% - 0.85em - 2px), transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0));
 }
 @media screen and (min-width: 480px) {
   :root {
@@ -719,7 +765,6 @@ date-picker .actions {
     --direction: column;
     --min-padding: 1.5em 0;
     --row-dir: column;
-    --row-align: stretch;
     grid-area: nav;
     border-radius: 0 1.25em 1.25em 0;
   }
@@ -777,4 +822,9 @@ date-picker > .calendar-grid {
   border-radius: .5rem;
   padding: .35em .75em 1em;
   gap: .25em;
+}
+.step-indicator {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  font-size: 0.8em;
 }
