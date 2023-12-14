@@ -97,12 +97,12 @@ body {
   background-color: var(--system-color-fillPrimary);
   accent-color: var(--system-color-softBlue);
   caret-color: var(--system-color-softBlue);
+  overflow: hidden;
 }
 section {
   --color-fill: var(--system-color-fillPrimary);
   --min-padding: 1.5em clamp(0.5em, 4cqi, 1.5em) 0.5em;
-  overflow: hidden var(--y-overflow, auto);
-  block-size: calc(100lvb - max(7rem, 72px));
+  block-size: calc(100lvb - min(7rem, 72px));
 }
 .heading-l {
   --f-size: var(--system-heading-large);
@@ -125,6 +125,9 @@ section {
 }
 .self-center {
   place-self: center;
+}
+.y-scrollable {
+  overflow-y: auto;
 }
 .sticky-top {
   --min-padding: var(--sticky-padding, inherit);
@@ -164,6 +167,7 @@ section {
   background-color: var(--color-fill-hover, transparent);
 }
 .btn.back {
+  align-self: start;
   background-color: transparent;
   color: var(--system-color-text);
 }
@@ -275,9 +279,10 @@ label {
 .stack > * + * {
   margin-block-start: var(--space, 1.5em);
 }
-.row {
+:is(.row,
+.column,
+.segragator) {
   display: flex;
-  flex-direction: var(--direction, row);
   align-items: var(--alignment, center);
   gap: var(--space, 1.5em);
 }
@@ -285,10 +290,16 @@ label {
   flex-grow: 2;
 }
 .segragator {
-  display: flex;
-  flex-direction: var(--direction, row);
-  align-items: var(--alignment, center);
+  flex-flow: var(--direction, row) var(--wrap, nowrap);
   justify-content: space-between;
+}
+.row {
+  --alignment: var(--row-align, center);
+  flex-flow: var(--row-dir, row) var(--wrap, nowrap);
+}
+.column {
+  --alignment: var(--col-align, stretch);
+  flex-flow: var(--col-dir, column) var(--wrap, nowrap);
 }
 :is(.blank-box,
 .box) {
@@ -421,15 +432,15 @@ label {
   --label-weight: 500;
 }
 .invoice__details {
-  --min-padding: 1em clamp(0.5em, 4cqi, 1.5em);
-  --sticky-padding: 1em 0;
+  --min-padding: clamp(0.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em);
   --invoice-grid: "ref ." "date total" "name total" "status status"/1fr 1fr;
-  padding: 0 clamp(0.5em, 4vmin, 1.5em);
+  --space: clamp(0.5em, 2vb, 1.5em);
+  padding: 0.5em clamp(0.5em, 4vmin, 1.5em) 3.5em;
 }
 .invoice__details::after {
   content: "";
-  display: block;
-  block-size: 7vb;
+  display: var(--deco-display, block);
+  block-size: clamp(5em, 10vmin, 8em);
 }
 .invoice__table {
   --prefix-color: currentColor;
@@ -441,9 +452,8 @@ label {
   gap: 1ch;
 }
 .invoice__desc {
-  --alignment: start;
-  --direction: column;
-  --space: 0.75em;
+  --row-align: start;
+  --row-dir: column;
   gap: 1em;
 }
 .blank-box {
@@ -459,6 +469,7 @@ label {
   --radius: 0 0 0.5rem 0.5rem;
   --color-fill: var(--fill-amount-box, #252946);
   --system-color-text: #fff;
+  --alignment: center;
   color: #fff;
   container: amount/inline-size;
 }
@@ -501,7 +512,6 @@ label {
 step-by-step {
   position: relative;
   display: block;
-  overflow: hidden auto;
 }
 step-by-step > * {
   transform: translateX(calc((var(--i) - var(--current)) * 100%));
@@ -650,7 +660,7 @@ date-picker .actions {
     --invoice-grid: "ref ref ref" "date total status" "name total ."/1fr 1fr 1fr;
   }
   .invoice__desc > :first-child {
-    --direction: row;
+    --row-dir: row;
     justify-content: space-between;
   }
   .invoice__item {
@@ -690,6 +700,9 @@ date-picker .actions {
     justify-content: end;
     flex-grow: 2;
   }
+  .invoice__details {
+    --deco-display: none;
+  }
   .drawer {
     inline-size: clamp(480px, 69vi, 616px);
     border-radius: 0 1.25em 1.25em 0;
@@ -705,6 +718,8 @@ date-picker .actions {
   .banner {
     --direction: column;
     --min-padding: 1.5em 0;
+    --row-dir: column;
+    --row-align: stretch;
     grid-area: nav;
     border-radius: 0 1.25em 1.25em 0;
   }
@@ -715,7 +730,7 @@ date-picker .actions {
   body {
     --y-offset: 0px;
     display: grid;
-    grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(688px, 4fr) 1fr;
+    grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(clamp(688px, 60vi, 719px), 2.5fr) 1fr;
   }
   body > main {
     grid-area: main;

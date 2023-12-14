@@ -112,11 +112,11 @@ body
     background-color: var(--system-color-fillPrimary)
     accent-color: var(--system-color-softBlue)
     caret-color: var(--system-color-softBlue)
+    overflow: hidden
 section
     --color-fill: var(--system-color-fillPrimary)
     --min-padding 1.5em clamp(.5em, 4cqi, 1.5em) .5em
-    overflow: hidden var(--y-overflow, auto)
-    block-size: calc(100lvb - max(7rem, 72px))
+    block-size: calc(100lvb - min(7rem, 72px))
 .heading-l
     --f-size: var(--system-heading-large)
     heading(bold, var(--system-heading-large), 1.1, -1px)
@@ -127,6 +127,8 @@ section
 
 .self-center
     place-self: center
+.y-scrollable
+    overflow-y: auto
 .sticky-top
     --min-padding: var(--sticky-padding, inherit)
     position: sticky
@@ -148,6 +150,7 @@ section
     &:hover
         background-color: var(--color-fill-hover, transparent)
 .btn.back
+    align-self: start
     background-color: transparent
     color: var(--system-color-text)
 .btn-primary, .btn-danger
@@ -332,14 +335,14 @@ section
     --label-weight: 500
 
 .invoice__details
-    --min-padding: 1em clamp(0.5em, 4cqi, 1.5em)
-    --sticky-padding: 1em 0
+    --min-padding: clamp(.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em)
     --invoice-grid: "ref ." "date total" "name total" "status status" / 1fr 1fr
-    padding: 0 clamp(0.5em, 4vmin, 1.5em)
+    --space: clamp(0.5em, 2vb, 1.5em)
+    padding: .5em clamp(0.5em, 4vmin, 1.5em) 3.5em
     &::after
         content: ""
-        display: block
-        block-size: max(3.5em, 7vb)
+        display: var(--deco-display, block)
+        block-size: clamp(5em, 10vmin, 8em)
 
 .invoice__table
     --prefix-color: currentColor
@@ -351,9 +354,8 @@ section
     gap: 1ch
 
 .invoice__desc
-    --alignment: start
-    --direction: column
-    --space: .75em
+    --row-align: start
+    --row-dir: column
     gap: 1em
 .blank-box
     --radius: .5rem
@@ -366,6 +368,7 @@ section
     --radius: 0 0 .5rem .5rem
     --color-fill: var(--fill-amount-box, hsl(233, 30, 21))
     --system-color-text: white
+    --alignment: center
     color: white
     container: amount / inline-size
 
@@ -402,7 +405,6 @@ section
 step-by-step
     position: relative
     display: block
-    overflow: hidden auto
     & > *
        transform: translateX(calc((var(--i) - var(--current)) * 100%))
     & > .step-out
@@ -523,7 +525,7 @@ date-picker
     .invoice__desc
         --invoice-grid: "ref ref ref" "date total status" "name total ." / 1fr 1fr 1fr
         & > :first-child
-            --direction: row
+            --row-dir: row
             justify-content: space-between
     .invoice__item
         --invoice-grid: "ref date name total" / 1.5fr .5fr 1fr 1fr
@@ -554,6 +556,8 @@ date-picker
         position: initial
         justify-content: end
         flex-grow: 2
+    .invoice__details
+        --deco-display: none
 
     .drawer
         inline-size: clamp(480px, 69vi, 616px)
@@ -568,6 +572,8 @@ date-picker
     .banner
         --direction: column
         --min-padding: 1.5em 0
+        --row-dir: column
+        --row-align: stretch
         grid-area: nav
         border-radius: 0 1.25em 1.25em 0
         .theme-switch
@@ -576,7 +582,7 @@ date-picker
     body
         --y-offset: 0px
         display: grid
-        grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px) / 72px 1fr minmax(688px, 4fr) 1fr
+        grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px) / 72px 1fr minmax(clamp(688px, 60vi, 719px), 2.5fr) 1fr
         & > main
             grid-area: main
     .drawer

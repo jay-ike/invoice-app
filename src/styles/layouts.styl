@@ -1,20 +1,25 @@
 
 flex()
     display: flex
-    flex-direction: var(--direction, row)
     align-items: var(--alignment, center)
 .stack > * + *
     margin-block-start: var(--space, 1.5em)
 
-.row
+:is(.row, .column, .segragator)
     flex()
     gap: var(--space, 1.5em)
 .grow-2
     flex-grow: 2
 
 .segragator
-    flex()
+    flex-flow: var(--direction, row) var(--wrap, nowrap)
     justify-content: space-between
+.row
+    --alignment: var(--row-align, center)
+    flex-flow: var(--row-dir, row) var(--wrap, nowrap)
+.column
+    --alignment: var(--col-align, stretch)
+    flex-flow: var(--col-dir, column) var(--wrap, nowrap)
 
 :is(.blank-box, .box)
     padding: var(--min-padding, 1.5em)
