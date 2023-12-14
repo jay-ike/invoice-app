@@ -528,6 +528,17 @@ step-by-step > .step-out {
   inline-size: 100%;
   z-index: 1;
 }
+.drawer h2 {
+  --prefix-color: currentColor;
+  --prefix: var(--heading-text, unset);
+}
+.drawer[data-edit] {
+  --drafter-display: none;
+  --ref-display: inline;
+  --cancel-text: "cancel";
+  --proceed-text: "save changes";
+  --heading-text: "edit ";
+}
 .drawer > form {
   max-block-size: 70%;
   overflow: hidden auto;
@@ -546,6 +557,18 @@ step-by-step > .step-out {
 }
 .drawer > .row > .btn-draft {
   margin-inline-start: auto;
+  display: var(--drafter-display, initial);
+}
+.drawer .cancel {
+  --prefix: var(--cancel-text, unset);
+}
+.drawer .proceed {
+  --prefix: var(--proceed-text, unset);
+}
+.invoice__ref {
+  --prefix-color: initial;
+  --prefix: initial;
+  display: var(--ref-display, none);
 }
 .input-step {
   --space: 1.25rem;

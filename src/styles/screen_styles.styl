@@ -425,6 +425,15 @@ step-by-step
     text-transform: capitalize
     inline-size: 100%
     z-index: 1
+    h2
+        --prefix-color: currentColor
+        --prefix: var(--heading-text, unset)
+    &[data-edit]
+        --drafter-display: none
+        --ref-display: inline
+        --cancel-text: "cancel"
+        --proceed-text: "save changes"
+        --heading-text: "edit "
     & > form
         max-block-size: 70%
         overflow: hidden auto
@@ -441,6 +450,17 @@ step-by-step
         background-color: var(--system-color-fillPrimary)
         & > .btn-draft
             margin-inline-start: auto
+            display: var(--drafter-display, initial)
+    .cancel
+        --prefix: var(--cancel-text, unset)
+    .proceed
+        --prefix: var(--proceed-text, unset)
+.invoice__ref
+    --prefix-color: initial
+    --prefix: initial
+    display: var(--ref-display, none)
+
+
 .input-step
     --space: 1.25rem
     container: input-step / inline-size
