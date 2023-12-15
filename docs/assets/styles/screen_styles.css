@@ -86,6 +86,27 @@
   --fill-items-box: #252946;
   --fill-amount-box: #0d0f17;
 }
+
+@supports(font-size: 1cqi) {
+  :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
+      font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
+  }
+}
+date-picker > .calendar-grid {
+  display: var(--calendar-display, none);
+  grid-template-columns: repeat(7, auto);
+  position: absolute;
+  inset-block-start: var(--bottom, calc(100% + .5rem));
+  background-color: var(--system-color-blank);
+  border-radius: .5rem;
+  padding: .35em .75em 1em;
+  gap: .25em;
+}
+.step-indicator {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  font-size: 0.8em;
+}
 body {
   font-family: Spartan;
   line-height: 1.5;
@@ -646,55 +667,61 @@ date-picker .actions {
 .step-indicator {
   --deco-size: 1.7em;
   --bdr-width: 2px;
-  --deco-width-fistHalf: calc(50% - 0.85em - 2px);
-  --deco-color: #f00;
+  --deco-color: var(--system-color-labelText);
 }
 .step-indicator p {
-  text-align: center;
-  display: none;
+  display: var(--content-display, none);
+}
+.step-indicator > .step-active {
+  --deco-color: var(--system-color-darkPurple);
+  --deco-bg: var(--deco-color);
+  --deco-colorText: #fafafa;
 }
 .step-indicator > * {
-  padding-block-end: 2em;
+  padding-block: var(--b-padding, 0 2em);
   counter-increment: indicator;
   position: relative;
+  text-align: center;
 }
 .step-indicator > *:first-child {
-  --deco-img: linear-gradient(to right, transparent calc(1.7em + 2px), var(--deco-color) 0);
+  --deco-img: linear-gradient(var(--gradient-dir, to right), transparent calc(var(--deco-size) + 2px), var(--deco-color) 0);
   --deco-margin: 0 auto;
+  text-align: start;
 }
 .step-indicator > *:last-child {
-  --deco-img: linear-gradient(to left, transparent calc(1.7em + 4px), var(--deco-color) 0);
+  --deco-img: linear-gradient(var(--gradient-dir, to right), var(--deco-color) calc(100% - var(--deco-size) - 4px), transparent 0);
   --deco-margin: auto 0;
+  text-align: end;
 }
 .step-indicator > *:not(:last-child,
 .step-indicator > * :first-child) {
-  padding-inline: 0.5em;
+  padding-inline: var(--i-padding, 0.5em);
 }
 .step-indicator > *::after {
   content: counters(indicator, ".");
+  color: var(--deco-colorText, currentColor);
   position: absolute;
   display: inline-grid;
   place-content: center;
-  border: var(--bdr-width) solid #f00;
+  border: var(--bdr-width) solid var(--deco-color);
   border-radius: 50%;
   inline-size: var(--deco-size);
   aspect-ratio: 1;
-  inset-inline: 0;
-  inset-block-end: 0;
+  inset: var(--inset-after, auto 0 0);
   margin-inline: var(--deco-margin, auto);
+  background-color: var(--deco-bg, transparent);
 }
 .step-indicator > *::before {
   content: "";
   position: absolute;
   display: inline-block;
   block-size: 2px;
-  inset-block-end: calc(0.85em - 1px);
-  inset-inline: 0;
-  background-image: var(--deco-img, linear-gradient(to right, var(--deco-color) calc(50% - 0.85em - 2px), transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0));
+  inset: var(--inset-before, auto 0 calc(0.85em - 1px));
+  background-image: var(--deco-img, linear-gradient(var(--gradient-dir, to right), var(--deco-color) calc(50% - 0.85em - 2px), transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0));
 }
 @media screen and (min-width: 480px) {
   :root {
-    --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr minmax(auto, 0.5fr) auto 1.5em;
+    --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr minmax(auto, 0.75fr) auto 1.5em;
   }
   .sm-hide {
     display: initial;
@@ -752,12 +779,19 @@ date-picker .actions {
   .drawer {
     inline-size: clamp(480px, 69vi, 616px);
     border-radius: 0 1.25em 1.25em 0;
+    visibility: hidden;
+  }
+  [data-drawer="show"] .drawer {
+    visibility: visible;
   }
   [data-drawer="show"] main::after {
     content: "";
     position: fixed;
     inset: 0;
     background-color: rgba(13,14,23,0.4);
+  }
+  .step-indicator {
+    --content-display: block;
   }
 }
 @media screen and (min-width: 768px) {
@@ -806,25 +840,4 @@ date-picker .actions {
     --fill-items-box: #252946;
     --fill-amount-box: #0d0f17;
   }
-}
-
-@supports(font-size: 1cqi) {
-  :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
-      font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
-  }
-}
-date-picker > .calendar-grid {
-  display: var(--calendar-display, none);
-  grid-template-columns: repeat(7, auto);
-  position: absolute;
-  inset-block-start: var(--bottom, calc(100% + .5rem));
-  background-color: var(--system-color-blank);
-  border-radius: .5rem;
-  padding: .35em .75em 1em;
-  gap: .25em;
-}
-.step-indicator {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  font-size: 0.8em;
 }
