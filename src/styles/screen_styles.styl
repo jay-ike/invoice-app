@@ -9,6 +9,7 @@ decoElt(size, ratio, fill)
     background-color: var(--deco-fill, fill)
 inlineFlex(gap=.5em)
     display: inline-flex
+    flex-flow: var(--i-flow, row nowrap)
     gap: var(--items-space, gap)
     align-items: center
 leftArrowDeco(size, ratio, color)
@@ -35,6 +36,7 @@ darkShade()
 
     --fill-items-box: hsl(233, 30, 21)
     --fill-amount-box: hsl(228, 29, 7)
+    --color-disabled: hsla(231, 67, 99, 0.6)
 
 
 :root
@@ -69,6 +71,7 @@ darkShade()
     --system-heading-medium: 1.5rem
     --system-heading-small: 0.9375rem
     --system-text-body: 0.8125rem
+    --system-color-disabled: var(--color-disabled, hsla(233, 31, 17, 0.6))
 
     --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status" / 1fr .5fr 1fr;
 
@@ -159,23 +162,24 @@ section
     background-color: var(--sticky-fill, var(--color-fill))
 .no-gap
     --space: 0
+.no-padding
+    --min-padding: 0
 .subtitle-text
     color: var(--color-labelText, hsl(231, 20, 61))
-:is(.btn, .btn-edit, .btn-primary, .btn-danger, .btn-draft)
+[class*="btn"]
     --radius: 1.5rem
     font-weight: 900
     text-transform: capitalize
     font-size: clamp(.75em, 4cqi, 1em)
     min-inline-size: 4.5rem
     min-block-size: 3rem
-    &:focus,
-    &:hover
-        background-color: var(--color-fill-hover, transparent)
+[class*="btn"]:is(:focus, :hover)
+    background-color: var(--color-fill-hover, transparent)
 .btn.back
     align-self: start
     background-color: transparent
     color: var(--system-color-text)
-.btn-primary, .btn-danger
+:is(.btn-primary, .btn-danger)
     --color-text: white
 .btn-primary
     --color-fill: var(--system-color-softBlue)
@@ -208,11 +212,28 @@ section
 .inline-row
     inlineFlex()
 
+[data-icon]:is(:focus, :hover):not(:disabled)
+	--deco-fill: var(--icon-fill-hover, currentColor)
+	--icon-transform: var(--hover-transform, inherit)
+	color: var(--icon-text, var(--system-color-lightBlue))
+
 [data-icon]
     inlineFlex()
+    &:disabled
+        --deco-fill: currentColor
+        opacity: 0.6
+        color: var(--system-color-disabled)
+
+[data-icon="arrow_right"]
+    --icon-transform: rotate(180deg)
+    --i-flow: row-reverse nowrap
+    --hover-transform: rotate(180deg) translateX(0.5em)
 [data-icon="arrow_left"]
-    &::before
-        leftArrowDeco(1.5rem, 1, var(--system-color-softBlue))
+    --hover-transform: translateX(0.5em)
+:is([data-icon="arrow_left"], [data-icon="arrow_right"])::before
+	leftArrowDeco(1.5rem, 1, var(--icon-fill, var(--system-color-softBlue)))
+	transform: var(--icon-transform, none)
+
 [data-icon="arrow_down"]
     --min-padding: .75em 1.5em .75em 0
     --space: 0.1em

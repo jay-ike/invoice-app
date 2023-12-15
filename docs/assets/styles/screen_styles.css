@@ -28,6 +28,7 @@
   --system-heading-medium: 1.5rem;
   --system-heading-small: 0.9375rem;
   --system-text-body: 0.8125rem;
+  --system-color-disabled: var(--color-disabled, rgba(30,33,57,0.6));
   --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status"/1fr 0.5fr 1fr;
 }
 @font-face {
@@ -85,6 +86,7 @@
   --input-bd-clr: #252946;
   --fill-items-box: #252946;
   --fill-amount-box: #0d0f17;
+  --color-disabled: rgba(251,251,254,0.6);
 }
 
 @supports(font-size: 1cqi) {
@@ -160,14 +162,13 @@ section {
 .no-gap {
   --space: 0;
 }
+.no-padding {
+  --min-padding: 0;
+}
 .subtitle-text {
   color: var(--color-labelText, #888eaf);
 }
-:is(.btn,
-.btn-edit,
-.btn-primary,
-.btn-danger,
-.btn-draft) {
+[class*="btn"] {
   --radius: 1.5rem;
   font-weight: 900;
   text-transform: capitalize;
@@ -175,16 +176,8 @@ section {
   min-inline-size: 4.5rem;
   min-block-size: 3rem;
 }
-:is(.btn:focus,
-.btn-edit:focus,
-.btn-primary:focus,
-.btn-danger:focus,
-.btn-draft):focus,
-:is(.btn:hover,
-.btn-edit:hover,
-.btn-primary:hover,
-.btn-danger:hover,
-.btn-draft):hover {
+[class*="btn"]:is(:focus,
+:hover) {
   background-color: var(--color-fill-hover, transparent);
 }
 .btn.back {
@@ -192,8 +185,8 @@ section {
   background-color: transparent;
   color: var(--system-color-text);
 }
-.btn-primary,
-.btn-danger {
+:is(.btn-primary,
+.btn-danger) {
   --color-text: #fff;
 }
 .btn-primary {
@@ -236,20 +229,43 @@ label {
 }
 .inline-row {
   display: inline-flex;
+  flex-flow: var(--i-flow, row nowrap);
   gap: var(--items-space, 0.5em);
   align-items: center;
+}
+[data-icon]:is(:focus,
+:hover):not(:disabled) {
+  --deco-fill: var(--icon-fill-hover, currentColor);
+  --icon-transform: var(--hover-transform, inherit);
+  color: var(--icon-text, var(--system-color-lightBlue));
 }
 [data-icon] {
   display: inline-flex;
+  flex-flow: var(--i-flow, row nowrap);
   gap: var(--items-space, 0.5em);
   align-items: center;
 }
-[data-icon="arrow_left"]::before {
+[data-icon]:disabled {
+  --deco-fill: currentColor;
+  opacity: 0.6;
+  color: var(--system-color-disabled);
+}
+[data-icon="arrow_right"] {
+  --icon-transform: rotate(180deg);
+  --i-flow: row-reverse nowrap;
+  --hover-transform: rotate(180deg) translateX(0.5em);
+}
+[data-icon="arrow_left"] {
+  --hover-transform: translateX(0.5em);
+}
+:is([data-icon="arrow_left"],
+[data-icon="arrow_right"])::before {
   content: "";
   inline-size: 1.5rem;
   aspect-ratio: 1;
-  background-color: var(--deco-fill, var(--system-color-softBlue));
+  background-color: var(--deco-fill, var(--icon-fill, var(--system-color-softBlue)));
   clip-path: url("#arrow_left");
+  transform: var(--icon-transform, none);
 }
 [data-icon="arrow_down"] {
   --min-padding: 0.75em 1.5em 0.75em 0;
@@ -501,6 +517,7 @@ label {
   text-transform: capitalize;
   font-weight: bold;
   display: inline-flex;
+  flex-flow: var(--i-flow, row nowrap);
   gap: var(--items-space, 0.5em);
   align-items: center;
 }
@@ -839,5 +856,6 @@ date-picker .actions {
     --input-bd-clr: #252946;
     --fill-items-box: #252946;
     --fill-amount-box: #0d0f17;
+    --color-disabled: rgba(251,251,254,0.6);
   }
 }

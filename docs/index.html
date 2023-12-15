@@ -164,7 +164,7 @@
             <section class="drawer box column">
                <h2 class="heading-l" aria-label="purpose of the action" data-prefix="new invoice"><span data-prefix="#" data-suffix="" class="invoice__ref"></span></h2>
                <ul class="step-indicator">
-                <li>
+                <li class="step-active">
                     <p>your informations</p>
                 </li>
                 <li>
@@ -177,6 +177,10 @@
                     <p>the billing items</p>
                 </li>
                </ul>
+               <span class="segragator no-padding">
+					<button class="box btn" id="prev_step" type="button" data-icon="arrow_left" disabled="true">previous step</button>
+					<button class="box btn" id="next_step" type="button" data-icon="arrow_right">next step</button>
+               </span>
                <form action="" class="grow-2">
                    <step-by-step out-indicator="step-out">
                     <fieldset class="input-step stack" name="senderInfos">
