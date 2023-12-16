@@ -26,8 +26,8 @@
         </header>
         <main>
             <step-by-step out-indicator="step-out">
-                <section>
-                    <div class="box row no-gap sticky-top">
+                <section class="column box">
+                    <div class="row no-gap">
                         <dl class="grow-2">
                             <dt class="heading-l">Invoices</dt>
                             <dd class="subtitle-text">No invoices</dd>
@@ -67,7 +67,7 @@
                         </details>
                         <button data-icon="add-circle" class="btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
-                    <div class="invoices stack box content-bold">
+                    <div class="invoices stack grow-2">
                         <dl class="blank-box invoice__summary extend-click">
                             <dt data-prefix="#">RT3080</dt>
                             <dd class="label-text" data-prefix="Due ">19 Aug 2021</dd>
@@ -162,7 +162,7 @@
             </step-by-step>
 
             <section class="drawer box column">
-               <h2 class="heading-l" aria-label="purpose of the action" data-prefix="new invoice"><span data-prefix="#" data-suffix="" class="invoice__ref"></span></h2>
+                <h2 class="heading-l"><span>new invoice</span><span data-prefix="#" data-suffix="" class="invoice__ref"></span></h2>
                <ul class="step-indicator">
                 <li class="step-active">
                     <p>your informations</p>
@@ -208,14 +208,13 @@
                             <label for="inv-date">invoice date</label>
                         </div>
                         <div>
-                            <input type="number" list="terms-list" name="paymentTerms" id="inv-terms">
+                            <select name="paymentTerms" id="inv-terms">
+                                <option class="blank-box" value="1" label="net 1 day">
+                                <option class="blank-box" value="7" label="net 7 days">
+                                <option class="blank-box" value="14" label="net 14 days">
+                                <option class="blank-box" value="30" label="net 30 days">
+                            </select>
                             <label for="inv-terms">payment terms</label>
-                            <datalist id="terms-list">
-                                <options class="blank-box" value="1" label="net 1 day">
-                                <options class="blank-box" value="7" label="net 7 days">
-                                <options class="blank-box" value="14" label="net 14 days">
-                                <options class="blank-box" value="30" label="net 30 days">
-                            </datalist>
                         </div>
                         <div><input type="text" id="inv-desc" name="description" required><label for="inv-desc">project description</label></div>
                     </fieldset>

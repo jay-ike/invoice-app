@@ -75,7 +75,7 @@
   --color-labelText: var(--system-color-lightPurple);
   --color-labelFill: var(--system-color-grayishBlue);
   --color-labelHover: #fff;
-  --color-shadow: rgba(0,0,0,0.1);
+  --color-shadow: rgba(224,228,250,0.1);
   --page-bg: #141624;
   --color-checkboxFill: var(--page-bg);
   --color-info: #f9fafa;
@@ -152,13 +152,6 @@ section {
 .y-scrollable {
   overflow-y: auto;
 }
-.sticky-top {
-  --min-padding: var(--sticky-padding, inherit);
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 2;
-  background-color: var(--sticky-fill, var(--color-fill));
-}
 .no-gap {
   --space: 0;
 }
@@ -187,7 +180,8 @@ section {
 }
 :is(.btn-primary,
 .btn-danger) {
-  --color-text: #fff;
+  --color-text: #fafafa;
+  --color-text-hover: var(--system-color-lightGrayishBlue);
 }
 .btn-primary {
   --color-fill: var(--system-color-softBlue);
@@ -237,7 +231,7 @@ label {
 :hover):not(:disabled) {
   --deco-fill: var(--icon-fill-hover, currentColor);
   --icon-transform: var(--hover-transform, inherit);
-  color: var(--icon-text, var(--system-color-lightBlue));
+  color: var(--color-text-hover, var(--system-color-lightBlue));
 }
 [data-icon] {
   display: inline-flex;
@@ -376,12 +370,13 @@ label {
   --min-padding: 1.5em;
   font-weight: bold;
   border-radius: 0.5em;
-  box-shadow: 0 10 20px 0 var(--system-color-shadow);
+  box-shadow: 0 4px 8px 0 var(--system-color-shadow);
   background-color: var(--system-color-blank);
   position: absolute;
   inset-block-start: 110%;
-  inset-inline-start: -5%;
+  inset-inline: -20%;
   min-inline-size: 12rem;
+  z-index: 1;
   opacity: 0;
 }
 [open] #status-form {
@@ -443,6 +438,10 @@ label {
   position: relative;
   z-index: 2;
 }
+.invoices {
+  --item-alignment: center;
+  overflow: hidden auto;
+}
 .invoices:empty {
   display: none;
 }
@@ -468,6 +467,7 @@ label {
   --f-size-fluid: 4cqi;
   --space: 1rem;
   --label-weight: 500;
+  font-weight: bold;
 }
 .invoice__details {
   --min-padding: clamp(0.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em);
@@ -586,7 +586,6 @@ step-by-step > .step-out {
   --ref-display: inline;
   --cancel-text: "cancel";
   --proceed-text: "save changes";
-  --heading-text: "edit ";
 }
 .drawer > form {
   max-block-size: 70%;
@@ -614,6 +613,7 @@ step-by-step > .step-out {
 .invoice__ref {
   --prefix-color: initial;
   --prefix: initial;
+  text-transform: uppercase;
   display: var(--ref-display, none);
 }
 .input-step {
@@ -629,7 +629,8 @@ step-by-step > .step-out {
   display: flex;
   flex-flow: column-reverse nowrap;
 }
-.input-step input {
+.input-step :is(input,
+.input-step select) {
   min-inline-size: 100%;
   font-weight: bold;
   color: var(--system-color-text);
@@ -638,7 +639,8 @@ step-by-step > .step-out {
   border: 1px solid var(--input-bd-clr, var(--system-color-lightPurple));
   border-radius: 0.25em;
 }
-.input-step input:hover {
+.input-step :is(input:hover,
+.input-step select):hover {
   --input-bd-clr: var(--system-color-softBlue);
 }
 date-picker {
@@ -668,7 +670,7 @@ date-picker .today {
   --label-color: var(--system-color-softRed);
 }
 date-picker .selected {
-  --label-color: var(--system-color-softBlue);
+  --label-color: var(--system-color-lightBlue);
 }
 date-picker button {
   font-weight: inherit;
@@ -839,13 +841,13 @@ date-picker .actions {
   }
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-apearence="light"]) {
     --color-text: var(--system-color-lightGrayishBlue);
     --color-blank: var(--system-color-darkPurple);
     --color-labelText: var(--system-color-lightPurple);
     --color-labelFill: var(--system-color-grayishBlue);
     --color-labelHover: #fff;
-    --color-shadow: rgba(0,0,0,0.1);
+    --color-shadow: rgba(224,228,250,0.1);
     --page-bg: #141624;
     --color-checkboxFill: var(--page-bg);
     --color-info: #f9fafa;

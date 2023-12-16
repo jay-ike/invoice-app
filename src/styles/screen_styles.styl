@@ -24,7 +24,7 @@ darkShade()
     --color-labelText: var(--system-color-lightPurple)
     --color-labelFill: var(--system-color-grayishBlue)
     --color-labelHover: white
-    --color-shadow: rgba(0, 0, 0, 0.1)
+    --color-shadow: hsla(231, 73, 93, 0.1)
     --page-bg: hsl(233 30 11)
     --color-checkboxFill: var(--page-bg)
     --color-info: hsl(231, 11, 98)
@@ -154,12 +154,6 @@ section
     place-self: center
 .y-scrollable
     overflow-y: auto
-.sticky-top
-    --min-padding: var(--sticky-padding, inherit)
-    position: sticky
-    inset-block-start: 0
-    z-index: 2
-    background-color: var(--sticky-fill, var(--color-fill))
 .no-gap
     --space: 0
 .no-padding
@@ -180,7 +174,8 @@ section
     background-color: transparent
     color: var(--system-color-text)
 :is(.btn-primary, .btn-danger)
-    --color-text: white
+    --color-text: #fafafa
+    --color-text-hover: var(--system-color-lightGrayishBlue)
 .btn-primary
     --color-fill: var(--system-color-softBlue)
     --color-fill-hover: var(--system-color-lightBlue)
@@ -215,7 +210,7 @@ section
 [data-icon]:is(:focus, :hover):not(:disabled)
 	--deco-fill: var(--icon-fill-hover, currentColor)
 	--icon-transform: var(--hover-transform, inherit)
-	color: var(--icon-text, var(--system-color-lightBlue))
+	color: var(--color-text-hover, var(--system-color-lightBlue))
 
 [data-icon]
     inlineFlex()
@@ -296,12 +291,13 @@ section
     --min-padding: 1.5em
     font-weight: bold
     border-radius: .5em
-    box-shadow: 0 10 20px 0 var(--system-color-shadow)
+    box-shadow: 0 4px 8px 0 var(--system-color-shadow)
     background-color: var(--system-color-blank)
     position: absolute
     inset-block-start: 110%
-    inset-inline-start: -5%
+    inset-inline: -20%
     min-inline-size: 12rem
+    z-index: 1
     opacity: 0
     [open] &
         opacity: 1
@@ -355,8 +351,11 @@ section
     position: relative
     z-index: 2
 
-.invoices:empty
-    display: none
+.invoices
+    --item-alignment: center
+    overflow: hidden auto
+    &:empty
+        display: none
 .empty
     --min-padding: 2em 1.5em 0
     display: none
@@ -377,6 +376,7 @@ section
     --f-size-fluid: 4cqi
     --space: 1rem
     --label-weight: 500
+    font-weight: bold
 
 .invoice__details
     --min-padding: clamp(.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em)
@@ -479,7 +479,6 @@ step-by-step
         --ref-display: inline
         --cancel-text: "cancel"
         --proceed-text: "save changes"
-        --heading-text: "edit "
     & > form
         max-block-size: 70%
         overflow: hidden auto
@@ -501,6 +500,7 @@ step-by-step
 .invoice__ref
     --prefix-color: initial
     --prefix: initial
+    text-transform: uppercase
     display: var(--ref-display, none)
 
 .input-step
@@ -514,7 +514,7 @@ step-by-step
     & > div
         display: flex
         flex-flow: column-reverse nowrap
-    input
+    & :is(input, select)
         min-inline-size: 100%
         font-weight: bold
         color: var(--system-color-text)
@@ -541,7 +541,7 @@ date-picker
     .today
         --label-color: var(--system-color-softRed)
     .selected
-        --label-color: var(--system-color-softBlue)
+        --label-color: var(--system-color-lightBlue)
     button
         font-weight: inherit
         background-color: transparent
@@ -684,6 +684,6 @@ date-picker
             padding: inherit
 
 @media(prefers-color-scheme: dark)
-    :root
+    :root:not([data-apearence="light"])
         darkShade()
 

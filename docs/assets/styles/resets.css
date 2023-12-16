@@ -34,3 +34,6 @@ dialog {
     inset: 0;
     margin: auto;
 }
+select {
+    text-transform: inherit;
+}
