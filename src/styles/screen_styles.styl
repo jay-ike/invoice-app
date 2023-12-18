@@ -68,7 +68,7 @@ darkShade()
 	--system-heading-small: 0.9375rem;
 	--system-text-body: 0.8125rem;
 	--system-color-disabled: var(--color-disabled, hsla(233, 31%, 17%, 0.6));
-    --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status" / 1fr .5fr 1fr;
+    --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status" / minmax(10ch, 1fr) .5fr .75fr;
 
     --system-theme-clip: var(--theme-clip, url(#night_mode))
 }
@@ -378,7 +378,6 @@ section
         place-items: center
 
 .invoice__summary
-    --min-padding: 1rem 1.5rem
     --status-padding: var(--box-padding, .75rem clamp(.5rem, 5cqi, 1.5rem))
     --f-size: 1em
     --f-size-diff: 0.2
@@ -386,6 +385,7 @@ section
     --space: 1rem
     --label-weight: 500
     font-weight: bold
+    padding: clamp(.5em, 5cqi, 1.5em)
 
 .invoice__details
     --min-padding: clamp(.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em)
