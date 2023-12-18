@@ -129,6 +129,13 @@ section {
   --min-padding: 1.5em clamp(0.5em, 4cqi, 1.5em) 0.5em;
   block-size: calc(100lvb - min(7rem, 72px));
 }
+button {
+  font-weight: 900;
+  text-transform: capitalize;
+  font-size: clamp(0.75em, 4cqi, 1em);
+  min-inline-size: 4.5rem;
+  min-block-size: 3rem;
+}
 .heading-l {
   --f-size: var(--system-heading-large);
   font-weight: bold;
@@ -166,11 +173,6 @@ section {
 [class*="btn"] {
   --radius: 1.5rem;
   --space: 0.25em;
-  font-weight: 900;
-  text-transform: capitalize;
-  font-size: clamp(0.75em, 4cqi, 1em);
-  min-inline-size: 4.5rem;
-  min-block-size: 3rem;
 }
 [class*="btn"]:is(:focus,
 :hover) {
@@ -484,6 +486,7 @@ label {
   --label-weight: 500;
   font-weight: bold;
   padding: clamp(0.5em, 5cqi, 1.5em);
+  box-shadow: 0 2px 8px 0 var(--system-color-shadow);
 }
 .invoice__details {
   --min-padding: clamp(0.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em);
@@ -905,5 +908,21 @@ dialog > .row {
     --fill-amount-box: #0d0f17;
     --color-disabled: rgba(251,251,254,0.6);
     --theme-clip: url("#light_mode");
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :is(body,
+  .box),
+  .step-indicator li::before,
+  .step-indicator li::after {
+    transition: color 0.35s ease-in, background-color, 0.35s ease-out;
+  }
+  :is(.drawer,
+  input,
+  [class*="btn"]),
+  .theme-switch::before,
+  [data-icon]::before,
+  [data-icon]::after {
+    transition: all 0.35s ease-out;
   }
 }

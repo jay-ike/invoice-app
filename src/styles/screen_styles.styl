@@ -140,6 +140,12 @@ section
     --color-fill: var(--system-color-fillPrimary)
     --min-padding 1.5em clamp(.5em, 4cqi, 1.5em) .5em
     block-size: calc(100lvb - min(7rem, 72px))
+button
+    font-weight: 900
+    text-transform: capitalize
+    font-size: clamp(.75em, 4cqi, 1em)
+    min-inline-size: 4.5rem
+    min-block-size: 3rem
 .heading-l
     --f-size: var(--system-heading-large)
     heading(bold, var(--system-heading-large), 1.1, -1px)
@@ -161,11 +167,6 @@ section
 [class*="btn"]
     --radius: 1.5rem
     --space: .25em
-    font-weight: 900
-    text-transform: capitalize
-    font-size: clamp(.75em, 4cqi, 1em)
-    min-inline-size: 4.5rem
-    min-block-size: 3rem
 [class*="btn"]:is(:focus, :hover)
     background-color: var(--color-fill-hover, transparent)
 .btn.back
@@ -386,6 +387,7 @@ section
     --label-weight: 500
     font-weight: bold
     padding: clamp(.5em, 5cqi, 1.5em)
+    box-shadow: 0 2px 8px 0 var(--system-color-shadow)
 
 .invoice__details
     --min-padding: clamp(.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em)
@@ -729,3 +731,13 @@ dialog
     :root:not([data-apearence="light"])
         darkShade()
 
+@media(prefers-reduced-motion: no-preference)
+    :is(body, .box),
+    .step-indicator li::before,
+    .step-indicator li::after
+        transition: color .35s ease-in, background-color, .35s ease-out
+    :is(.drawer, input, [class*="btn"]),
+    .theme-switch::before,
+    [data-icon]::before,
+    [data-icon]::after
+        transition: all .35s ease-out
