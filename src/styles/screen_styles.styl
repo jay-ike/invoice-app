@@ -61,6 +61,7 @@ darkShade()
 	--system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
 	--system-color-info: var(--color-info, var(--system-color-lightPurple));
 	--system-color-infoFill: var(--color-infoFill, var(--system-color-grayishBlue));
+    --system-color-backdropFill: hsla(231, 28%, 7%, 0.4);
 
 	--system-heading-large: 2.25rem;
 	--system-heading-medium: 1.5rem;
@@ -621,6 +622,28 @@ noscript[data-status]
     margin-block-start: .5em
     margin-inline: .5em
     background-color: var(--system-color-lightRed)
+dialog:not([open])
+    display: none
+    transform: scale(0)
+dialog
+    --min-padding: clamp(.5em, 4cqi, 1.5em)
+    --f-size: var(--system-heading-medium)
+    color: var(--color-text, var(--system-color-darkBlue))
+    container: dialog / inline-size
+    inline-size: @css{min(480px, 80vi)}
+    transform: scale(1)
+    border: none
+    z-index: 4
+
+    &::backdrop
+        background-color: var(--system-color-backdropFill)
+
+    & > h3
+        text-transform: capitalize
+        color: var(--system-color-text)
+
+    & > .row
+        justify-content: end
 
 @media screen and (min-width: 480px)
     :root
@@ -679,7 +702,7 @@ noscript[data-status]
         	content: ""
         	position: fixed
         	inset: 0
-        	background-color: hsla(231 28 7, 0.4)
+        	background-color: var(--system-color-backdropFill)
     .step-indicator
         --content-display: block
 

@@ -23,6 +23,7 @@
 	--system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
 	--system-color-info: var(--color-info, var(--system-color-lightPurple));
 	--system-color-infoFill: var(--color-infoFill, var(--system-color-grayishBlue));
+  --system-color-backdropFill: hsla(231, 28%, 7%, 0.4);
 
 	--system-heading-large: 2.25rem;
 	--system-heading-medium: 1.5rem;
@@ -763,6 +764,30 @@ noscript[data-status] {
   margin-inline: 0.5em;
   background-color: var(--system-color-lightRed);
 }
+dialog:not([open]) {
+  display: none;
+  transform: scale(0);
+}
+dialog {
+  --min-padding: clamp(0.5em, 4cqi, 1.5em);
+  --f-size: var(--system-heading-medium);
+  color: var(--color-text, var(--system-color-darkBlue));
+  container: dialog/inline-size;
+  inline-size: min(480px, 80vi);
+  transform: scale(1);
+  border: none;
+  z-index: 4;
+}
+dialog::backdrop {
+  background-color: var(--system-color-backdropFill);
+}
+dialog > h3 {
+  text-transform: capitalize;
+  color: var(--system-color-text);
+}
+dialog > .row {
+  justify-content: end;
+}
 @media screen and (min-width: 480px) {
   :root {
     --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr minmax(auto, 0.75fr) auto 1.5em;
@@ -832,7 +857,7 @@ noscript[data-status] {
     content: "";
     position: fixed;
     inset: 0;
-    background-color: rgba(13,14,23,0.4);
+    background-color: var(--system-color-backdropFill);
   }
   .step-indicator {
     --content-display: block;
