@@ -1,35 +1,35 @@
+
 :root {
-  --system-color-softBlue: #7b5cfa;
-  --system-color-lightBlue: #9175ff;
-  --system-color-softRed: #ec5555;
-  --system-color-lightRed: #f99;
-  --system-color-limeGreen: #33d7a0;
-  --system-color-pureOrange: #ff9100;
-  --system-color-grayishBlue: #373b53;
-  --system-color-lightGrayishBlue: #fbfbfe;
-  --system-color-darkBlue: #0d0e17;
-  --system-color-lightPurple: #e0e4fa;
-  --system-color-softPurple: #7e88c4;
-  --system-color-darkPurple: #1e2139;
-  --system-color-fillPrimary: var(--page-bg, #f9f9fb);
-  --system-color-blank: var(--color-blank, #fff);
-  --system-color-labelText: var(--color-labelText, var(--system-color-softPurple));
-  --system-color-captionText: var(--color-captionText, #888eaf);
-  --system-color-labelFill: var(--color-labelFill, var(--system-color-lightGrayishBlue));
-  --system-color-labelHover: var(--color-labelHover, var(--system-color-lightPurple));
-  --system-color-text: var(--color-text, var(--system-color-darkBlue));
-  --system-color-shadow: var(--color-shadow, #dcdfef);
-  --system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
-  --system-color-warningFill: var(--color-warningFill, #fef4e7);
-  --system-color-successFill: var(--color-successFill, #f5fefb);
-  --system-color-info: var(--color-info, #384071);
-  --system-color-infoFill: var(--color-infoFill, #eaebf0);
-  --system-heading-large: 2.25rem;
-  --system-heading-medium: 1.5rem;
-  --system-heading-small: 0.9375rem;
-  --system-text-body: 0.8125rem;
-  --system-color-disabled: var(--color-disabled, rgba(30,33,57,0.6));
-  --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status"/1fr 0.5fr 1fr;
+	--system-color-softBlue: hsl(252, 94%, 67%);
+	--system-color-lightBlue: hsl(252, 100%, 73%);
+	--system-color-softRed: hsl(0, 80%, 63%);
+	--system-color-lightRed: hsl(0, 10%0, 80%);
+	--system-color-limeGreen: hsl(160, 67%, 52%);
+	--system-color-pureOrange: hsl(34, 90%, 69%);
+	--system-color-grayishBlue: hsl(231, 20%, 27%);
+	--system-color-lightGrayishBlue: hsl(231, 67%, 99%);
+	--system-color-darkBlue: hsl(231, 28% 7);
+	--system-color-lightPurple: hsl(231, 73%, 93%);
+	--system-color-softPurple: hsl(231, 37%, 63%);
+	--system-color-darkPurple: hsl(233, 31%, 17%);
+	--system-color-fillPrimary: var(--page-bg, hsl(240, 27%, 98%));
+	--system-color-blank: var(--color-blank, #fff);
+	--system-color-labelText: var(--color-labelText, var(--system-color-softPurple));
+	--system-color-captionText: var(--color-captionText, hsl(231, 20%, 61%));
+	--system-color-labelFill: var(--color-labelFill, var(--system-color-lightGrayishBlue));
+	--system-color-labelHover: var(--color-labelHover, var(--system-color-lightPurple));
+	--system-color-text: var(--color-text, var(--system-color-darkBlue));
+	--system-color-shadow: var(--color-shadow, hsl(231, 38%, 90%));
+	--system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
+	--system-color-info: var(--color-info, var(--system-color-lightPurple));
+	--system-color-infoFill: var(--color-infoFill, var(--system-color-grayishBlue));
+
+	--system-heading-large: 2.25rem;
+	--system-heading-medium: 1.5rem;
+	--system-heading-small: 0.9375rem;
+	--system-text-body: 0.8125rem;
+	--system-color-disabled: var(--color-disabled, hsla(233, 31%, 17%, 0.6));
+  --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status" / 1fr .5fr 1fr;
 }
 @font-face {
   font-family: "Spartan";
@@ -78,12 +78,10 @@
   --color-shadow: rgba(224,228,250,0.1);
   --page-bg: #141624;
   --color-checkboxFill: var(--page-bg);
-  --color-info: #f9fafa;
-  --color-infoFill: rgba(250,250,250,0.15);
-  --color-warningFill: rgba(243,242,242,0.15);
-  --color-successFill: rgba(242,243,242,0.15);
   --color-editText: var(--system-color-softPurple);
   --input-bd-clr: #252946;
+  --color-info: var(--system-color-grayishBlue);
+  --color-infoFill: var(--system-color-lightPurple);
   --fill-items-box: #252946;
   --fill-amount-box: #0d0f17;
   --color-disabled: rgba(251,251,254,0.6);
@@ -221,12 +219,6 @@ label {
   color: var(--system-color-text);
   font-weight: bold;
 }
-.inline-row {
-  display: inline-flex;
-  flex-flow: var(--i-flow, row nowrap);
-  gap: var(--items-space, 0.5em);
-  align-items: center;
-}
 [data-icon]:is(:focus,
 :hover):not(:disabled) {
   --deco-fill: var(--icon-fill-hover, currentColor);
@@ -287,17 +279,17 @@ label {
   background-color: var(--deco-fill, currentColor);
   clip-path: url("#add-circle");
 }
-[data-state="pending"] {
-  --color-text: var(--system-color-pureOrange);
-  --color-fill: var(--system-color-warningFill);
+[data-status="pending"] {
+  --status-fill: var(--system-color-pureOrange);
+  --status-text: var(--system-color-darkPurple);
 }
-[data-state="paid"] {
-  --color-text: var(--system-color-limeGreen);
-  --color-fill: var(--system-color-successFill);
+[data-status="paid"] {
+  --status-text: var(--system-color-darkPurple);
+  --status-fill: var(--system-color-limeGreen);
 }
-[data-state="draft"] {
-  --color-text: var(--system-color-info);
-  --color-fill: var(--system-color-infoFill);
+[data-status="draft"] {
+  --status-text: var(--system-color-info);
+  --status-fill: var(--system-color-infoFill);
 }
 [data-prefix]::before {
   content: var(--prefix, attr(data-prefix));
@@ -331,6 +323,11 @@ label {
 .column {
   --alignment: var(--col-align, stretch);
   flex-flow: var(--col-dir, column) var(--wrap, nowrap);
+}
+.center {
+  display: grid;
+  place-items: center;
+  place-content: center;
 }
 :is(.blank-box,
 .box) {
@@ -514,6 +511,8 @@ label {
 .status-box {
   --radius: 0.5rem;
   --min-padding: var(--status-padding);
+  --color-text: var(--status-text, inherit);
+  --color-fill: var(--status-fill, inherit);
   text-transform: capitalize;
   font-weight: bold;
   display: inline-flex;
@@ -738,6 +737,13 @@ date-picker .actions {
   inset: var(--inset-before, auto 0 calc(0.85em - 1px));
   background-image: var(--deco-img, linear-gradient(var(--gradient-dir, to right), var(--deco-color) calc(50% - 0.85em - 2px), transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0));
 }
+noscript {
+  --min-padding: 1em;
+  --radius: 0.5em;
+  margin-block-start: 0.5em;
+  margin-inline: 0.5em;
+  display: block;
+}
 @media screen and (min-width: 480px) {
   :root {
     --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr minmax(auto, 0.75fr) auto 1.5em;
@@ -836,9 +842,6 @@ date-picker .actions {
   .drawer {
     --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em);
   }
-  .drawer > .row {
-    padding: inherit;
-  }
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-apearence="light"]) {
@@ -850,12 +853,10 @@ date-picker .actions {
     --color-shadow: rgba(224,228,250,0.1);
     --page-bg: #141624;
     --color-checkboxFill: var(--page-bg);
-    --color-info: #f9fafa;
-    --color-infoFill: rgba(250,250,250,0.15);
-    --color-warningFill: rgba(243,242,242,0.15);
-    --color-successFill: rgba(242,243,242,0.15);
     --color-editText: var(--system-color-softPurple);
     --input-bd-clr: #252946;
+    --color-info: var(--system-color-grayishBlue);
+    --color-infoFill: var(--system-color-lightPurple);
     --fill-items-box: #252946;
     --fill-amount-box: #0d0f17;
     --color-disabled: rgba(251,251,254,0.6);

@@ -24,57 +24,52 @@ darkShade()
     --color-labelText: var(--system-color-lightPurple)
     --color-labelFill: var(--system-color-grayishBlue)
     --color-labelHover: white
-    --color-shadow: hsla(231, 73, 93, 0.1)
-    --page-bg: hsl(233 30 11)
+    --color-shadow: hsla(231, 73%, 93%, 0.1)
+    --page-bg: hsl(233, 30%, 11%)
     --color-checkboxFill: var(--page-bg)
-    --color-info: hsl(231, 11, 98)
-    --color-infoFill: hsla(231, 5, 98, 0.15)
-    --color-warningFill: hsla(34, 5, 95, 0.15)
-    --color-successFill: hsla(159, 5, 95, 0.15)
     --color-editText: var(--system-color-softPurple)
-    --input-bd-clr: hsl(233, 30, 21)
+    --input-bd-clr: hsl(233, 30%, 21%)
+    --color-info: var(--system-color-grayishBlue)
+    --color-infoFill: var(--system-color-lightPurple)
 
-    --fill-items-box: hsl(233, 30, 21)
-    --fill-amount-box: hsl(228, 29, 7)
-    --color-disabled: hsla(231, 67, 99, 0.6)
+    --fill-items-box: hsl(233, 30%, 21%)
+    --fill-amount-box: hsl(228, 29%, 7)
+    --color-disabled: hsla(231, 67%, 99%, 0.6)
 
+@css {
+:root {
+	--system-color-softBlue: hsl(252, 94%, 67%);
+	--system-color-lightBlue: hsl(252, 100%, 73%);
+	--system-color-softRed: hsl(0, 80%, 63%);
+	--system-color-lightRed: hsl(0, 10%0, 80%);
+	--system-color-limeGreen: hsl(160, 67%, 52%);
+	--system-color-pureOrange: hsl(34, 90%, 69%);
+	--system-color-grayishBlue: hsl(231, 20%, 27%);
+	--system-color-lightGrayishBlue: hsl(231, 67%, 99%);
+	--system-color-darkBlue: hsl(231, 28% 7);
+	--system-color-lightPurple: hsl(231, 73%, 93%);
+	--system-color-softPurple: hsl(231, 37%, 63%);
+	--system-color-darkPurple: hsl(233, 31%, 17%);
+	--system-color-fillPrimary: var(--page-bg, hsl(240, 27%, 98%));
+	--system-color-blank: var(--color-blank, #fff);
+	--system-color-labelText: var(--color-labelText, var(--system-color-softPurple));
+	--system-color-captionText: var(--color-captionText, hsl(231, 20%, 61%));
+	--system-color-labelFill: var(--color-labelFill, var(--system-color-lightGrayishBlue));
+	--system-color-labelHover: var(--color-labelHover, var(--system-color-lightPurple));
+	--system-color-text: var(--color-text, var(--system-color-darkBlue));
+	--system-color-shadow: var(--color-shadow, hsl(231, 38%, 90%));
+	--system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
+	--system-color-info: var(--color-info, var(--system-color-lightPurple));
+	--system-color-infoFill: var(--color-infoFill, var(--system-color-grayishBlue));
 
-:root
-    --system-color-softBlue: hsl(252 94 67)
-    --system-color-lightBlue: hsl(252 100 73)
-    --system-color-softRed: hsl(0 80 63)
-    --system-color-lightRed: hsl(0 100 80)
-    --system-color-limeGreen: hsl(160 67 52)
-    --system-color-pureOrange: hsl(34 100 50)
-    --system-color-grayishBlue: hsl(231 20 27)
-    --system-color-lightGrayishBlue: hsl(231 67 99)
-    --system-color-darkBlue: hsl(231 28 7)
-    --system-color-lightPurple: hsl(231 73 93)
-    --system-color-softPurple: hsl(231 37 63)
-    --system-color-darkPurple: hsl(233 31 17)
-
-    --system-color-fillPrimary: var(--page-bg, hsl(240 27 98))
-    --system-color-blank: var(--color-blank, #fff)
-    --system-color-labelText: var(--color-labelText, var(--system-color-softPurple))
-    --system-color-captionText: var(--color-captionText, hsl(231 20 61))
-    --system-color-labelFill: var(--color-labelFill, var(--system-color-lightGrayishBlue))
-    --system-color-labelHover: var(--color-labelHover, var(--system-color-lightPurple))
-    --system-color-text: var(--color-text, var(--system-color-darkBlue))
-    --system-color-shadow: var(--color-shadow, hsl(231 38 90))
-    --system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple))
-    --system-color-warningFill: var(--color-warningFill, hsl(34, 90, 95))
-    --system-color-successFill: var(--color-successFill, hsl(159, 90, 98))
-    --system-color-info: var(--color-info, hsl(231, 34, 33))
-    --system-color-infoFill: var(--color-infoFill, hsl(231, 15, 93))
-
-    --system-heading-large: 2.25rem
-    --system-heading-medium: 1.5rem
-    --system-heading-small: 0.9375rem
-    --system-text-body: 0.8125rem
-    --system-color-disabled: var(--color-disabled, hsla(233, 31, 17, 0.6))
-
+	--system-heading-large: 2.25rem;
+	--system-heading-medium: 1.5rem;
+	--system-heading-small: 0.9375rem;
+	--system-text-body: 0.8125rem;
+	--system-color-disabled: var(--color-disabled, hsla(233, 31%, 17%, 0.6));
     --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status" / 1fr .5fr 1fr;
-
+}
+}
 
 @font-face
     font-family: "Spartan"
@@ -204,8 +199,6 @@ section
 .content-bold
     color: var(--system-color-text)
     font-weight: bold
-.inline-row
-    inlineFlex()
 
 [data-icon]:is(:focus, :hover):not(:disabled)
 	--deco-fill: var(--icon-fill-hover, currentColor)
@@ -248,15 +241,15 @@ section
         decoElt(2em, 1, currentColor)
         clip-path: url(#add-circle)
 
-[data-state="pending"]
-    --color-text: var(--system-color-pureOrange)
-    --color-fill: var(--system-color-warningFill)
-[data-state="paid"]
-    --color-text: var(--system-color-limeGreen)
-    --color-fill: var(--system-color-successFill)
-[data-state="draft"]
-    --color-text: var(--system-color-info)
-    --color-fill: var(--system-color-infoFill)
+[data-status="pending"]
+    --status-fill: var(--system-color-pureOrange)
+    --status-text: var(--system-color-darkPurple)
+[data-status="paid"]
+    --status-text: var(--system-color-darkPurple)
+    --status-fill: var(--system-color-limeGreen)
+[data-status="draft"]
+    --status-text: var(--system-color-info)
+    --status-fill: var(--system-color-infoFill)
 
 [data-prefix]::before
     content: var(--prefix, attr(data-prefix))
@@ -419,6 +412,8 @@ section
 .status-box
     --radius: .5rem
     --min-padding: var(--status-padding)
+    --color-text: var(--status-text, inherit)
+    --color-fill: var(--status-fill, inherit)
     text-transform: capitalize
     font-weight: bold
     inlineFlex()
@@ -600,6 +595,12 @@ date-picker
             inset: var(--inset-before, auto 0 calc(.85em - 1px))
             background-image: var(--deco-img, linear-gradient(var(--gradient-dir, to right), var(--deco-color) calc(50% - .85em - 2px), transparent 0 calc(50% + .85em + 2px), var(--deco-color) 0))
 
+noscript
+    --min-padding: 1em
+    --radius: .5em
+    margin-block-start: .5em
+    margin-inline: .5em
+    display: block
 
 @media screen and (min-width: 480px)
     :root
@@ -680,8 +681,6 @@ date-picker
             grid-area: main
     .drawer
         --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em)
-        & > .row
-            padding: inherit
 
 @media(prefers-color-scheme: dark)
     :root:not([data-apearence="light"])

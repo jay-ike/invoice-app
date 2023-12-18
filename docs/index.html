@@ -15,6 +15,7 @@
             <nav class="box row">
                 <button aria-label="Theme switcher" class="box theme-switch">
                     <svg width="32px" height="32px">
+                        <title>An Illustration of the current theme state</title>
                         <use href="#night_mode"></use>
                     </svg>
                 </button>
@@ -24,7 +25,10 @@
                 </svg>
             </nav>
         </header>
-        <main>
+        <main class="relative">
+            <noscript class="box" data-state="pending">
+                <p>It looks like no scripting is available some features may not work as expected</p>
+            </noscript>
             <step-by-step out-indicator="step-out">
                 <section class="column box">
                     <div class="row no-gap">
@@ -68,12 +72,12 @@
                         <button data-icon="add-circle" class="btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
                     <div class="invoices stack grow-2">
-                        <dl class="blank-box invoice__summary extend-click">
+                        <dl class="blank-box invoice__summary extend-click" data-status="pending">
                             <dt data-prefix="#">RT3080</dt>
                             <dd class="label-text" data-prefix="Due ">19 Aug 2021</dd>
                             <dd class="label-text">Melissa Clarke</dd>
                             <dd>$ 4,032.33</dd>
-                            <dd class="box status-box" data-state="pending">pending</dd>
+                            <dd class="box status-box">pending</dd>
                         </dl>
                     </div>
                     <div class="empty box stack">
@@ -262,7 +266,10 @@
                 <clipPath id="add-circle" clipPathUnits="objectBoundingBox">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.924 0.504 a 0.42 0.42 90 1 1 -0.84 0 a 0.42 0.42 90 0 1 0.84 0 z m -0.42 -0.1995 c 0.0172 0 0.0315 0.0143 0.0315 0.0315 v 0.1365 h 0.1365 a 0.0315 0.0315 90 0 1 0 0.063 h -0.1365 v 0.1365 a 0.0315 0.0315 90 0 1 -0.063 0 v -0.1365 h -0.1365 a 0.0315 0.0315 90 0 1 0 -0.063 h 0.1365 v -0.1365 c 0 -0.0172 0.0143 -0.0315 0.0315 -0.0315 z" fill="currentColor" style="fill:var(--icon-fill, currentColor)" id="path5"/>
                 </clipPath>
-            </defs>
+                 <clipPath id="light_mode" clipPathUnits="objectBoundingBox">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.2903 0.0529 c 0.0099 0 0.0181 0.0144 0.0181 0.0318 v 0.0847 a 0.0318 0.0181 90 0 1 -0.0363 0 v -0.0847 c 0 -0.0173 0.0082 -0.0318 0.0181 -0.0318 z m 0.121 0.4551 a 0.2117 0.121 90 1 1 -0.2419 0 a 0.2117 0.121 90 0 1 0.2419 0 z m -0.1028 0.3387 a 0.0318 0.0181 90 0 0 -0.0363 0 v 0.0847 a 0.0318 0.0181 90 0 0 0.0363 0 v -0.0847 z m 0.2071 -0.566 c 0.0048 0.0148 0.002 0.0343 -0.0065 0.0431 l -0.0421 0.0423 a 0.0318 0.0181 90 1 1 -0.0181 -0.055 l 0.0421 -0.0423 a 0.0318 0.0181 90 0 1 0.0247 0.0119 z m -0.3837 0.4242 a 0.0318 0.0181 90 1 0 -0.0181 -0.055 l -0.0421 0.0423 a 0.0318 0.0181 90 1 0 0.0181 0.055 l 0.0421 -0.0423 z m -0.0668 -0.4242 a 0.0318 0.0181 90 0 1 0.0247 -0.0119 l 0.0421 0.0423 a 0.0318 0.0181 90 1 1 -0.0181 0.055 l -0.0421 -0.0423 a 0.0318 0.0181 90 0 1 -0.0065 -0.0431 z m 0.4018 0.3691 a 0.0318 0.0181 90 0 0 -0.0181 0.055 l 0.0421 0.0423 a 0.0318 0.0181 90 0 0 0.0181 -0.055 l -0.0421 -0.0423 z"/>
+                </clipPath>
+           </defs>
         </svg>
         <script type="module" src="/scripts/index.js"></script>
     </body>

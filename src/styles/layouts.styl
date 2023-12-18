@@ -20,6 +20,10 @@ flex()
 .column
     --alignment: var(--col-align, stretch)
     flex-flow: var(--col-dir, column) var(--wrap, nowrap)
+.center
+    display: grid
+    place-items: center
+    place-content: center
 
 :is(.blank-box, .box)
     padding: var(--min-padding, 1.5em)
