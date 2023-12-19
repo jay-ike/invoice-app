@@ -42,6 +42,9 @@ class Stepper extends HTMLElement {
 
     attributeChangedCallback(name, ignore, newValue) {
         const current = "--current: " + this.#current + ";";
+        if (newValue === null) {
+            return;
+        }
         if (newValue.match(current) === null && name === "style") {
             this.style.setProperty("--current", this.#current);
         }

@@ -192,8 +192,11 @@
                     </fieldset>
                     <fieldset class="input-step stack" name="clientInfos">
                         <legend>bill to</legend>
-                        <div><input type="text" id="bt-name" name="clientName" required><label for="bt-name">client's name</label></div>
-                        <div><input type="email" id="bt-email" name="clientMail" required pattern="^[a-zA-Z0-9\._%\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"><label for="bt-email">client's email</label></div>
+                        <div><input type="text" id="bt-name" name="clientName" required><label for="bt-name" data-error="can't be empty">client's name</label></div>
+                        <div>
+							<input type="email" id="bt-email" name="clientMail" required pattern="^[a-zA-Z0-9\._%\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$">
+							<label for="bt-email" data-error="invalid email address">client's email</label>
+						</div>
                         <div><input type="text" id="bt-street" name="clientAddress"><label for="bt-street">street address</label></div>
                         <div><input type="text" id="bt-city" name="clientCity"><label for="bt-city">city</label></div>
                         <div><input type="text" id="bt-post-code" name="clientPostCode"><label for="bt-post-code">post code</label></div>
@@ -201,22 +204,21 @@
                     </fieldset>
                     <fieldset class="input-step stack" name="terms">
                         <legend>payment terms</legend>
+                        <date-picker month-format="short">
+                            <input type="text" id="inv-date" name="invoiceDate" required>
+                            <label for="inv-date" data-error="no date selected">invoice date</label>
+                        </date-picker>
                         <div>
-                            <date-picker month-format="short">
-                                <input type="text" id="inv-date" name="invoiceDate" required>
-                            </date-picker>
-                            <label for="inv-date">invoice date</label>
-                        </div>
-                        <div>
-                            <select name="paymentTerms" id="inv-terms">
+                            <select name="paymentTerms" id="inv-terms" required>
+                                <option value="" class="blank-box" label="select your term" selected>
                                 <option class="blank-box" value="1" label="net 1 day">
                                 <option class="blank-box" value="7" label="net 7 days">
                                 <option class="blank-box" value="14" label="net 14 days">
                                 <option class="blank-box" value="30" label="net 30 days">
                             </select>
-                            <label for="inv-terms">payment terms</label>
+                            <label for="inv-terms" data-error="no term selected">payment terms</label>
                         </div>
-                        <div><input type="text" id="inv-desc" name="description" required><label for="inv-desc">project description</label></div>
+                        <div><input type="text" id="inv-desc" name="description" required><label for="inv-desc" data-error="no description specified">project description</label></div>
                     </fieldset>
                    </step-by-step>
                </form>

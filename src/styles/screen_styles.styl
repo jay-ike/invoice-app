@@ -14,7 +14,7 @@ inlineFlex(gap=.5em)
     align-items: center
 leftArrowDeco(size, ratio, color)
     decoElt(size, ratio, color)
-    clip-path: url(#arrow_left)
+    clip-path: @css{url(#arrow_left)}
 
 
 darkShade()
@@ -109,6 +109,7 @@ darkShade()
     }
 }
 date-picker > .calendar-grid {
+    font-weight: bold;
     display: var(--calendar-display, none);
     grid-template-columns: repeat(7, auto);
     position: absolute;
@@ -144,8 +145,6 @@ button
     font-weight: 900
     text-transform: capitalize
     font-size: clamp(.75em, 4cqi, 1em)
-    min-inline-size: 4.5rem
-    min-block-size: 3rem
 .heading-l
     --f-size: var(--system-heading-large)
     heading(bold, var(--system-heading-large), 1.1, -1px)
@@ -169,6 +168,8 @@ button
     --space: .25em
 [class*="btn"]:is(:focus, :hover)
     background-color: var(--color-fill-hover, transparent)
+    min-inline-size: 4.5rem
+    min-block-size: 3rem
 .btn.back
     align-self: start
     background-color: transparent
@@ -237,7 +238,7 @@ button
     cursor: pointer
     &::after
         decoElt(1em, 0.6, var(--system-color-softBlue))
-        clip-path: url(#arrow_down)
+        clip-path: @css{url(#arrow_down)}
         transform: var(--transformation, none)
     [open] &
         --transformation: rotateZ(180deg)
@@ -526,32 +527,42 @@ step-by-step
         font-size: clamp(0.8 * 1.5em, 4cqi, 1.5em)
         color: var(--system-color-softBlue)
 
-    & > div
+    & > *
         display: flex
         flex-flow: column-reverse nowrap
-    & :is(input, select)
-        min-inline-size: 100%
-        font-weight: bold
-        color: var(--system-color-text)
-        padding: var(--input-padding, .75em 1.25em)
-        background-color: var(--system-color-blank)
-        border: 1px solid var(--input-bd-clr, var(--system-color-lightPurple))
-        border-radius: .25em
-        &:hover
-            --input-bd-clr: var(--system-color-softBlue)
+:is(input, select)
+	min-inline-size: 100%
+	font-weight: bold
+	color: var(--system-color-text)
+	padding: var(--input-padding, .75em 1.25em)
+	background-color: var(--system-color-blank)
+	border: 1px solid var(--input-bd-clr, var(--system-color-lightPurple))
+	border-radius: .25em
+:is(input, select):is(:hover, :focus)
+    --input-bd-clr: var(--system-color-softBlue)
+:is(input, select):invalid
+    --input-bd-clr: var(--system-color-softRed)
+:is(input, select):invalid ~ label
+    color: var(--system-color-softRed)
+    display: flex
+    justify-content: space-between
+    align-items: baseline
+:is(input,select):invalid ~ label::after
+    content: @css{attr(data-error, "")}
+    font-size: .7em
+    text-transform: none
 date-picker
     position: relative
     isolation: isolate
-    font-weight: bold
     &[data-show]
         --calendar-display: grid
     [disabled]
         opacity: 0.6
-    & [data-action="previous month"]::before,
-    & [data-action="next month"]::before
+    & .control::before
+        content: ""
         leftArrowDeco(1.5rem, 1, var(--system-color-softBlue))
         display: inline-block
-    & [data-action="next month"]::before
+    & [data-action*="next"]::before
         transform: rotateZ(180deg)
     .today
         --label-color: var(--system-color-softRed)
@@ -731,13 +742,16 @@ dialog
     :root:not([data-apearence="light"])
         darkShade()
 
-@media(prefers-reduced-motion: no-preference)
-    :is(body, .box),
-    .step-indicator li::before,
-    .step-indicator li::after
-        transition: color .35s ease-in, background-color, .35s ease-out
-    :is(.drawer, input, [class*="btn"]),
-    .theme-switch::before,
-    [data-icon]::before,
-    [data-icon]::after
-        transition: all .35s ease-out
+@css{
+@media(prefers-reduced-motion: no-preference) {
+	:is(body, .box), .step-indicator li::before, .step-indicator li::after {
+	    transition: color .35s ease-in, background-color, .35s ease-out;
+	}
+	:is(.drawer, input, select, [class*="btn"]), .theme-switch::before, [data-icon]::before, [data-icon]::after {
+	    transition: all .35s ease-out;
+	}
+	step-by-step > * {
+        transition: transform .35s ease-out;
+	}
+}
+}
