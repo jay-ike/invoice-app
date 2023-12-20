@@ -17,7 +17,7 @@
                 </button>
                 <svg width="32px" height="32px" class="self-center">
                     <title>An Icon illustrating a user avatar</title>
-                    <use href="#user-circle">
+                    <use href="#user-circle"></use>
                 </svg>
             </nav>
         </header>
@@ -39,7 +39,7 @@
                                     <span class="status-option no-shrink">
                                         <input type="checkbox" name="draftSelected" id="o-draft">
                                         <svg>
-                                            <use href="#checked">
+                                            <use href="#checked"></use>
                                         </svg>
                                     </span>
                                     <label for="o-draft">Draft</label>
@@ -48,7 +48,7 @@
                                     <span class="status-option no-shrink">
                                         <input type="checkbox" name="paidSelected" id="o-paid">
                                         <svg>
-                                            <use href="#checked">
+                                            <use href="#checked"></use>
                                         </svg>
                                     </span>
                                     <label for="o-paid">Paid</label>
@@ -57,7 +57,7 @@
                                     <span class="status-option no-shrink">
                                         <input type="checkbox" name="pendingSelected" id="o-pending">
                                         <svg>
-                                            <use href="#checked">
+                                            <use href="#checked"></use>
                                         </svg>
                                     </span>
                                     <label for="o-pending">Pending</label>
@@ -68,7 +68,7 @@
                         <button data-icon="add-circle" class="row btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
                     <div class="invoices stack grow-2">
-                        <dl class="blank-box invoice__summary extend-click" data-status="pending">
+                        <dl class="blank-box invoice-grid invoice__summary extend-click" data-status="pending">
                             <dt data-prefix="#">RT3080</dt>
                             <dd class="label-text" data-prefix="Due ">19 Aug 2021</dd>
                             <dd class="label-text">Melissa Clarke</dd>
@@ -181,7 +181,7 @@
 					<button class="box row" id="prev_step" type="button" data-icon="arrow_left" disabled="true">previous step</button>
 					<button class="box row" id="next_step" type="button" data-icon="arrow_right">next step</button>
                </span>
-               <form action="" class="grow-2">
+               <form action="" class="grow-2 y-scrollable">
                    <step-by-step out-indicator="step-out">
                     <fieldset class="input-step stack" name="senderInfos">
                         <legend>bill from</legend>
@@ -220,6 +220,29 @@
                         </div>
                         <div><input type="text" id="inv-desc" name="description" required><label for="inv-desc" data-error="no description specified">project description</label></div>
                     </fieldset>
+                    <div class="stack">
+                        <h3 class="heading-m primary-text">item list</h3>
+                        <fieldset class="invoice-grid input-step inv-item" name="item-1">
+                            <div>
+                                <input type="text" id="item-1-name" name="item-1-name" required>
+								<label for="item-1-name">item name</label>
+							</div>
+                            <div>
+                                <input type="text" id="item-1-qty" name="item-1-qty" pattern="\d+" required>
+								<label for="item-1-qty"><abbr title="quantity">qty.</abbr></label>
+							</div>
+                            <div>
+                                <input type="text" id="item-1-price" name="item-1-price" pattern="^\d+(\.\d+)?$" required>
+								<label for="">price</label>
+							</div>
+                            <div>
+                                <output name="item-1-total" id="item-1-total" for="item-1-qty item-1-price"></output>
+								<label for="item-1-total">total</label>
+							</div>
+                            <button class="box no-padding" data-icon="delete" aria-label="delete the invoice item" type="button"></button>
+                        </fieldset>
+                        <button class="large-btn box" data-prefix="+ ">add new item</button>
+                    </div>
                    </step-by-step>
                </form>
                <div>
@@ -277,6 +300,9 @@
                 </clipPath>
                 <clipPath id="warning" clipPathUnits="objectBoundingBox">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.4147 0.1733 c 0.0368 -0.0647 0.1322 -0.0647 0.1691 0 l 0.3192 0.5602 c 0.0358 0.0629 -0.0108 0.1401 -0.0845 0.1401 h -0.6383 c -0.0737 0 -0.1203 -0.0772 -0.0845 -0.1401 l 0.3192 -0.5602 z m 0.1261 0.5339 c 0 0.023 -0.0186 0.0416 -0.0416 0.0416 c -0.023 0 -0.0416 -0.0186 -0.0416 -0.0416 c 0 -0.023 0.0186 -0.0416 0.0416 -0.0416 c 0.023 0 0.0416 0.0186 0.0416 0.0416 z m -0.0104 -0.3328 c 0 -0.0172 -0.014 -0.0312 -0.0312 -0.0312 c -0.0172 0 -0.0312 0.014 -0.0312 0.0312 v 0.208 c 0 0.0172 0.014 0.0312 0.0312 0.0312 c 0.0172 0 0.0312 -0.014 0.0312 -0.0312 v -0.208 z" style="fill: var(--icon-fill, currentColor);"/>
+                </clipPath>
+                <clipPath id="delete" clipPathUnits="objectBoundingBox">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.39 0.12 c 0.02 -0.02 0.04 -0.04 0.07 -0.04 h 0.08 c 0.03 0 0.05 0.01 0.07 0.04 l 0.04 0.06 h 0.16 c 0.02 0 0.03 0.01 0.03 0.03 c 0 0.02 -0.01 0.03 -0.03 0.03 h -0.6 c -0.02 0 -0.03 -0.01 -0.03 -0.03 c 0 -0.02 0.01 -0.03 0.03 -0.03 h 0.16 l 0.04 -0.06 z m 0.23 0.79 h -0.25 c -0.09 0 -0.17 -0.07 -0.17 -0.17 v -0.46 h 0.58 v 0.46 c 0 0.09 -0.07 0.17 -0.17 0.17 z m -0.21 -0.49 c 0.02 0 0.03 0.01 0.03 0.03 v 0.29 c 0 0.02 -0.01 0.03 -0.03 0.03 c -0.02 0 -0.03 -0.01 -0.03 -0.03 l 0 -0.29 c 0 -0.02 0.01 -0.03 0.03 -0.03 z m 0.17 0 c 0.02 0 0.03 0.01 0.03 0.03 v 0.29 c 0 0.02 -0.01 0.03 -0.03 0.03 c -0.02 0 -0.03 -0.01 -0.03 -0.03 v -0.29 c 0 -0.02 0.01 -0.03 0.03 -0.03 z" style="fill: var(--icon-fill, currentColor);"/>
                 </clipPath>
            </defs>
         </svg>

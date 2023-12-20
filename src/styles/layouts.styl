@@ -3,19 +3,20 @@ flex()
     display: flex
     align-items: var(--alignment, center)
 .stack > * + *
-    margin-block-start: var(--space, 1.5em)
+    margin-block-start: var(--s-space, 1.5em)
 
 :is(.row, .column, .segragator)
     flex()
-    gap: var(--space, 1.5em)
+    gap: var(--r-space, var(--c-space, 1.5em))
+    justify-content: var(--i-alignment, start)
 .grow-2
     flex-grow: 2
 .no-shrink
     flex-shrink: 0
 
 .segragator
+    --i-alignment: space-between
     flex-flow: var(--direction, row) var(--wrap, nowrap)
-    justify-content: space-between
 .row
     --alignment: var(--row-align, center)
     flex-flow: var(--row-dir, row) var(--wrap, nowrap)

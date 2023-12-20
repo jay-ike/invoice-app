@@ -41,31 +41,26 @@
   font-feature-settings: "zero";
 }
 @layer utils {
-  .invoice-grid,
-  .invoice__summary {
+  .invoice-grid {
     display: grid;
     grid-template: var(--invoice-grid);
     align-items: var(--item-alignment, var(--alignment, center));
+    gap: var(--invoice-gap, initial);
     container: invoice/inline-size;
   }
-  .invoice-grid > :first-child,
-  .invoice__summary > :first-child {
+  .invoice-grid > :first-child {
     grid-area: ref;
   }
-  .invoice-grid> :nth-child(2),
-  .invoice__summary> :nth-child(2) {
+  .invoice-grid> :nth-child(2) {
     grid-area: date;
   }
-  .invoice-grid > :nth-child(3),
-  .invoice__summary > :nth-child(3) {
+  .invoice-grid > :nth-child(3) {
     grid-area: name;
   }
-  .invoice-grid > :nth-child(4),
-  .invoice__summary > :nth-child(4) {
+  .invoice-grid > :nth-child(4) {
     grid-area: total;
   }
-  .invoice-grid > :nth-child(5),
-  .invoice__summary > :nth-child(5) {
+  .invoice-grid > :nth-child(5) {
     grid-area: status;
   }
   .sm-hide {
@@ -92,7 +87,7 @@
 }
 
 @supports(font-size: 1cqi) {
-  :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
+  :is(h1, h2, h3, h4, p, dd, [class*="heading-"], .fluid-type) {
       font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
   }
 }
@@ -106,6 +101,7 @@ date-picker > .calendar-grid {
   border-radius: .5rem;
   padding: .35em .75em 1em;
   gap: .25em;
+  box-shadow: 0 4px 8px 0 var(--system-color-shadow);
 }
 .step-indicator {
   display: grid;
@@ -137,20 +133,16 @@ button {
 }
 .heading-l {
   --f-size: var(--system-heading-large);
-  font-weight: bold;
-  font-size: var(--system-heading-large);
   line-height: 1.1;
   letter-spacing: -1px;
 }
 .heading-m {
-  font-weight: bold;
-  font-size: var(--system-heading-medium);
+  --f-size: var(--system-heading-medium);
   line-height: 1.1;
   letter-spacing: -0.75px;
 }
 .heading-s {
-  font-weight: bold;
-  font-size: var(--system-heading-small);
+  --f-size: var(--system-heading-small);
   line-height: 1;
   letter-spacing: -0.25px;
 }
@@ -158,26 +150,31 @@ button {
   place-self: center;
 }
 .y-scrollable {
-  overflow-y: auto;
+  overflow: hidden auto;
 }
 .no-gap {
-  --space: 0;
+  --r-space: 0;
+  --c-space: 0;
 }
 .no-padding {
   --min-padding: 0;
 }
+.primary-text {
+  color: var(--system-color-softBlue);
+  font-weight: var(--weight, inherit);
+}
 .subtitle-text {
-  color: var(--color-labelText, #888eaf);
+  color: var(--color-labelText, hsl(231, 20%, 61%));
 }
 [class*="btn"] {
   --radius: 1.5rem;
-  --space: 0.25em;
+  --r-space: 0.25em;
+  min-inline-size: 4.5rem;
+  min-block-size: 3rem;
 }
 [class*="btn"]:is(:focus,
 :hover) {
   background-color: var(--color-fill-hover, transparent);
-  min-inline-size: 4.5rem;
-  min-block-size: 3rem;
 }
 .btn.back {
   align-self: start;
@@ -206,6 +203,14 @@ button {
   --color-text: var(--color-labelText, var(--system-color-captionText));
   --color-fill: #373b53;
   --color-fill-hover: var(--fill-items-box, #0d0f17);
+}
+.large-btn {
+  --min-padding: var(--btn-padding, initial);
+  --color-text: var(--color-labelText, var(--system-color-darkBlue));
+  --color-fill: var(--fill-items-box, var(--system-color-labelText));
+  --color-fill-hover: var(--fill-amount-box, hsl(231, 73%, 93%));
+  --prefix-color: currentColor;
+  inline-size: 100%;
 }
 .extend-click {
   position: relative;
@@ -262,7 +267,7 @@ label {
 }
 [data-icon="arrow_down"] {
   --min-padding: 0.75em 1.5em 0.75em 0;
-  --space: 0.1em;
+  --r-space: 0.1em;
   cursor: pointer;
 }
 [data-icon="arrow_down"]::after {
@@ -290,6 +295,12 @@ label {
   background-color: var(--deco-fill, currentColor);
   clip-path: url("#warning");
 }
+[data-icon="delete"]::before {
+  inline-size: 1.5em;
+  aspect-ratio: 1;
+  background-color: var(--deco-fill, var(--icon-fill, currentColor));
+  clip-path: url(#delete);
+}
 [data-status="pending"] {
   --status-fill: var(--system-color-pureOrange);
   --status-text: var(--system-color-darkPurple);
@@ -311,14 +322,15 @@ label {
   color: var(--suffix-color, currentColor);
 }
 .stack > * + * {
-  margin-block-start: var(--space, 1.5em);
+  margin-block-start: var(--s-space, 1.5em);
 }
 :is(.row,
 .column,
 .segragator) {
   display: flex;
   align-items: var(--alignment, center);
-  gap: var(--space, 1.5em);
+  gap: var(--r-space, var(--c-space, 1.5em));
+  justify-content: var(--i-alignment, start);
 }
 .grow-2 {
   flex-grow: 2;
@@ -327,8 +339,8 @@ label {
   flex-shrink: 0;
 }
 .segragator {
+  --i-alignment: space-between;
   flex-flow: var(--direction, row) var(--wrap, nowrap);
-  justify-content: space-between;
 }
 .row {
   --alignment: var(--row-align, center);
@@ -394,7 +406,7 @@ label {
   opacity: 1;
 }
 .inv-option {
-  --space: 1em;
+  --r-space: 1em;
   --label-color: var(--system-color-text);
   cursor: pointer;
 }
@@ -464,26 +476,28 @@ label {
 .invoices:empty {
   display: none;
 }
+*:not(:empty) + .empty {
+  display: none;
+}
+:is(*:empty + .empty,
+.center) {
+  display: grid;
+  place-content: center;
+  place-items: center;
+}
 .empty {
   --min-padding: 2em 1.5em 0;
-  display: none;
-  auto: 1fr;
 }
 .empty > p {
   max-inline-size: 25ch;
   white-space: pre-wrap;
-}
-.invoices:empty + .empty {
-  display: grid;
-  place-content: center;
-  place-items: center;
 }
 .invoice__summary {
   --status-padding: var(--box-padding, 0.75rem clamp(0.5rem, 5cqi, 1.5rem));
   --f-size: 1em;
   --f-size-diff: 0.2;
   --f-size-fluid: 4cqi;
-  --space: 1rem;
+  --s-space: 1rem;
   --label-weight: 500;
   font-weight: bold;
   padding: clamp(0.5em, 5cqi, 1.5em);
@@ -492,7 +506,7 @@ label {
 .invoice__details {
   --min-padding: clamp(0.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em);
   --invoice-grid: "ref ." "date total" "name total" "status status"/1fr 1fr;
-  --space: clamp(0.5em, 2vb, 1.5em);
+  --s-space: clamp(0.5em, 2vb, 1.5em);
   padding: 0.5em clamp(0.5em, 4vmin, 1.5em) 3.5em;
 }
 .invoice__details::after {
@@ -500,13 +514,30 @@ label {
   display: var(--deco-display, block);
   block-size: clamp(5em, 10vmin, 8em);
 }
+.inv-item {
+  --invoice-grid: "ref ref ref ref" "date name total status" / minmax(48px, .25fr) minmax(8ch, .5fr) minmax(8ch, .5fr) auto;
+  --invoice-gap: 0.5em;
+  --icon-fill-hover: var(--system-color-softRed);
+  --icon-fill: var(--system-color-captionText);
+  --min-padding: 0.5em;
+  --input-padding: 0.5em;
+}
+.inv-item output {
+  font-weight: bold;
+  color: var(--system-color-captionText);
+  block-size: 2em;
+  padding: var(--input-padding);
+}
+.inv-item.input-step {
+  padding: 0;
+}
 .invoice__table {
   --prefix-color: currentColor;
   text-transform: capitalize;
 }
 .invoice__item {
   --invoice-grid: "ref ref total" "date name total"/auto 1fr;
-  --space: 1em;
+  --s-space: 1em;
   gap: 1ch;
 }
 .invoice__desc {
@@ -520,7 +551,7 @@ label {
 }
 .items-box {
   --radius: 0.5rem 0.5rem 0 0;
-  --color-fill: var(--fill-items-box, #fbfbfe);
+  --color-fill: var(--fill-items-box, hsl(231, 67%, 99%));
 }
 .amount-box {
   --f-size: 1.5em;
@@ -552,7 +583,7 @@ label {
 }
 .invoice__status {
   --status-padding: 0.75rem clamp(0.5em, 2cqi, 1.5em);
-  --space: 0.5em;
+  --r-space: 0.5em;
   color: var(--system-color-captionText);
   text-transform: capitalize;
 }
@@ -588,6 +619,7 @@ step-by-step > .step-out {
 .drawer {
   --translateY: var(--y-offset, 72px);
   --y-overflow: hidden;
+  --c-space: var(0.5em, 2vb, 1.5em);
   position: fixed;
   transform: translate(var(--x-offset, -100%), var(--translateY));
   block-size: calc(100% - var(--translateY));
@@ -607,10 +639,6 @@ step-by-step > .step-out {
   --ref-display: inline;
   --cancel-text: "cancel";
   --proceed-text: "save changes";
-}
-.drawer > form {
-  max-block-size: 70%;
-  overflow: hidden auto;
 }
 .drawer > div {
   --prefix-color: currentColor;
@@ -637,8 +665,12 @@ step-by-step > .step-out {
   text-transform: uppercase;
   display: var(--ref-display, none);
 }
+.input-step > :is(div,
+date-picker) {
+  display: flex;
+  flex-flow: column-reverse nowrap;
+}
 .input-step {
-  --space: 1.25rem;
   container: input-step/inline-size;
   padding: 0.5rem;
 }
@@ -646,13 +678,8 @@ step-by-step > .step-out {
   font-size: clamp(1.2em, 4cqi, 1.5em);
   color: var(--system-color-softBlue);
 }
-.input-step > * {
-  display: flex;
-  flex-flow: column-reverse nowrap;
-}
 :is(input,
 select) {
-  min-inline-size: 100%;
   font-weight: bold;
   color: var(--system-color-text);
   padding: var(--input-padding, 0.75em 1.25em);
@@ -780,7 +807,7 @@ noscript[data-status] {
   --radius: 0.5em;
   --color-text: var(--status-text, currentColor);
   --color-text-hover: var(--system-color-darkPurple);
-  --space: 0.5em;
+  --r-space: 0.5em;
   margin-block-start: 0.5em;
   margin-inline: 0.5em;
   background-color: var(--system-color-lightRed);
@@ -870,6 +897,13 @@ dialog > .row {
     inline-size: clamp(480px, 69vi, 616px);
     border-radius: 0 1.25em 1.25em 0;
     visibility: hidden;
+  }
+  .inv-item {
+    --invoice-grid: "ref date name total status" / minmax(min(214px, 30%), 1fr) minmax(48px, .25fr) minmax(min(20%, 100px),.35fr) minmax(min(20%, 100px), .35fr) 2rem;
+  }
+  .inv-item:not(:first-of-type) label {
+    clip-path: inset(50%);
+    position: absolute;
   }
   [data-drawer="show"] .drawer {
     visibility: visible;

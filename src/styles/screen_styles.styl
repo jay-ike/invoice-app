@@ -1,6 +1,5 @@
-heading(weight, size, height, spacing)
-    font-weight: weight
-    font-size: size
+heading(size, height, spacing)
+    --f-size: size
     line-height: height
     letter-spacing: spacing
 decoElt(size, ratio, fill)
@@ -81,11 +80,11 @@ darkShade()
     font-feature-settings: "zero"
 
 @layer utils
-	.invoice-grid,
-	.invoice__summary
+	.invoice-grid
 		display: grid
 		grid-template: var(--invoice-grid)
 		align-items: var(--item-alignment, var(--alignment, center))
+		gap: var(--invoice-gap, initial)
 		container: invoice / inline-size
 		& > :first-child
 		    grid-area: ref
@@ -104,7 +103,7 @@ darkShade()
 
 @css {
 @supports(font-size: 1cqi) {
-    :is(h1, h2, h3, h4, p, dd, .heading-l, .fluid-type) {
+    :is(h1, h2, h3, h4, p, dd, [class*="heading-"], .fluid-type) {
         font-size: clamp(var(--f-size) - var(--f-size) * var(--f-size-diff, 0.3), var(--f-size-fluid, 5cqi), var(--f-size));
     }
 }
@@ -118,6 +117,7 @@ date-picker > .calendar-grid {
     border-radius: .5rem;
     padding: .35em .75em 1em;
     gap: .25em;
+    box-shadow: 0 4px 8px 0 var(--system-color-shadow);
 }
 .step-indicator {
     display: grid;
@@ -146,30 +146,33 @@ button
     text-transform: capitalize
     font-size: clamp(.75em, 4cqi, 1em)
 .heading-l
-    --f-size: var(--system-heading-large)
-    heading(bold, var(--system-heading-large), 1.1, -1px)
+    heading(var(--system-heading-large), 1.1, -1px)
 .heading-m
-    heading(bold, var(--system-heading-medium), 1.1, -0.75px)
+    heading(var(--system-heading-medium), 1.1, -0.75px)
 .heading-s
-    heading(bold, var(--system-heading-small), 1, -0.25px)
+    heading(var(--system-heading-small), 1, -0.25px)
 
 .self-center
     place-self: center
 .y-scrollable
-    overflow-y: auto
+    overflow: hidden auto
 .no-gap
-    --space: 0
+    --r-space: 0
+    --c-space: 0
 .no-padding
     --min-padding: 0
+.primary-text
+    color: var(--system-color-softBlue)
+    font-weight: var(--weight, inherit)
 .subtitle-text
-    color: var(--color-labelText, hsl(231, 20, 61))
+    color: var(--color-labelText, @css{hsl(231, 20%, 61%)})
 [class*="btn"]
     --radius: 1.5rem
-    --space: .25em
-[class*="btn"]:is(:focus, :hover)
-    background-color: var(--color-fill-hover, transparent)
+    --r-space: .25em
     min-inline-size: 4.5rem
     min-block-size: 3rem
+[class*="btn"]:is(:focus, :hover)
+    background-color: var(--color-fill-hover, transparent)
 .btn.back
     align-self: start
     background-color: transparent
@@ -191,6 +194,14 @@ button
     --color-text: var(--color-labelText, var(--system-color-captionText))
     --color-fill: hsl(231, 20, 27)
     --color-fill-hover: var(--fill-items-box, hsl(228, 29, 7))
+.large-btn
+    --min-padding: var(--btn-padding, initial)
+    --color-text: var(--color-labelText, var(--system-color-darkBlue))
+    --color-fill: var(--fill-items-box, var(--system-color-labelText))
+    --color-fill-hover: var(--fill-amount-box, @css{hsl(231, 73%, 93%)})
+    --prefix-color: currentColor
+    inline-size: 100%
+
 .extend-click
     position: relative
     &::before
@@ -234,7 +245,7 @@ button
 
 [data-icon="arrow_down"]
     --min-padding: .75em 1.5em .75em 0
-    --space: 0.1em
+    --r-space: 0.1em
     cursor: pointer
     &::after
         decoElt(1em, 0.6, var(--system-color-softBlue))
@@ -251,6 +262,9 @@ button
 [data-icon="warning"]::before
     decoElt(1.5em, 1, currentColor)
     clip-path: url(#warning)
+[data-icon="delete"]::before
+    decoElt(1.5em, 1, var(--icon-fill, currentColor))
+    clip-path: @css{url(#delete)}
 
 
 [data-status="pending"]
@@ -308,7 +322,7 @@ button
         opacity: 1
 
 .inv-option
-    --space: 1em
+    --r-space: 1em
     --label-color: var(--system-color-text)
     cursor: pointer
     &:focus,
@@ -367,24 +381,25 @@ button
     overflow: hidden auto
     &:empty
         display: none
+*:not(:empty) + .empty
+    display: none
+:is(*:empty + .empty, .center)
+    display: grid
+    place-content: center
+    place-items: center
+
 .empty
     --min-padding: 2em 1.5em 0
-    display: none
-    auto 1fr
     & > p
         max-inline-size: 25ch
         white-space: pre-wrap
-    .invoices:empty + &
-        display: grid
-        place-content: center
-        place-items: center
 
 .invoice__summary
     --status-padding: var(--box-padding, .75rem clamp(.5rem, 5cqi, 1.5rem))
     --f-size: 1em
     --f-size-diff: 0.2
     --f-size-fluid: 4cqi
-    --space: 1rem
+    --s-space: 1rem
     --label-weight: 500
     font-weight: bold
     padding: clamp(.5em, 5cqi, 1.5em)
@@ -393,20 +408,33 @@ button
 .invoice__details
     --min-padding: clamp(.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em)
     --invoice-grid: "ref ." "date total" "name total" "status status" / 1fr 1fr
-    --space: clamp(0.5em, 2vb, 1.5em)
+    --s-space: clamp(0.5em, 2vb, 1.5em)
     padding: .5em clamp(0.5em, 4vmin, 1.5em) 3.5em
     &::after
         content: ""
         display: var(--deco-display, block)
         block-size: clamp(5em, 10vmin, 8em)
-
+.inv-item
+    --invoice-grid: @css{"ref ref ref ref" "date name total status" / minmax(48px, .25fr) minmax(8ch, .5fr) minmax(8ch, .5fr) auto}
+    --invoice-gap: .5em
+    --icon-fill-hover: var(--system-color-softRed)
+    --icon-fill: var(--system-color-captionText)
+    --min-padding: .5em
+    --input-padding: .5em
+    & output
+        font-weight: bold
+        color: var(--system-color-captionText)
+        block-size: 2em
+        padding: var(--input-padding)
+    &.input-step
+        padding: 0
 .invoice__table
     --prefix-color: currentColor
     text-transform: capitalize
 
 .invoice__item
     --invoice-grid: "ref ref total" "date name total" / auto 1fr
-    --space: 1em
+    --s-space: 1em
     gap: 1ch
 
 .invoice__desc
@@ -418,7 +446,7 @@ button
     --color-fill: var(--system-color-blank)
 .items-box
     --radius: .5rem .5rem 0 0
-    --color-fill: var(--fill-items-box, hsl(231, 67, 99))
+    --color-fill: var(--fill-items-box, @css{hsl(231, 67%, 99%)})
 .amount-box
     --f-size: 1.5em
     --radius: 0 0 .5rem .5rem
@@ -446,7 +474,7 @@ button
 
 .invoice__status
     --status-padding: .75rem clamp(.5em, 2cqi, 1.5em)
-    --space: .5em
+    --r-space: .5em
     color: var(--system-color-captionText)
     text-transform: capitalize
     & > :first-child
@@ -478,6 +506,7 @@ step-by-step
 .drawer
     --translateY: var(--y-offset, 72px)
     --y-overflow: hidden
+    --c-space: var(.5em, 2vb, 1.5em)
     position: fixed
     transform: translate(var(--x-offset, -100%), var(--translateY))
     block-size: calc(100% - var(--translateY))
@@ -495,9 +524,6 @@ step-by-step
         --ref-display: inline
         --cancel-text: "cancel"
         --proceed-text: "save changes"
-    & > form
-        max-block-size: 70%
-        overflow: hidden auto
     & > div
         --prefix-color: currentColor
         --min-padding: .75em clamp(0.5em, 3cqi, 1.5em)
@@ -519,19 +545,17 @@ step-by-step
     text-transform: uppercase
     display: var(--ref-display, none)
 
+.input-step > :is(div, date-picker)
+    display: flex
+    flex-flow: column-reverse nowrap
 .input-step
-    --space: 1.25rem
     container: input-step / inline-size
     padding: .5rem
     & > legend
         font-size: clamp(0.8 * 1.5em, 4cqi, 1.5em)
         color: var(--system-color-softBlue)
 
-    & > *
-        display: flex
-        flex-flow: column-reverse nowrap
 :is(input, select)
-	min-inline-size: 100%
 	font-weight: bold
 	color: var(--system-color-text)
 	padding: var(--input-padding, .75em 1.25em)
@@ -631,7 +655,7 @@ noscript[data-status]
     --radius: .5em
     --color-text: var(--status-text, currentColor)
     --color-text-hover: var(--system-color-darkPurple)
-    --space: .5em
+    --r-space: .5em
     margin-block-start: .5em
     margin-inline: .5em
     background-color: var(--system-color-lightRed)
@@ -708,6 +732,11 @@ dialog
         inline-size: clamp(480px, 69vi, 616px)
         border-radius: 0 1.25em 1.25em 0
         visibility: hidden
+    .inv-item
+        --invoice-grid: @css{"ref date name total status" / minmax(min(214px, 30%), 1fr) minmax(48px, .25fr) minmax(min(20%, 100px),.35fr) minmax(min(20%, 100px), .35fr) 2rem}
+        &:not(:first-of-type) label
+            clip-path: inset(50%)
+            position: absolute
     [data-drawer="show"]
         & .drawer
             visibility: visible
