@@ -1,0 +1,92 @@
+.stack > * + * {
+  margin-block-start: var(--s-space, 1.5em);
+}
+
+:is(.row, .column, .segragator) {
+  display: flex;
+  align-items: var(--alignment, center);
+  gap: var(--r-space, var(--c-space, 1.5em));
+  justify-content: var(--i-alignment, start);
+}
+.segragator {
+  --i-alignment: space-between;
+  flex-flow: var(--direction, row) var(--wrap, nowrap);
+}
+
+@page {
+  size: A4;
+  margin: 0in;
+}
+body {
+	--system-color-purpleBlue: hsl(251, 92%, 38%);
+	--system-color-darkPurple: hsl(231, 20%, 27%);
+	--system-text-large: 20pt;
+	--system-text-medium: 15pt;
+    --alignment: start;
+	font-size: 13pt;
+	color: hsl(233, 30%, 11%);
+	print-color-adjust: exact;
+    font-family: times serif;
+    padding: 24pt;
+    line-height: 1.5;
+}
+span {
+    font-size: var(--f-size);
+    text-transform: var(--transform);
+    color: var(--clr);
+}
+tbody tr {
+  position: relative;
+}
+th {
+  text-transform: capitalize;
+  text-align: start;
+}
+:is(thead, tfoot) {
+  --cell-padding: 16pt;
+  font-size: var(--system-text-medium);
+}
+thead {
+	background-color: var(--system-color-purpleBlue);
+	color: #fff;
+	font-size: 15pt;
+}
+tfoot {
+  background-color: var(--system-color-darkPurple);
+  color: #fff;
+}
+table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  clip-path: inset(0 round 8pt);
+}
+:is(td, th) {
+  padding: var(--cell-padding, 12pt 16pt);
+}
+:is(tr > :not(:first-child)) {
+  --cell-padding: 12pt 16pt 12pt 0;
+  text-align: end;
+}
+tfoot td:last-child {
+    font-size: var(--system-text-large);
+    font-weight: 900;
+}
+tbody > tr + tr > :first-child::before {
+  content: "";
+  position: absolute;
+  block-size: 2pt;
+  background-color: hsl(231, 20%, 61%);
+  inset-block-start: 0;
+  inset-inline: 0;
+}
+:is(ul, dl) {
+    font-weight: 500;
+}
+:is(dt, span) {
+    font-weight: 500;
+    color: var(--system-color-purpleBlue);
+    text-transform: capitalize;
+}
+#description {
+    --f-size: var(--system-text-medium);
+}

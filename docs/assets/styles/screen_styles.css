@@ -324,9 +324,8 @@ label {
 .stack > * + * {
   margin-block-start: var(--s-space, 1.5em);
 }
-:is(.row,
-.column,
-.segragator) {
+
+:is(.row, .column, .segragator) {
   display: flex;
   align-items: var(--alignment, center);
   gap: var(--r-space, var(--c-space, 1.5em));
@@ -355,8 +354,8 @@ label {
   place-items: center;
   place-content: center;
 }
-:is(.blank-box,
-.box) {
+
+:is(.blank-box, .box) {
   padding: var(--min-padding, 1.5em);
   background-color: var(--color-fill, transparent);
   color: var(--color-text, currentColor);

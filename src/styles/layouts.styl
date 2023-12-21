@@ -1,14 +1,14 @@
-
-flex()
-    display: flex
-    align-items: var(--alignment, center)
 .stack > * + *
     margin-block-start: var(--s-space, 1.5em)
 
-:is(.row, .column, .segragator)
-    flex()
-    gap: var(--r-space, var(--c-space, 1.5em))
-    justify-content: var(--i-alignment, start)
+@css{
+:is(.row, .column, .segragator) {
+    display: flex;
+    align-items: var(--alignment, center);
+    gap: var(--r-space, var(--c-space, 1.5em));
+    justify-content: var(--i-alignment, start);
+}
+}
 .grow-2
     flex-grow: 2
 .no-shrink
@@ -28,8 +28,11 @@ flex()
     place-items: center
     place-content: center
 
-:is(.blank-box, .box)
-    padding: var(--min-padding, 1.5em)
-    background-color: var(--color-fill, transparent)
-    color: var(--color-text, currentColor)
-    border-radius: var(--radius, 0)
+@css{
+:is(.blank-box, .box) {
+    padding: var(--min-padding, 1.5em);
+    background-color: var(--color-fill, transparent);
+    color: var(--color-text, currentColor);
+    border-radius: var(--radius, 0);
+}
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>invoice preview</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="./assets/styles/resets.css" rel="stylesheet">
+        <link rel="stylesheet" href="./assets/styles/print_styles.css" media="print">
+    </head>
+    <body class="stack">
+        <div class="segragator">
+            <ul class="medium-text" id="sender_infos">
+                <li>19 Union Terrace</li>
+                <li>London</li>
+                <li>E1 3EZ</li>
+                <li>United Kingdom</li>
+            </ul>
+            <dl id="reciever_infos" class="medium-text">
+                <dt class="primary-text">Invoice to</dt>
+                <dd>Alex Grim</dd>
+                <dd>alexgrim@gmail.com</dd>
+                <dd>84 Church Way</dd>
+                <dd>Bradford</dd>
+                <dd>BD1 9PB</dd>
+                <dd>United Kingdom</dd>
+            </dl>
+        </div>
+        <div class="details">
+            <p><strong>Invoice Date:  </strong><span> 21 Aug 2021</span></p>
+            <p><strong>Reference  </strong><span> #LM9912</span></p>
+        </div>
+        <p id="description"><strong>Project Description:  </strong><span>company website design</span></p>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">item name</th>
+                    <th scope="col" class="align-end">quantity</th>
+                    <th scope="col" class="align-end">unit price</th>
+                    <th scope="col" class="align-end">total price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Graphic Design</td>
+                    <td>2</td>
+                    <td>100.000 XAF</td>
+                    <td>200.000 XAF</td>
+                </tr>
+                <tr>
+                    <td>Devices Mockups</td>
+                    <td>10</td>
+                    <td>15.000 XAF</td>
+                    <td>150.000 XAF</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row">amount due</th>
+                    <td class="align-end" colspan="3">350.000 XAF</td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </body>
+</html>
