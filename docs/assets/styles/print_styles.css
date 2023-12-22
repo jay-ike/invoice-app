@@ -37,6 +37,7 @@ span {
 }
 tbody tr {
   position: relative;
+  background-color: hsl(240, 27%, 90%);
 }
 th {
   text-transform: capitalize;

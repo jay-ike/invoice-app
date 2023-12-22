@@ -22,18 +22,18 @@
             </nav>
         </header>
         <main class="relative">
-            <noscript class="box row" data-status="pending" data-icon="warning">
+            <noscript class="box row icon-start" data-status="pending" data-icon="warning">
                 <p>It looks like no scripting is available some features may not work as expected</p>
             </noscript>
             <step-by-step out-indicator="step-out">
                 <section class="column box">
-                    <div class="row no-gap">
+                    <div class="row no-gap content-bold">
                         <dl class="grow-2">
                             <dt class="heading-l">Invoices</dt>
                             <dd class="subtitle-text">No invoices</dd>
                         </dl>
                         <details class="relative">
-                            <summary class="box heading-s row" data-icon="arrow_down">Filter <span class="sm-hide">by status</span></summary>
+                            <summary class="box heading-s row icon-end" data-icon="arrow_down">Filter <span class="sm-hide">by status</span></summary>
                             <form id="status-form" class="stack box" action="">
                                 <div class="inv-option row">
                                     <span class="status-option no-shrink">
@@ -65,7 +65,7 @@
 
                             </form>
                         </details>
-                        <button data-icon="add-circle" class="row btn-primary box">New <span class="sm-hide">Invoice</span></button>
+                        <button data-icon="add-circle" class="row icon-start btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
                     <div class="invoices stack grow-2">
                         <dl class="blank-box invoice-grid invoice__summary extend-click" data-status="pending">
@@ -73,21 +73,21 @@
                             <dd class="label-text" data-prefix="Due ">19 Aug 2021</dd>
                             <dd class="label-text">Melissa Clarke</dd>
                             <dd>$ 4,032.33</dd>
-                            <dd class="box status-box">pending</dd>
+                            <dd class="box icon-start status-box">pending</dd>
                         </dl>
                     </div>
-                    <div class="empty box stack">
+                    <div class="empty box center stack">
                         <img src="./assets/Email campaign_Flatline 2.svg" alt="An Illustration of a woman in purple shirt holding a speaker for an email campaign" width="194px" height="160px">
                         <h3 style="--space: 2em;" class="heading-m">There is nothing here</h3>
                         <p class="subtitle-text">Create an invoice by clicking the <strong>New <span class="sm-hide">Invoice</span></strong> button and get started</p>
                     </div>
                 </section>
                 <section class="box invoice__details column">
-                    <button class="row btn back" data-icon="arrow_left">Go back</button>
+                    <button class="row btn back icon-start"[data-icon] data-icon="arrow_left">Go back</button>
                     <div class="invoice__status blank-box">
                         <dl class="row">
                             <dt>status</dt>
-                            <dd class="box status-box" data-status="pending">pending</dd>
+                            <dd class="box status-box icon-start" data-status="pending">pending</dd>
                         </dl>
                         <div class="box invoice__actions">
                             <button class="box btn-edit">edit</button>
@@ -178,8 +178,8 @@
                 </li>
                </ul>
                <span class="segragator no-gap no-padding">
-					<button class="box row" id="prev_step" type="button" data-icon="arrow_left" disabled="true">previous step</button>
-					<button class="box row" id="next_step" type="button" data-icon="arrow_right">next step</button>
+					<button class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true">previous step</button>
+					<button class="box row icon-end" id="next_step" type="button" data-icon="arrow_right">next step</button>
                </span>
                <form action="" class="grow-2 y-scrollable">
                    <step-by-step out-indicator="step-out">
@@ -239,7 +239,7 @@
                                 <output name="item-1-total" id="item-1-total" for="item-1-qty item-1-price"></output>
 								<label for="item-1-total">total</label>
 							</div>
-                            <button class="box no-padding" data-icon="delete" aria-label="delete the invoice item" type="button"></button>
+                            <button class="box no-padding icon-start" data-icon="delete" aria-label="delete the invoice item" type="button"></button>
                         </fieldset>
                         <button class="large-btn box" data-prefix="+ ">add new item</button>
                     </div>

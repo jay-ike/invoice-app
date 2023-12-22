@@ -80,6 +80,7 @@ darkShade()
     font-feature-settings: "zero"
 
 @layer utils
+    @require "./layouts.styl"
 	.invoice-grid
 		display: grid
 		grid-template: var(--invoice-grid)
@@ -216,55 +217,57 @@ button
 .content-bold
     color: var(--system-color-text)
     font-weight: bold
+@css{
+:is(.icon-start, .theme-switch)::before,
+.icon-end::after {
+    content: "";
+    min-inline-size: var(--icon-size, 1.5em);
+    aspect-ratio: var(--icon-ratio, 1);
+    display: inline-block;
+    background-color: var(--icon-fill, currentColor);
+    transform: var(--icon-transform, none);
+    clip-path: var(--icon-clip, none);
+    border-radius: var(--icon-radius, 0px);
+}
+.icon-start:is(:hover,:focus)::before,
+.icon-end:is(:hover,:focus)::after {
+    --icon-fill: var(--icon-fill-hover, currentColor);
+    --icon-transform: var(--icon-hoverTransform, none);
+}
 
-[data-icon]:is(:focus, :hover):not(:disabled)
-	--deco-fill: var(--icon-fill-hover, currentColor)
-	--icon-transform: var(--hover-transform, inherit)
-	color: var(--color-text-hover, var(--system-color-lightBlue))
+}
 
-[data-icon]
-    &:disabled
-        --deco-fill: currentColor
-        opacity: 0.6
-        color: var(--system-color-disabled)
-    &::before,
-    &::after
-        content: ""
-        display: inline-block
-        flex-shrink: 0
 
+[data-icon]:disabled
+    --icon-fill: currentColor
+    opacity: 0.6
+    color: var(--system-color-disabled)
 [data-icon="arrow_right"]
+    --icon-clip: @css{url(#arrow_left)}
     --icon-transform: rotate(180deg)
-    --row-dir: row-reverse
-    --hover-transform: rotate(180deg) translateX(0.5em)
+    --icon-hoverTransform: rotate(180deg) translateX(0.5em)
 [data-icon="arrow_left"]
-    --hover-transform: translateX(0.5em)
-:is([data-icon="arrow_left"], [data-icon="arrow_right"])::before
-	leftArrowDeco(1.5rem, 1, var(--icon-fill, var(--system-color-softBlue)))
-	transform: var(--icon-transform, none)
+    --icon-hoverTransform: translateX(0.5em)
+    --icon-clip: @css{url(#arrow_left)}
+[data-icon*="arrow"]
+	--icon-fill: var(--system-color-softBlue)
 
 [data-icon="arrow_down"]
     --min-padding: .75em 1.5em .75em 0
     --r-space: 0.1em
+    --icon-clip: @css{url(#arrow_down)}
     cursor: pointer
-    &::after
-        decoElt(1em, 0.6, var(--system-color-softBlue))
-        clip-path: @css{url(#arrow_down)}
-        transform: var(--transformation, none)
     [open] &
-        --transformation: rotateZ(180deg)
+        --icon-transform: rotateZ(180deg)
 
 [data-icon="add-circle"]
     --min-padding: .75em clamp(.5em, 2vw, 1.5em) .75em .5em
-    &::before
-        decoElt(2em, 1, currentColor)
-        clip-path: url(#add-circle)
-[data-icon="warning"]::before
-    decoElt(1.5em, 1, currentColor)
-    clip-path: url(#warning)
-[data-icon="delete"]::before
-    decoElt(1.5em, 1, var(--icon-fill, currentColor))
-    clip-path: @css{url(#delete)}
+    --icon-siize: 2em
+    --icon-clip: @css{url(#add-circle)}
+[data-icon="warning"]
+    --icon-clip: @css{url(#warning)}
+[data-icon="delete"]
+    --icon-clip: @css{url(#delete)}
 
 
 [data-status="pending"]
@@ -283,7 +286,6 @@ button
 [data-suffix]::after
     content: var(--suffix, attr(data-suffix))
     color: var(--suffix-color, currentColor)
-@require "./layouts.styl"
 
 #logo
     width: 72px
@@ -359,14 +361,9 @@ button
 .theme-switch:is(:focus, :hover)
     --icon-fill: var(--system-color-lightPurple)
 .theme-switch
+    --icon-size: 32px
+    --icon-clip: var(--system-theme-clip)
     border-inline-end: 1px solid var(--system-color-grayishBlue)
-    &::before
-        content: ""
-        display: inline-block
-        inline-size: 32px
-        aspect-ratio: 1
-        background-color: var(--icon-fill, currentColor)
-        clip-path: var(--system-theme-clip)
 .banner
     --alignment: stretch
     --icon-fill: var(--system-color-softPurple)
@@ -379,17 +376,14 @@ button
 .invoices
     --item-alignment: center
     overflow: hidden auto
-    &:empty
-        display: none
+.invoices:empty
+    display: none
 *:not(:empty) + .empty
     display: none
-:is(*:empty + .empty, .center)
-    display: grid
-    place-content: center
-    place-items: center
 
 .empty
     --min-padding: 2em 1.5em 0
+    text-align: center
     & > p
         max-inline-size: 25ch
         white-space: pre-wrap
@@ -461,16 +455,13 @@ button
     --min-padding: var(--status-padding)
     --color-text: var(--status-text, inherit)
     --color-fill: var(--status-fill, inherit)
+    --icon-size: .5em
+    --icon-radius: 50%
     display: inline-flex
     align-items: center
     gap: .25em
     text-transform: capitalize
     font-weight: bold
-    &::before
-        content: ""
-        display: inline-block
-        decoElt(.5em, 1, currentColor)
-        border-radius: 50%
 
 .invoice__status
     --status-padding: .75rem clamp(.5em, 2cqi, 1.5em)
@@ -773,10 +764,10 @@ dialog
 
 @css{
 @media(prefers-reduced-motion: no-preference) {
-	:is(body, .box), .step-indicator li::before, .step-indicator li::after {
+	.box, .step-indicator li::before, .step-indicator li::after {
 	    transition: color .35s ease-in, background-color, .35s ease-out;
 	}
-	:is(.drawer, input, select, [class*="btn"]), .theme-switch::before, [data-icon]::before, [data-icon]::after {
+	:is(.drawer, input, select, [class*="btn"]), :is(.theme-switch, .icon-start)::before, .icon-end::after {
 	    transition: all .35s ease-out;
 	}
 	step-by-step > * {
