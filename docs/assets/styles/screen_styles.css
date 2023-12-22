@@ -40,10 +40,9 @@
   font-variant-ligatures: common-ligatures discretionary-ligatures historical-ligatures;
   font-feature-settings: "zero";
 }
-@layer utils {
-  .stack > * + * {
-    margin-block-start: var(--s-space, 1.5em);
-  }
+.stack > * + * {
+  margin-block-start: var(--s-space, 1.5em);
+}
 
 :is(.row, .column, .segragator) {
   display: flex;
@@ -51,30 +50,30 @@
   gap: var(--r-space, var(--c-space, 1.5em));
   justify-content: var(--i-alignment, start);
 }
-  .grow-2 {
-    flex-grow: 2;
-  }
-  .no-shrink {
-    flex-shrink: 0;
-  }
-  .segragator {
-    --i-alignment: space-between;
-    flex-flow: var(--direction, row) var(--wrap, nowrap);
-  }
-  .row {
-    --alignment: var(--row-align, center);
-    flex-flow: var(--row-dir, row) var(--wrap, nowrap);
-  }
-  .column {
-    --alignment: var(--col-align, stretch);
-    flex-flow: var(--col-dir, column) var(--wrap, nowrap);
-  }
-  .center {
-    display: grid;
-    place-items: center;
-    place-content: center;
-    gap: var(--s-space, 1.5em);
-  }
+.grow-2 {
+  flex-grow: 2;
+}
+.no-shrink {
+  flex-shrink: 0;
+}
+.segragator {
+  --i-alignment: space-between;
+  flex-flow: var(--direction, row) var(--wrap, nowrap);
+}
+.row {
+  --alignment: var(--row-align, center);
+  flex-flow: var(--row-dir, row) var(--wrap, nowrap);
+}
+.column {
+  --alignment: var(--col-align, stretch);
+  flex-flow: var(--col-dir, column) var(--wrap, nowrap);
+}
+.center {
+  display: grid;
+  place-items: center;
+  place-content: center;
+  gap: var(--s-space, 1.5em);
+}
 
 :is(.blank-box, .box) {
   padding: var(--min-padding, 1.5em);
@@ -82,31 +81,32 @@
   color: var(--color-text, currentColor);
   border-radius: var(--radius, 0);
 }
-}
-.invoice-grid {
-  display: grid;
-  grid-template: var(--invoice-grid);
-  align-items: var(--item-alignment, var(--alignment, center));
-  gap: var(--invoice-gap, initial);
-  container: invoice/inline-size;
-}
-.invoice-grid > :first-child {
-  grid-area: ref;
-}
-.invoice-grid> :nth-child(2) {
-  grid-area: date;
-}
-.invoice-grid > :nth-child(3) {
-  grid-area: name;
-}
-.invoice-grid > :nth-child(4) {
-  grid-area: total;
-}
-.invoice-grid > :nth-child(5) {
-  grid-area: status;
-}
-.sm-hide {
-  display: none;
+@layer utils {
+  .invoice-grid {
+    display: grid;
+    grid-template: var(--invoice-grid);
+    align-items: var(--item-alignment, var(--alignment, center));
+    gap: var(--invoice-gap, initial);
+    container: invoice/inline-size;
+  }
+  .invoice-grid > :first-child {
+    grid-area: ref;
+  }
+  .invoice-grid> :nth-child(2) {
+    grid-area: date;
+  }
+  .invoice-grid > :nth-child(3) {
+    grid-area: name;
+  }
+  .invoice-grid > :nth-child(4) {
+    grid-area: total;
+  }
+  .invoice-grid > :nth-child(5) {
+    grid-area: status;
+  }
+  .sm-hide {
+    display: none;
+  }
 }
 [data-theme="dark"] {
   --color-text: var(--system-color-lightGrayishBlue);
@@ -493,6 +493,7 @@ label {
   --icon-fill: var(--system-color-captionText);
   --min-padding: 0.5em;
   --input-padding: 0.5em;
+  --s-space: var(--c-space, clamp(0.5em, 2vb, 1.5em));
 }
 .inv-item output {
   font-weight: bold;
@@ -585,7 +586,7 @@ step-by-step > .step-out {
 .drawer {
   --translateY: var(--y-offset, 72px);
   --y-overflow: hidden;
-  --c-space: var(0.5em, 2vb, 1.5em);
+  --c-space: clamp(0.5em, 2vb, 1.5em);
   position: fixed;
   transform: translate(var(--x-offset, -100%), var(--translateY));
   block-size: calc(100% - var(--translateY));

@@ -79,8 +79,8 @@ darkShade()
     font-variant-ligatures: common-ligatures discretionary-ligatures historical-ligatures
     font-feature-settings: "zero"
 
+@require "./layouts.styl"
 @layer utils
-    @require "./layouts.styl"
 	.invoice-grid
 		display: grid
 		grid-template: var(--invoice-grid)
@@ -415,6 +415,7 @@ button
     --icon-fill: var(--system-color-captionText)
     --min-padding: .5em
     --input-padding: .5em
+    --s-space: var(--c-space, clamp(.5em, 2vb, 1.5em))
     & output
         font-weight: bold
         color: var(--system-color-captionText)
@@ -497,7 +498,7 @@ step-by-step
 .drawer
     --translateY: var(--y-offset, 72px)
     --y-overflow: hidden
-    --c-space: var(.5em, 2vb, 1.5em)
+    --c-space: clamp(.5em, 2vb, 1.5em)
     position: fixed
     transform: translate(var(--x-offset, -100%), var(--translateY))
     block-size: calc(100% - var(--translateY))

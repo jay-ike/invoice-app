@@ -9,6 +9,43 @@ let currentTheme = (
     : "light"
 );
 
+function cloneFields(fieldset) {
+    let clone = null;
+    const nameUpdater = (val) => Number.parseInt(val, 10) + 1;
+    if (HTMLCollection.prototype.isPrototypeOf(fieldset?.elements)) {
+        clone = fieldset.cloneNode(true);
+        clone.name = clone.name.replace(/\d+/, nameUpdater);
+        Array.from(clone.elements).forEach(function (elt) {
+            let label;
+            let newName = elt.id.replace(/\d+/, nameUpdater);
+            if (elt.tagName.toLowerCase() !== "button") {
+                label = elt.nextElementSibling;
+                label.htmlFor = newName;
+                elt.id = newName;
+                elt.name = newName;
+                elt.value = "";
+            }
+        });
+    }
+    return clone;
+}
+function requestNewItem(button, fieldset) {
+    let newItem;
+    let isValid = Array.from(fieldset.elements).every(function (elt) {
+        if (elt.tagName.toLowerCase() !== "button") {
+            elt.reportValidity();
+            return elt.checkValidity();
+        }
+        return true;
+    });
+    if (isValid) {
+        newItem = cloneFields(fieldset);
+        if (newItem !== null) {
+            button.insertAdjacentElement("beforebegin", newItem);
+        }
+    }
+}
+
 config.themeSwitches = {dark: "light", light: "dark"};
 config.drawer = document.querySelector(".drawer");
 config.invoiceForm = document.querySelector("form#invoice_form");
@@ -66,6 +103,9 @@ config.drawer.addEventListener("click", function ({target}) {
     }
     if (target.id === "prev_step") {
         config.invoiceForm.firstElementChild.previousStep();
+    }
+    if (target.classList.contains("large-btn")) {
+        requestNewItem(target, target.previousElementSibling);
     }
 }, false);
 config.invoiceDetails.addEventListener("click", function ({target}) {
