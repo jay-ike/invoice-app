@@ -108,7 +108,7 @@
 .sm-hide {
   display: none;
 }
-[data-apearence="dark"] {
+[data-theme="dark"] {
   --color-text: var(--system-color-lightGrayishBlue);
   --color-blank: var(--system-color-darkPurple);
   --color-labelText: var(--system-color-lightPurple);
@@ -286,7 +286,7 @@ label {
 }
 .icon-start:is(:hover,:focus)::before,.icon-end:is(:hover,:focus)::after {
   --icon-fill: var(--icon-fill-hover, currentColor);
-  --icon-transform: var(--icon-hoverTransform, none);
+  --icon-transform: var(--icon-hoverTransform, inherit);
 }
 [data-icon]:disabled {
   --icon-fill: currentColor;
@@ -779,12 +779,11 @@ noscript[data-status] {
   background-color: var(--system-color-lightRed);
 }
 dialog:not([open]) {
-  display: none;
   transform: scale(0);
 }
 dialog {
   --min-padding: clamp(0.5em, 4cqi, 1.5em);
-  --f-size: var(--system-heading-medium);
+  --f-size: 1.2em;
   color: var(--color-text, var(--system-color-darkBlue));
   container: dialog/inline-size;
   inline-size: min(480px, 80vi);
@@ -795,11 +794,11 @@ dialog {
 dialog::backdrop {
   background-color: var(--system-color-backdropFill);
 }
-dialog > h3 {
+dialog h3 {
   text-transform: capitalize;
   color: var(--system-color-text);
 }
-dialog > .row {
+dialog .row {
   justify-content: end;
 }
 @media screen and (min-width: 480px) {
@@ -909,7 +908,7 @@ dialog > .row {
   }
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-apearence="light"]) {
+  :root:not([data-theme="light"]) {
     --color-text: var(--system-color-lightGrayishBlue);
     --color-blank: var(--system-color-darkPurple);
     --color-labelText: var(--system-color-lightPurple);
@@ -930,7 +929,7 @@ dialog > .row {
 }
 
 @media(prefers-reduced-motion: no-preference) {
-	.box, .step-indicator li::before, .step-indicator li::after {
+	.blank-box, .step-indicator li::before, .step-indicator li::after {
 	    transition: color .35s ease-in, background-color, .35s ease-out;
 	}
 	:is(.drawer, input, select, [class*="btn"]), :is(.theme-switch, .icon-start)::before, .icon-end::after {
@@ -939,4 +938,7 @@ dialog > .row {
 	step-by-step > * {
       transition: transform .35s ease-out;
 	}
+  dialog.blank-box {
+      transition: transform .35s cubic-bezier(.25, .1, .3, 1.5);
+  }
 }

@@ -37,3 +37,6 @@ dialog {
 select {
     text-transform: inherit;
 }
+option[value=""] {
+    display: none;
+}

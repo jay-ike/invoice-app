@@ -65,7 +65,7 @@
 
                             </form>
                         </details>
-                        <button data-icon="add-circle" class="row icon-start btn-primary box">New <span class="sm-hide">Invoice</span></button>
+                        <button id="new_invoice" data-icon="add-circle" class="row icon-start btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
                     <div class="invoices stack grow-2">
                         <dl class="blank-box invoice-grid invoice__summary extend-click" data-status="pending">
@@ -181,7 +181,7 @@
 					<button class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true">previous step</button>
 					<button class="box row icon-end" id="next_step" type="button" data-icon="arrow_right">next step</button>
                </span>
-               <form action="" class="grow-2 y-scrollable">
+               <form id="invoice_form" action="" class="grow-2 y-scrollable">
                    <step-by-step out-indicator="step-out">
                     <fieldset class="input-step stack" name="senderInfos">
                         <legend>bill from</legend>
@@ -252,16 +252,18 @@
                </div>
             </section>
         </main>
-        <dialog class="blank-box column">
-            <h3 class="heading-m">confirm deletion</h3>
-            <p>
+        <dialog class="blank-box">
+            <form method="dialog" class="column">
+                <h3 class="heading-m">confirm deletion</h3>
+                <p>
                 <span data-suffix=" #XM0141">Are you sure you want to delete invoice</span>?
                 <strong>This action cannot be undone.</strong>
-            </p>
-            <div class="row">
-				<button class="box btn-edit cancel">cancel</button>
-				<button class="box btn-danger delete">delete</button>
-            </div>
+                </p>
+                <menu class="row">
+                    <button value="cancel" class="box btn-edit cancel">cancel</button>
+                    <button value="delete" class="box btn-danger delete">delete</button>
+                </menu>
+            </form>
         </dialog>
         <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" version="1.1" aria-hidden="true">
             <symbol viewBox="0 0 24 24" id="trash" fill="none">
