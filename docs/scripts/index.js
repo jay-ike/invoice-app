@@ -9,31 +9,30 @@ let currentTheme = (
     : "light"
 );
 
-function resetFields(fieldset, newName) {
-    fieldset.name = newName;
+function resetFields(fieldset, nameUpdater) {
+    fieldset.name = fieldset.name.replace(/\d+/, nameUpdater);
     Array.from(fieldset.elements).filter(
         (elt) => elt.tagName.toLowerCase() !== "button"
     ).forEach(function (elt) {
         let label = elt.nextElementSibling;
+        let newName = elt.name.replace(/\d+/, nameUpdater);
         label.htmlFor = newName;
         elt.dataset.new = "";
         elt.id = newName;
         elt.name = newName;
         elt.value = "";
+        if (elt.tagName.toLowerCase() === "output") {
+            elt.htmlFor = elt.htmlFor.value.replace(/\d+/g, nameUpdater)
+        }
     });
 
 }
 
 function cloneFields(fieldset) {
     let clone = null;
-    let newName;
     if (HTMLCollection.prototype.isPrototypeOf(fieldset?.elements)) {
         clone = fieldset.cloneNode(true);
-        newName = clone.name.replace(
-            /\d+/,
-            (val) => Number.parseInt(val, 10) + 1
-        );
-        resetFields(clone);
+        resetFields(clone, (val) => Number.parseInt(val, 10) + 1);
     }
     return clone;
 }
@@ -54,12 +53,10 @@ function requestNewItem(button, fieldset) {
     }
 }
 function requestItemDeletion(item) {
-    let newName;
     const selector = "." + Array.from(item.classList.values()).join(".");
     const items = config.drawer.querySelectorAll(selector);
     if (items.length === 1) {
-        newName = item.name.replace(/\d+/, () => 1);
-        resetFields(item, newName);
+        resetFields(item, () => 1);
     } else {
         item.remove();
     }
