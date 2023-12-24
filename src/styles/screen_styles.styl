@@ -556,9 +556,9 @@ step-by-step
 	border-radius: .25em
 :is(input, select):is(:hover, :focus)
     --input-bd-clr: var(--system-color-softBlue)
-:is(input, select):invalid
+:is(input, select):invalid:not([data-new])
     --input-bd-clr: var(--system-color-softRed)
-:is(input, select):invalid ~ label
+:is(input, select):invalid:not([data-new]) ~ label
     color: var(--system-color-softRed)
     display: flex
     justify-content: space-between

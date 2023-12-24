@@ -9,31 +9,39 @@ let currentTheme = (
     : "light"
 );
 
+function resetFields(fieldset, newName) {
+    fieldset.name = newName;
+    Array.from(fieldset.elements).filter(
+        (elt) => elt.tagName.toLowerCase() !== "button"
+    ).forEach(function (elt) {
+        let label = elt.nextElementSibling;
+        label.htmlFor = newName;
+        elt.dataset.new = "";
+        elt.id = newName;
+        elt.name = newName;
+        elt.value = "";
+    });
+
+}
+
 function cloneFields(fieldset) {
     let clone = null;
-    const nameUpdater = (val) => Number.parseInt(val, 10) + 1;
+    let newName;
     if (HTMLCollection.prototype.isPrototypeOf(fieldset?.elements)) {
         clone = fieldset.cloneNode(true);
-        clone.name = clone.name.replace(/\d+/, nameUpdater);
-        Array.from(clone.elements).forEach(function (elt) {
-            let label;
-            let newName = elt.id.replace(/\d+/, nameUpdater);
-            if (elt.tagName.toLowerCase() !== "button") {
-                label = elt.nextElementSibling;
-                label.htmlFor = newName;
-                elt.id = newName;
-                elt.name = newName;
-                elt.value = "";
-            }
-        });
+        newName = clone.name.replace(
+            /\d+/,
+            (val) => Number.parseInt(val, 10) + 1
+        );
+        resetFields(clone);
     }
     return clone;
 }
 function requestNewItem(button, fieldset) {
     let newItem;
     let isValid = Array.from(fieldset.elements).every(function (elt) {
+        delete elt.dataset.new;
         if (elt.tagName.toLowerCase() !== "button") {
-            elt.reportValidity();
             return elt.checkValidity();
         }
         return true;
@@ -43,6 +51,17 @@ function requestNewItem(button, fieldset) {
         if (newItem !== null) {
             button.insertAdjacentElement("beforebegin", newItem);
         }
+    }
+}
+function requestItemDeletion(item) {
+    let newName;
+    const selector = "." + Array.from(item.classList.values()).join(".");
+    const items = config.drawer.querySelectorAll(selector);
+    if (items.length === 1) {
+        newName = item.name.replace(/\d+/, () => 1);
+        resetFields(item, newName);
+    } else {
+        item.remove();
     }
 }
 
@@ -106,6 +125,9 @@ config.drawer.addEventListener("click", function ({target}) {
     }
     if (target.classList.contains("large-btn")) {
         requestNewItem(target, target.previousElementSibling);
+    }
+    if (target.dataset.icon === "delete") {
+        requestItemDeletion(target.parentElement);
     }
 }, false);
 config.invoiceDetails.addEventListener("click", function ({target}) {
