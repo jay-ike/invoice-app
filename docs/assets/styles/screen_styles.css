@@ -671,7 +671,7 @@ select):invalid:not([data-new]) ~ label {
   align-items: baseline;
 }
 :is(input,
-select):invalid ~ label::after {
+select):invalid:not([data-new]) ~ label::after {
   content: attr(data-error, "");
   font-size: 0.7em;
   text-transform: none;

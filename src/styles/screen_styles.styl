@@ -563,7 +563,7 @@ step-by-step
     display: flex
     justify-content: space-between
     align-items: baseline
-:is(input,select):invalid ~ label::after
+:is(input,select):invalid:not([data-new]) ~ label::after
     content: @css{attr(data-error, "")}
     font-size: .7em
     text-transform: none

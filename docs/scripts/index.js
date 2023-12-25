@@ -22,7 +22,7 @@ function resetFields(fieldset, nameUpdater) {
         elt.name = newName;
         elt.value = "";
         if (elt.tagName.toLowerCase() === "output") {
-            elt.htmlFor = elt.htmlFor.value.replace(/\d+/g, nameUpdater)
+            elt.htmlFor = elt.htmlFor.value.replace(/\d+/g, nameUpdater);
         }
     });
 
@@ -30,7 +30,7 @@ function resetFields(fieldset, nameUpdater) {
 
 function cloneFields(fieldset) {
     let clone = null;
-    if (HTMLCollection.prototype.isPrototypeOf(fieldset?.elements)) {
+    if (window.HTMLCollection.prototype.isPrototypeOf(fieldset?.elements)) {
         clone = fieldset.cloneNode(true);
         resetFields(clone, (val) => Number.parseInt(val, 10) + 1);
     }
@@ -107,6 +107,24 @@ document.body.addEventListener("click", function ({target}) {
     }
     if (target.id === "new_invoice") {
         document.body.dataset.drawer = "show";
+    }
+}, false);
+config.drawer.addEventListener("input", function ({target}) {
+    let fieldset;
+    let itemName;
+    let total;
+    if (target.pattern.trim().length <= 0 || !target.required) {
+        return;
+    }
+    fieldset = target.closest("fieldset.inv-item");
+    if (fieldset === null) {
+        return;
+    }
+    itemName = fieldset.name;
+    total = Number.parseInt(fieldset.elements[itemName + "-qty"].value, 10) *
+        Number.parseFloat(fieldset.elements[itemName + "-price"].value);
+    if (Number.isFinite(total)) {
+        fieldset.elements[itemName + "-total"].value = total;
     }
 }, false);
 config.drawer.addEventListener("click", function ({target}) {
