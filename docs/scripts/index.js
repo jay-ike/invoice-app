@@ -4,6 +4,7 @@ import Datepicker from "./datepicker.js";
 
 const config = {};
 const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+const researchedTags = ["input", "select", "output"];
 let currentTheme = (
     window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
@@ -73,6 +74,37 @@ function requestItemDeletion(item) {
     } else {
         item.remove();
     }
+}
+function closeDrawer() {
+    delete document.body.dataset.drawer;
+    delete config.drawer.dataset.edit;
+    config.invoiceForm.reset();
+}
+function getFormDatas(ref, status) {
+    let result = Object.create(null);
+    result.items = [];
+    const fieldsets = config.invoiceForm.querySelectorAll("fieldset");
+    fieldsets.forEach(function (fieldset) {
+        let item;
+        let elements = Array.from(fieldset.elements).filter(
+            (elt) => researchedTags.includes(elt.tagName.toLowerCase())
+        );
+        if (fieldset.name.match(/item-\d+/)) {
+            item = Object.create(null);
+            elements.forEach(function (elt) {
+                let [,key] = elt.name.split(/item-\d+-/);
+                item[key] = elt.value;
+            });
+            result.items[result.items.length] = item;
+        } else {
+            elements.forEach(function (elt) {
+                result[elt.name] = elt.value;
+            });
+        }
+    });
+    result.reference = ref ?? getInvoiceRef();
+    result.status = status ?? "pending";
+    return result;
 }
 
 config.themeSwitches = {dark: "light", light: "dark"};
@@ -145,10 +177,9 @@ config.drawer.addEventListener("input", function ({target}) {
     }
 }, false);
 config.drawer.addEventListener("click", function ({target}) {
+    let formDatas;
     if (target.classList.contains("cancel")) {
-        delete document.body.dataset.drawer;
-        delete config.drawer.dataset.edit;
-        config.invoiceForm.reset();
+        closeDrawer();
     }
     if (target.id === "next_step") {
         requestNextFormStep();
@@ -161,6 +192,10 @@ config.drawer.addEventListener("click", function ({target}) {
     }
     if (target.dataset.icon === "delete") {
         requestItemDeletion(target.parentElement);
+    }
+    if (target.classList.contains("proceed")) {
+        formDatas = getFormDatas();
+        console.log(formDatas);
     }
 }, false);
 config.invoiceDetails.addEventListener("click", function ({target}) {
