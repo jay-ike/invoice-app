@@ -178,38 +178,38 @@
                 </li>
                </ul>
                <span class="segragator no-gap no-padding">
-					<button class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true">previous step</button>
+					<button class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true" autocomplete="off">previous step</button>
 					<button class="box row icon-end" id="next_step" type="button" data-icon="arrow_right">next step</button>
                </span>
                <form id="invoice_form" action="" class="grow-2 y-scrollable">
                    <step-by-step out-indicator="step-out">
                     <fieldset class="input-step stack" name="senderInfos">
                         <legend>bill from</legend>
-                        <div><input type="text" id="bf-street" name="senderAddress"><label for="bf-street">street address</label></div>
-                        <div><input type="text" id="bf-city" name="senderCity"><label for="bf-city">city</label></div>
-                        <div><input type="text" id="bf-post-code" name="senderPostCode"><label for="bf-post-code">post code</label></div>
-                        <div><input type="text" id="bf-country" name="senderCountry"><label for="bf-country">country</label></div>
+                        <div><input type="text" id="bf-street" name="senderAddress" autocomplete="address-line1"><label for="bf-street">street address</label></div>
+                        <div><input type="text" id="bf-city" name="senderCity" autocomplete="address-level2"><label for="bf-city">city</label></div>
+                        <div><input type="text" id="bf-post-code" name="senderPostCode" autocomplete="postal-code"><label for="bf-post-code">post code</label></div>
+                        <div><input type="text" id="bf-country" name="senderCountry" autocomplete="country-name"><label for="bf-country">country</label></div>
                     </fieldset>
                     <fieldset class="input-step stack" name="clientInfos">
                         <legend>bill to</legend>
-                        <div><input type="text" id="bt-name" name="clientName" data-new required><label for="bt-name" data-error="can't be empty">client's name</label></div>
+                        <div><input type="text" id="bt-name" name="clientName" autocomplete="name" data-new required><label for="bt-name" data-error="can't be empty">client's name</label></div>
                         <div>
-							<input type="email" id="bt-email" name="clientMail" data-new required pattern="^[a-zA-Z0-9\._%\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$">
+							<input type="email" id="bt-email" name="clientMail" autocomplete="email" data-new required pattern="^[a-zA-Z0-9\._%\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$">
 							<label for="bt-email" data-error="invalid email address">client's email</label>
 						</div>
-                        <div><input type="text" id="bt-street" name="clientAddress"><label for="bt-street">street address</label></div>
-                        <div><input type="text" id="bt-city" name="clientCity"><label for="bt-city">city</label></div>
-                        <div><input type="text" id="bt-post-code" name="clientPostCode"><label for="bt-post-code">post code</label></div>
-                        <div><input type="text" id="bt-country" name="clientCountry"><label for="bt-country">country</label></div>
+                        <div><input type="text" id="bt-street" name="clientAddress" autocomplete="address-line1"><label for="bt-street">street address</label></div>
+                        <div><input type="text" id="bt-city" name="clientCity" autocomplete="address-level2"><label for="bt-city">city</label></div>
+                        <div><input type="text" id="bt-post-code" name="clientPostCode" autocomplete="postal-code"><label for="bt-post-code">post code</label></div>
+                        <div><input type="text" id="bt-country" name="clientCountry" autocomplete="country-name"><label for="bt-country">country</label></div>
                     </fieldset>
                     <fieldset class="input-step stack" name="terms">
                         <legend>payment terms</legend>
                         <date-picker month-format="short">
-                            <input type="text" id="inv-date" name="invoiceDate" data-new required>
+                            <input type="text" id="inv-date" name="invoiceDate" autocomplete="off" data-new required>
                             <label for="inv-date" data-error="no date selected">invoice date</label>
                         </date-picker>
                         <div>
-                            <select name="paymentTerms" id="inv-terms" required>
+                            <select name="paymentTerms" id="inv-terms" autocomplete="off" data-new required>
                                 <option value="" class="blank-box" label="select your term" selected>
                                 <option class="blank-box" value="1" label="net 1 day">
                                 <option class="blank-box" value="7" label="net 7 days">
@@ -224,15 +224,15 @@
                         <h3 class="heading-m primary-text">item list</h3>
                         <fieldset class="invoice-grid input-step inv-item" name="item-1">
                             <div>
-                                <input type="text" id="item-1-name" name="item-1-name" required>
+                                <input type="text" id="item-1-name" name="item-1-name" required data-new>
 								<label for="item-1-name">item name</label>
 							</div>
                             <div>
-                                <input type="text" id="item-1-qty" name="item-1-qty" pattern="^\d+$" required>
+                                <input type="text" id="item-1-qty" name="item-1-qty" pattern="^\d+$" inputmode="numeric" required data-new>
 								<label for="item-1-qty"><abbr title="quantity">qty.</abbr></label>
 							</div>
                             <div>
-                                <input type="text" id="item-1-price" name="item-1-price" pattern="^\d+(\.\d+)?$" required>
+                                <input type="text" id="item-1-price" name="item-1-price" pattern="^\d+(\.\d+)?$" inputmode="decimal" required data-new>
 								<label for="">price</label>
 							</div>
                             <div>

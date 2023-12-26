@@ -3,12 +3,18 @@ import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
 
 const config = {};
+const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 let currentTheme = (
     window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light"
 );
 
+function getInvoiceRef() {
+    let numbers = new Uint8Array(6);
+    window.crypto.getRandomValues(numbers);
+    return numbers.reduce((acc, val) => acc + alphabet[val % 32], "");
+}
 function resetFields(fieldset, nameUpdater) {
     fieldset.name = fieldset.name.replace(/\d+/, nameUpdater);
     Array.from(fieldset.elements).filter(
@@ -25,9 +31,20 @@ function resetFields(fieldset, nameUpdater) {
             elt.htmlFor = elt.htmlFor.value.replace(/\d+/g, nameUpdater);
         }
     });
-
 }
-
+function requestNextFormStep() {
+    const selector = "step-by-step > :not(.step-out) :is(input,select)";
+    let inputFields = Array.from(config.invoiceForm.querySelectorAll(selector));
+    if (allFieldsValid(inputFields)) {
+        config.invoiceForm.firstElementChild.nextStep();
+    }
+}
+function allFieldsValid(fields) {
+    return fields.every(function (field) {
+        delete field.dataset.new;
+        return field.checkValidity();
+    });
+}
 function cloneFields(fieldset) {
     let clone = null;
     if (window.HTMLCollection.prototype.isPrototypeOf(fieldset?.elements)) {
@@ -38,14 +55,10 @@ function cloneFields(fieldset) {
 }
 function requestNewItem(button, fieldset) {
     let newItem;
-    let isValid = Array.from(fieldset.elements).every(function (elt) {
-        delete elt.dataset.new;
-        if (elt.tagName.toLowerCase() !== "button") {
-            return elt.checkValidity();
-        }
-        return true;
-    });
-    if (isValid) {
+    let fields = Array.from(fieldset.elements).filter(
+        (elt) => elt.tagName.toLowerCase() !== "button"
+    );
+    if (allFieldsValid(fields)) {
         newItem = cloneFields(fieldset);
         if (newItem !== null) {
             button.insertAdjacentElement("beforebegin", newItem);
@@ -113,7 +126,8 @@ config.drawer.addEventListener("input", function ({target}) {
     let fieldset;
     let itemName;
     let total;
-    if (target.pattern.trim().length <= 0 || !target.required) {
+    itemName = target.pattern ?? "";
+    if (itemName.trim().length <= 0 || !target.required) {
         return;
     }
     fieldset = target.closest("fieldset.inv-item");
@@ -121,8 +135,11 @@ config.drawer.addEventListener("input", function ({target}) {
         return;
     }
     itemName = fieldset.name;
-    total = Number.parseInt(fieldset.elements[itemName + "-qty"].value, 10) *
-        Number.parseFloat(fieldset.elements[itemName + "-price"].value);
+    fieldset = fieldset.elements;
+    total = (
+        Number.parseInt(fieldset[itemName + "-qty"].value, 10) *
+        Number.parseFloat(fieldset[itemName + "-price"].value)
+    );
     if (Number.isFinite(total)) {
         fieldset.elements[itemName + "-total"].value = total;
     }
@@ -131,9 +148,10 @@ config.drawer.addEventListener("click", function ({target}) {
     if (target.classList.contains("cancel")) {
         delete document.body.dataset.drawer;
         delete config.drawer.dataset.edit;
+        config.invoiceForm.reset();
     }
     if (target.id === "next_step") {
-        config.invoiceForm.firstElementChild.nextStep();
+        requestNextFormStep();
     }
     if (target.id === "prev_step") {
         config.invoiceForm.firstElementChild.previousStep();
