@@ -1,8 +1,8 @@
 
 :root {
-	--system-color-softBlue: hsl(252, 94%, 67%);
-	--system-color-lightBlue: hsl(252, 100%, 73%);
-	--system-color-softRed: hsl(0, 80%, 63%);
+	--system-color-softBlue: hsl(252, 85%, 62%);
+	--system-color-lightBlue: hsl(252, 80%, 70%);
+	--system-color-softRed: hsl(0, 71%, 47%);
 	--system-color-lightRed: hsl(0, 100%, 80%);
 	--system-color-limeGreen: hsl(160, 67%, 52%);
 	--system-color-pureOrange: hsl(34, 90%, 69%);
@@ -10,12 +10,12 @@
 	--system-color-lightGrayishBlue: hsl(231, 67%, 99%);
 	--system-color-darkBlue: hsl(231, 28%, 7%);
 	--system-color-lightPurple: hsl(231, 73%, 93%);
-	--system-color-softPurple: hsl(231, 37%, 63%);
+	--system-color-softPurple: hsl(231, 37%, 44%);
 	--system-color-darkPurple: hsl(233, 31%, 17%);
 	--system-color-fillPrimary: var(--page-bg, hsl(240, 27%, 98%));
 	--system-color-blank: var(--color-blank, #fff);
 	--system-color-labelText: var(--color-labelText, var(--system-color-softPurple));
-	--system-color-captionText: var(--color-captionText, hsl(231, 20%, 61%));
+	--system-color-captionText: var(--color-captionText, hsl(230, 75%, 59%));
 	--system-color-labelFill: var(--color-labelFill, var(--system-color-lightGrayishBlue));
 	--system-color-labelHover: var(--color-labelHover, var(--system-color-lightPurple));
 	--system-color-text: var(--color-text, var(--system-color-darkBlue));
@@ -117,7 +117,8 @@
   --color-shadow: rgba(224,228,250,0.1);
   --page-bg: #141624;
   --color-checkboxFill: var(--page-bg);
-  --color-editText: var(--system-color-softPurple);
+  --color-editText: hsl(231, 38%, 80%);
+  --color-captionText: var(--color-editText);
   --input-bd-clr: #252946;
   --color-info: var(--system-color-grayishBlue);
   --color-infoFill: var(--system-color-lightPurple);
@@ -205,7 +206,8 @@ button {
   font-weight: var(--weight, inherit);
 }
 .subtitle-text {
-  color: var(--color-labelText, hsl(231, 20%, 61%));
+  color: var(--color-labelText, hsl(230, 75%, 59%));
+  font-weight: 500;
 }
 [class*="btn"] {
   --radius: 1.5rem;
@@ -213,8 +215,9 @@ button {
   min-inline-size: 4.5rem;
   min-block-size: 3rem;
 }
-[class*="btn"]:is(:focus,
+[class*="btn"]:enabled:is(:focus,
 :hover) {
+  color: var(--color-text-hover, var(--color-text));
   background-color: var(--color-fill-hover, transparent);
 }
 .btn.back {
@@ -241,9 +244,9 @@ button {
   --color-fill-hover: var(--system-color-labelHover);
 }
 .btn-draft {
-  --color-text: var(--color-labelText, var(--system-color-captionText));
-  --color-fill: #373b53;
-  --color-fill-hover: var(--fill-items-box, #0d0f17);
+  --color-text: var(--color-labelText, hsl(231, 38%, 80%));
+  --color-fill: hsl(231, 20%, 27%);
+  --color-fill-hover: var(--fill-items-box, hsl(228, 29%, 7%));
 }
 .large-btn {
   --min-padding: var(--btn-padding, initial);
@@ -284,7 +287,7 @@ label {
   clip-path: var(--icon-clip, none);
   border-radius: var(--icon-radius, 0px);
 }
-.icon-start:is(:hover,:focus)::before,.icon-end:is(:hover,:focus)::after {
+.icon-start:enabled:is(:hover,:focus)::before,.icon-end:enabled:is(:hover,:focus)::after {
   --icon-fill: var(--icon-fill-hover, currentColor);
   --icon-transform: var(--icon-hoverTransform, inherit);
 }
@@ -439,7 +442,7 @@ label {
 }
 .banner {
   --alignment: stretch;
-  --icon-fill: var(--system-color-softPurple);
+  --icon-fill: hsl(231, 38%, 80%);
   --min-padding: 0 1.5em;
   --row-align: stretch;
   background-color: var(--system-color-darkPurple);
@@ -522,6 +525,10 @@ label {
   --radius: 0.5rem;
   --color-fill: var(--system-color-blank);
 }
+
+  .blank-box:is(:focus, :hover) {
+      border: 1px solid var(--system-color-softBlue);
+  }
 .items-box {
   --radius: 0.5rem 0.5rem 0 0;
   --color-fill: var(--fill-items-box, hsl(231, 67%, 99%));
@@ -648,6 +655,7 @@ date-picker) {
 :is(input,
 select) {
   font-weight: bold;
+  font-size: inherit;
   color: var(--system-color-text);
   padding: var(--input-padding, 0.75em 1.25em);
   background-color: var(--system-color-blank);
@@ -918,7 +926,8 @@ dialog .row {
     --color-shadow: rgba(224,228,250,0.1);
     --page-bg: #141624;
     --color-checkboxFill: var(--page-bg);
-    --color-editText: var(--system-color-softPurple);
+    --color-editText: hsl(231, 38%, 80%);
+    --color-captionText: var(--color-editText);
     --input-bd-clr: #252946;
     --color-info: var(--system-color-grayishBlue);
     --color-infoFill: var(--system-color-lightPurple);

@@ -193,7 +193,7 @@ config.drawer.addEventListener("click", function ({target}) {
     if (target.dataset.icon === "delete") {
         requestItemDeletion(target.parentElement);
     }
-    if (target.classList.contains("proceed")) {
+    if (target.classList.contains("proceed") && config.invoiceForm.checkValidity()) {
         formDatas = getFormDatas();
         console.log(formDatas);
     }
