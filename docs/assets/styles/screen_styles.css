@@ -234,6 +234,10 @@ button {
   --color-fill: var(--system-color-softBlue);
   --color-fill-hover: var(--system-color-lightBlue);
 }
+.btn-primary:disabled {
+  --color-fill: hsl(251, 8%, 76%);
+  --color-text: hsl(45, 54%, 22%);
+}
 .btn-danger {
   --color-fill: var(--system-color-softRed);
   --color-fill-hover: var(--system-color-lightRed);

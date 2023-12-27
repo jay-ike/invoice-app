@@ -1,6 +1,7 @@
 /*jslint browser*/
 import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
+import store from "./storage.js";
 
 const config = {};
 const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
@@ -15,6 +16,11 @@ function getInvoiceRef() {
     let numbers = new Uint8Array(6);
     window.crypto.getRandomValues(numbers);
     return numbers.reduce((acc, val) => acc + alphabet[val % 32], "");
+}
+function notifyFormChange(formElement, detail) {
+    const options = {bubbles: true};
+    options.detail = detail ?? {isValid: formElement.form.checkValidity()};
+    formElement.dispatchEvent(new CustomEvent("formstatechanged", options));
 }
 function resetFields(fieldset, nameUpdater) {
     fieldset.name = fieldset.name.replace(/\d+/, nameUpdater);
@@ -63,6 +69,7 @@ function requestNewItem(button, fieldset) {
         newItem = cloneFields(fieldset);
         if (newItem !== null) {
             button.insertAdjacentElement("beforebegin", newItem);
+            button.scrollIntoView();
         }
     }
 }
@@ -76,9 +83,32 @@ function requestItemDeletion(item) {
     }
 }
 function closeDrawer() {
+    const form = config.invoiceForm;
+    let selector = ".inv-item:first-of-type [data-icon='delete']";
+    let deletionButton;
     delete document.body.dataset.drawer;
     delete config.drawer.dataset.edit;
+    deletionButton = form.querySelector(selector);
+    selector = ".inv-item + .inv-item";
+    form.querySelectorAll(selector).forEach((elt) => elt.remove());
+    deletionButton.click();
     config.invoiceForm.reset();
+}
+function updateFieldsDatas(fieldset, data) {
+    let name = fieldset.name;
+    Object.entries(data).forEach(function ([key, value]) {
+        fieldset.elements[name + "-" + key].value = value;
+    });
+}
+function initializeItems(values) {
+    let previous = config.invoiceForm.querySelector(".inv-item:first-of-type");
+    updateFieldsDatas(previous, values.shift());
+    values.reduce(function (acc, itemData) {
+        let clone = cloneFields(acc);
+        updateFieldsDatas(clone, itemData);
+        acc.insertAdjacentElement("afterend", clone);
+        return clone;
+    }, previous);
 }
 function getFormDatas(ref, status) {
     let result = Object.create(null);
@@ -92,8 +122,8 @@ function getFormDatas(ref, status) {
         if (fieldset.name.match(/item-\d+/)) {
             item = Object.create(null);
             elements.forEach(function (elt) {
-                let [,key] = elt.name.split(/item-\d+-/);
-                item[key] = elt.value;
+                let parts = elt.name.split(/item-\d+-/);
+                item[parts[1]] = elt.value;
             });
             result.items[result.items.length] = item;
         } else {
@@ -115,6 +145,7 @@ config.stepIndicators = document.querySelectorAll(".step-indicator > li");
 config.nextFormStep = document.querySelector("#next_step");
 config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
+config.storage = store();
 
 config.invoiceForm.firstElementChild.addEventListener(
     "indexupdated",
@@ -173,11 +204,17 @@ config.drawer.addEventListener("input", function ({target}) {
         Number.parseFloat(fieldset[itemName + "-price"].value)
     );
     if (Number.isFinite(total)) {
-        fieldset.elements[itemName + "-total"].value = total;
+        fieldset[itemName + "-total"].value = total;
     }
+    notifyFormChange(target);
+}, false);
+config.drawer.addEventListener("formstatechanged", function ({detail}) {
+    const {isValid} = detail;
+    config.drawer.querySelector(".proceed").disabled = !isValid;
 }, false);
 config.drawer.addEventListener("click", function ({target}) {
     let formDatas;
+    let storedDatas;
     if (target.classList.contains("cancel")) {
         closeDrawer();
     }
@@ -189,20 +226,38 @@ config.drawer.addEventListener("click", function ({target}) {
     }
     if (target.classList.contains("large-btn")) {
         requestNewItem(target, target.previousElementSibling);
+        notifyFormChange(target);
     }
     if (target.dataset.icon === "delete") {
+        formDatas = target.parentElement.form;
         requestItemDeletion(target.parentElement);
+        notifyFormChange(target, {isValid: formDatas.checkValidity()})
     }
     if (target.classList.contains("proceed") && config.invoiceForm.checkValidity()) {
         formDatas = getFormDatas();
-        console.log(formDatas);
+        storedDatas = config.storage.get(formDatas.status) ?? [];
+        storedDatas[storedDatas.length] = formDatas;
+        config.storage.set(formDatas.status, storedDatas);
+        closeDrawer();
     }
 }, false);
 config.invoiceDetails.addEventListener("click", function ({target}) {
+    let form;
+    let data = config.storage.get("pending")[0];
     if (target.classList.contains("back")) {
         config.invoiceDetails.closest("step-by-step").previousStep();
     }
     if (target.classList.contains("btn-edit")) {
+        form = config.invoiceForm;
+        Object.entries(data).forEach(function ([key, value]) {
+            if (form[key] !== undefined) {
+                form[key].value = value;
+            }
+            if (key === "items") {
+                initializeItems(value);
+            }
+        });
+        notifyFormChange(form, {isValid: form.checkValidity()});
         config.drawer.dataset.edit = "";
         document.body.dataset.drawer = "show";
     }

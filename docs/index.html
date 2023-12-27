@@ -239,7 +239,7 @@
                                 <output name="item-1-total" id="item-1-total" for="item-1-qty item-1-price"></output>
 								<label for="item-1-total">total</label>
 							</div>
-                            <button class="box no-padding icon-start" data-icon="delete" aria-label="delete the invoice item" type="button"></button>
+                            <button class="box no-padding icon-start" form="invoice_form" data-icon="delete" aria-label="delete the invoice item" type="button"></button>
                         </fieldset>
                         <button type="button" class="large-btn box" data-prefix="+ ">add new item</button>
                     </div>
@@ -248,7 +248,7 @@
                <div>
 					<button class="box btn-edit cancel" lang="en" data-prefix="discard" aria-label="cancel the ongoing operation"></button>
 					<button class="box btn-draft">save as draft</button>
-					<button class="box btn-primary proceed" lang="en" data-prefix="save & send" aria-label="proceed the ongoing operation"></button>
+					<button class="box btn-primary proceed" lang="en" data-prefix="save & send" aria-label="proceed the ongoing operation" disabled="true" autocomplete="off"></button>
                </div>
             </section>
         </main>

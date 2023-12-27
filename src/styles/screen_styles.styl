@@ -187,6 +187,9 @@ button
 .btn-primary
     --color-fill: var(--system-color-softBlue)
     --color-fill-hover: var(--system-color-lightBlue)
+    &:disabled
+        --color-fill: @css{hsl(251, 8%, 76%)}
+        --color-text: @css{hsl(45, 54%, 22%)}
 .btn-danger
     --color-fill: var(--system-color-softRed)
     --color-fill-hover: var(--system-color-lightRed)
