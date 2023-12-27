@@ -93,6 +93,7 @@ function closeDrawer() {
     form.querySelectorAll(selector).forEach((elt) => elt.remove());
     deletionButton.click();
     config.invoiceForm.reset();
+    form.firstElementChild.gotoStep(0);
 }
 function updateFieldsDatas(fieldset, data) {
     let name = fieldset.name;
@@ -150,21 +151,24 @@ config.storage = store();
 config.invoiceForm.firstElementChild.addEventListener(
     "indexupdated",
     function ({detail}) {
-        const {current, previous} = detail;
-        if (current > 0) {
-            config.prevFormStep.disabled = false;
-        } else {
-            config.prevFormStep.disabled = true;
-        }
-        if (current >= config.stepIndicators.length - 1) {
-            config.nextFormStep.disabled = true;
-        } else {
-            config.nextFormStep.disabled = false;
-        }
+        const indicators = config.stepIndicators;
+        let {current, previous} = detail;
+        let step = 1;
+
         if (previous > current) {
-            config.stepIndicators[previous].classList.remove("step-active");
+            step = -1;
         }
-        config.stepIndicators[current].classList.add("step-active");
+        config.prevFormStep.disabled = current <= 0;
+        config.nextFormStep.disabled = current >= indicators.length - 1;
+        while (previous !== current) {
+            if (step > 0) {
+                indicators[previous].classList.add("step-active");
+            } else {
+                indicators[previous].classList.remove("step-active");
+            }
+            previous += step;
+        }
+        indicators[current].classList.add("step-active");
     },
     false
 );
