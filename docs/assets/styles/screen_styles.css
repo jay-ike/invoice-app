@@ -530,7 +530,7 @@ label {
   --color-fill: var(--system-color-blank);
 }
 
-  .blank-box:is(:focus, :hover) {
+  .invoice__summary:is(:focus, :hover) {
       border: 1px solid var(--system-color-softBlue);
   }
 .items-box {

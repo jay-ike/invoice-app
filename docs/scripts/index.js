@@ -2,19 +2,21 @@
 import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
 import store from "./storage.js";
+import {contentDispatcher} from "./event-dispatcher.js";
 
 const config = {};
 const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 const researchedTags = ["input", "select", "output"];
+const {CustomEvent, HTMLCollection, crypto, matchMedia} = window;
 let currentTheme = (
-    window.matchMedia("(prefers-color-scheme: dark)").matches
+    matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light"
 );
 
 function getInvoiceRef() {
     let numbers = new Uint8Array(6);
-    window.crypto.getRandomValues(numbers);
+    crypto.getRandomValues(numbers);
     return numbers.reduce((acc, val) => acc + alphabet[val % 32], "");
 }
 function notifyFormChange(formElement, detail) {
@@ -54,7 +56,7 @@ function allFieldsValid(fields) {
 }
 function cloneFields(fieldset) {
     let clone = null;
-    if (window.HTMLCollection.prototype.isPrototypeOf(fieldset?.elements)) {
+    if (HTMLCollection.prototype.isPrototypeOf(fieldset?.elements)) {
         clone = fieldset.cloneNode(true);
         resetFields(clone, (val) => Number.parseInt(val, 10) + 1);
     }
@@ -147,6 +149,8 @@ config.nextFormStep = document.querySelector("#next_step");
 config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
 config.storage = store();
+config.drawerDispatcher = contentDispatcher(config.drawer);
+config.dispatchPreview = contentDispatcher(config.invoiceDetails).dispatch;
 
 config.invoiceForm.firstElementChild.addEventListener(
     "indexupdated",
@@ -175,17 +179,22 @@ config.invoiceForm.firstElementChild.addEventListener(
 
 document.body.addEventListener("click", function ({target}) {
     const root = document.documentElement;
+    let data;
     if (target.classList.contains("theme-switch")) {
         root.dataset.theme = config.themeSwitches[currentTheme];
         currentTheme = config.themeSwitches[currentTheme];
     }
     if (target.classList.contains("invoice__summary")) {
+        data = config.storage.get("pending")[0];
+        config.dispatchPreview("previewrequested", data);
         target.closest("step-by-step").nextStep();
     }
     if (target.classList.contains("back")) {
         target.closest("step-by-step").previousStep();
     }
     if (target.id === "new_invoice") {
+        data = {action: "new invoice", reference: ""};
+        config.drawerDispatcher.dispatch("draweropened", data);
         document.body.dataset.drawer = "show";
     }
 }, false);
@@ -219,6 +228,7 @@ config.drawer.addEventListener("formstatechanged", function ({detail}) {
 config.drawer.addEventListener("click", function ({target}) {
     let formDatas;
     let storedDatas;
+    const form = config.invoiceForm;
     if (target.classList.contains("cancel")) {
         closeDrawer();
     }
@@ -226,7 +236,7 @@ config.drawer.addEventListener("click", function ({target}) {
         requestNextFormStep();
     }
     if (target.id === "prev_step") {
-        config.invoiceForm.firstElementChild.previousStep();
+        form.firstElementChild.previousStep();
     }
     if (target.classList.contains("large-btn")) {
         requestNewItem(target, target.previousElementSibling);
@@ -235,9 +245,9 @@ config.drawer.addEventListener("click", function ({target}) {
     if (target.dataset.icon === "delete") {
         formDatas = target.parentElement.form;
         requestItemDeletion(target.parentElement);
-        notifyFormChange(target, {isValid: formDatas.checkValidity()})
+        notifyFormChange(target, {isValid: formDatas.checkValidity()});
     }
-    if (target.classList.contains("proceed") && config.invoiceForm.checkValidity()) {
+    if (target.classList.contains("proceed") && form.checkValidity()) {
         formDatas = getFormDatas();
         storedDatas = config.storage.get(formDatas.status) ?? [];
         storedDatas[storedDatas.length] = formDatas;
@@ -262,6 +272,8 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
             }
         });
         notifyFormChange(form, {isValid: form.checkValidity()});
+        data.action = "edit ";
+        config.drawerDispatcher.dispatch("draweropened", data);
         config.drawer.dataset.edit = "";
         document.body.dataset.drawer = "show";
     }

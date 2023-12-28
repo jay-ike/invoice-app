@@ -83,11 +83,11 @@
                     </div>
                 </section>
                 <section class="box invoice__details column">
-                    <button class="row btn back icon-start"[data-icon] data-icon="arrow_left">Go back</button>
-                    <div class="invoice__status blank-box">
+                    <button class="row btn back icon-start" data-icon="arrow_left">Go back</button>
+                    <div class="invoice__status blank-box" data-event="previewrequested" data-attributes="data-status:status">
                         <dl class="row">
                             <dt>status</dt>
-                            <dd class="box status-box icon-start" data-status="pending">pending</dd>
+                            <dd class="box status-box icon-start" data-property="status" data-event="previewrequested">pending</dd>
                         </dl>
                         <div class="box invoice__actions">
                             <button class="box btn-edit">edit</button>
@@ -100,19 +100,19 @@
                         <dl class="invoice-grid invoice__desc label-text">
                             <div class="row">
                                 <div>
-                                    <dt class="content-bold" data-prefix="#">XM9141</dt>
-                                    <dd>Graphic design</dd>
+                                    <dt class="content-bold" data-prefix="#" data-event="previewrequested" data-property="reference">XM9141</dt>
+                                    <dd data-event="previewrequested" data-property="description" >Graphic design</dd>
                                 </div>
                                 <div>
-                                    <dt>19 Union Terrace</dt>
-                                    <dd>London</dd>
-                                    <dd>31 EZ</dd>
-                                    <dd>United Kingdom</dd>
+                                    <dt data-event="previewrequested" data-property="senderAddress">19 Union Terrace</dt>
+                                    <dd data-event="previewrequested" data-property="senderCity">London</dd>
+                                    <dd data-event="previewrequested" data-property="senderPostCode">31 EZ</dd>
+                                    <dd data-event="previewrequested" data-property="senderCountry">United Kingdom</dd>
                                 </div>
                             </div>
                             <div>
                                 <dt>Invoice Date</dt>
-                                <dd class="content-bold">21 Aug 2023</dd>
+                                <dd data-event="previewrequested" data-property="invoiceDate" class="content-bold">21 Aug 2023</dd>
                             </div>
                             <div>
                                 <dt>Payment Due</dt>
@@ -120,15 +120,15 @@
                             </div>
                             <div>
                                 <dt>Bill To</dt>
-                                <dd class="content-bold">Alex Grim</dd>
-                                <dd>84 Church Way</dd>
-                                <dd>Bradford</dd>
-                                <dd>BD1 9PB</dd>
-                                <dd>United Kingdom</dd>
+                                <dd data-event="previewrequested" data-property="clientName" class="content-bold">Alex Grim</dd>
+                                <dd data-event="previewrequested" data-property="clientAddress">84 Church Way</dd>
+                                <dd data-event="previewrequested" data-property="clientCity">Bradford</dd>
+                                <dd data-event="previewrequested" data-property="clientPostCode">BD1 9PB</dd>
+                                <dd data-event="previewrequested" data-property="clientCountry">United Kingdom</dd>
                             </div>
                             <div>
                                 <dt>Sent To</dt>
-                                <dd class="content-bold">alexgrim@gmail.com</dd>
+                                <dd data-event="previewrequested" data-property="clientMail" class="content-bold">alexgrim@gmail.com</dd>
                             </div>
                         </dl>
                         <div class="invoice__table">
@@ -139,18 +139,14 @@
                                     <dd role="columnheader">price</dd>
                                     <dd role="columnheader">total</dd>
                                 </dl>
-                                <dl  role="row" class="invoice-grid invoice__item content-bold">
-                                    <dt role="gridcell">Banner Design</dt>
-                                    <dd role="gridcell" data-suffix=" x " class="label-text">1</dd>
-                                    <dd role="gridcell" data-prefix="$ " class="label-text">156.0</dd>
-                                    <dd role="gridcell" data-prefix="$ ">156.0</dd>
-                                </dl>
-                                <dl  role="row" class="invoice-grid invoice__item content-bold">
-                                    <dt role="gridcell">Email Design</dt>
-                                    <dd role="gridcell" data-suffix=" x " class="label-text">2</dd>
-                                    <dd role="gridcell" data-prefix="$ " class="label-text">400.0</dd>
-                                    <dd role="gridcell" data-prefix="$ ">800.0</dd>
-                                </dl>
+                                <div data-for="items" data-event="previewrequested">
+                                    <dl  role="row" class="invoice-grid invoice__item content-bold">
+                                        <dt role="gridcell" data-property="name">Banner Design</dt>
+                                        <dd role="gridcell" data-suffix=" x " data-property="qty" class="label-text">1</dd>
+                                        <dd role="gridcell" class="label-text" data-property="price">156.0</dd>
+                                        <dd role="gridcell" data-property="total">156.0</dd>
+                                    </dl>
+                                </div>
                             </div>
                             <dl class="box amount-box segragator">
                                 <dt>grand total</dt>
@@ -162,7 +158,7 @@
             </step-by-step>
 
             <section class="drawer box column">
-                <h2 class="heading-l"><span>new invoice</span><span data-prefix="#" data-suffix="" class="invoice__ref"></span></h2>
+                <h2 class="heading-l"><span data-event="draweropened" data-property="action">new invoice</span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="reference"></span></h2>
                <ul class="step-indicator">
                 <li class="step-active">
                     <p>your informations</p>
