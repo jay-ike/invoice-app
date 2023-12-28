@@ -449,6 +449,9 @@ button
     .invoice__summary:is(:focus, :hover) {
         border: 1px solid var(--system-color-softBlue);
     }
+    :is([data-status="paid"], [data-status="draft"]) .paid {
+        display: none;
+    }
 }
 .items-box
     --radius: .5rem .5rem 0 0

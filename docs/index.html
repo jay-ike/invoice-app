@@ -92,7 +92,7 @@
                         <div class="box invoice__actions">
                             <button class="box btn-edit">edit</button>
                             <button class="box btn-danger">delete</button>
-                            <button class="box btn-primary">mark as paid</button>
+                            <button class="box btn-primary paid">mark as paid</button>
 
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                             </div>
                             <div>
                                 <dt>Payment Due</dt>
-                                <dd class="content-bold">20 Sept 2023</dd>
+                                <dd class="content-bold" data-event="previewrequested" data-property="dueDate">20 Sept 2023</dd>
                             </div>
                             <div>
                                 <dt>Bill To</dt>
@@ -143,14 +143,14 @@
                                     <dl  role="row" class="invoice-grid invoice__item content-bold">
                                         <dt role="gridcell" data-property="name">Banner Design</dt>
                                         <dd role="gridcell" data-suffix=" x " data-property="qty" class="label-text">1</dd>
-                                        <dd role="gridcell" class="label-text" data-property="price">156.0</dd>
-                                        <dd role="gridcell" data-property="total">156.0</dd>
+                                        <dd role="gridcell" class="label-text" data-property="priceAmount">156.0</dd>
+                                        <dd role="gridcell" data-property="totalAmount">156.0</dd>
                                     </dl>
                                 </div>
                             </div>
                             <dl class="box amount-box segragator">
                                 <dt>grand total</dt>
-                                <dd class="content-bold" data-prefix="$ ">956.0</dd>
+                                <dd class="content-bold" data-event="previewrequested" data-property="totalAmount">956.0</dd>
                             </dl>
                         </div>
                     </div>
@@ -200,7 +200,7 @@
                     </fieldset>
                     <fieldset class="input-step stack" name="terms">
                         <legend>payment terms</legend>
-                        <date-picker month-format="short">
+                        <date-picker month-format="short" locale="en-GB">
                             <input type="text" id="inv-date" name="invoiceDate" autocomplete="off" data-new required>
                             <label for="inv-date" data-error="no date selected">invoice date</label>
                         </date-picker>

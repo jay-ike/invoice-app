@@ -4,16 +4,31 @@ import Datepicker from "./datepicker.js";
 import store from "./storage.js";
 import {contentDispatcher} from "./event-dispatcher.js";
 
+const {CustomEvent, HTMLCollection, Intl, crypto, matchMedia} = window;
 const config = {};
 const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 const researchedTags = ["input", "select", "output"];
-const {CustomEvent, HTMLCollection, crypto, matchMedia} = window;
+const numberFormatter = new Intl.NumberFormat(
+    navigator.language,
+    {currency: "XAF", style: "currency"}
+);
+const dateFormatter = new Intl.DateTimeFormat(
+    navigator.language,
+    {day: "numeric", month: "short", year: "numeric"}
+);
 let currentTheme = (
     matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light"
 );
 
+function formatCurrencyString(cost) {
+    const amount = Number.parseFloat(cost);
+    if (Number.isFinite(amount)) {
+        return numberFormatter.format(amount);
+    }
+    return "";
+}
 function getInvoiceRef() {
     let numbers = new Uint8Array(6);
     crypto.getRandomValues(numbers);
@@ -100,7 +115,10 @@ function closeDrawer() {
 function updateFieldsDatas(fieldset, data) {
     let name = fieldset.name;
     Object.entries(data).forEach(function ([key, value]) {
-        fieldset.elements[name + "-" + key].value = value;
+        let itemElt = name + "-" + key;
+        if (fieldset.elements[itemElt] !== undefined) {
+            fieldset.elements[itemElt].value = value;
+        }
     });
 }
 function initializeItems(values) {
@@ -115,18 +133,30 @@ function initializeItems(values) {
 }
 function getFormDatas(ref, status) {
     let result = Object.create(null);
+    let amount = 0;
+    const predicate = (elt) => (
+            researchedTags.includes(elt.tagName.toLowerCase())
+            && elt.checkValidity()
+    );
     result.items = [];
     const fieldsets = config.invoiceForm.querySelectorAll("fieldset");
     fieldsets.forEach(function (fieldset) {
         let item;
-        let elements = Array.from(fieldset.elements).filter(
-            (elt) => researchedTags.includes(elt.tagName.toLowerCase())
-        );
+        let elements = Array.from(fieldset.elements).filter(predicate);
         if (fieldset.name.match(/item-\d+/)) {
             item = Object.create(null);
-            elements.forEach(function (elt) {
+            elements.filter(predicate).forEach(function (elt) {
+                const amountProps = ["price", "total"];
+                let cost;
                 let parts = elt.name.split(/item-\d+-/);
                 item[parts[1]] = elt.value;
+                if (amountProps.includes(parts[1])) {
+                    cost = Number.parseFloat(elt.value);
+                    item[parts[1] + "Amount"] = formatCurrencyString(cost);
+                }
+                if (parts[1] === "total") {
+                    amount += cost;
+                }
             });
             result.items[result.items.length] = item;
         } else {
@@ -135,6 +165,8 @@ function getFormDatas(ref, status) {
             });
         }
     });
+    result.dueDate = config.invoiceForm.getDueDate() ?? "";
+    result.totalAmount = formatCurrencyString(amount);
     result.reference = ref ?? getInvoiceRef();
     result.status = status ?? "pending";
     return result;
@@ -152,6 +184,19 @@ config.storage = store();
 config.drawerDispatcher = contentDispatcher(config.drawer);
 config.dispatchPreview = contentDispatcher(config.invoiceDetails).dispatch;
 
+config.invoiceForm.getDueDate = function () {
+    const form = config.invoiceForm;
+    let terms = Number.parseInt(form.paymentTerms) * 24 * 3600000;
+    if (Number.isFinite(terms) && form.selectedDate !== undefined) {
+        terms += Date.parse(form.selectedDate);
+        return dateFormatter.format(terms);
+    }
+};
+config.invoiceForm.getCurrentStep = function () {
+    const {firstElementChild} = config.invoiceForm;
+    const step = firstElementChild.style.getPropertyValue("--current");
+    return Number.parseInt(step, 10);
+};
 config.invoiceForm.firstElementChild.addEventListener(
     "indexupdated",
     function ({detail}) {
@@ -177,6 +222,11 @@ config.invoiceForm.firstElementChild.addEventListener(
     false
 );
 
+config.invoiceForm.addEventListener("dateselected", function ({detail}) {
+    const {date} = detail;
+    config.invoiceForm.selectedDate = date;
+});
+
 document.body.addEventListener("click", function ({target}) {
     const root = document.documentElement;
     let data;
@@ -187,10 +237,10 @@ document.body.addEventListener("click", function ({target}) {
     if (target.classList.contains("invoice__summary")) {
         data = config.storage.get("pending")[0];
         config.dispatchPreview("previewrequested", data);
-        target.closest("step-by-step").nextStep();
+        target.closest("step-by-step").gotoStep(1);
     }
     if (target.classList.contains("back")) {
-        target.closest("step-by-step").previousStep();
+        target.closest("step-by-step").gotoStep(0);
     }
     if (target.id === "new_invoice") {
         data = {action: "new invoice", reference: ""};
@@ -254,14 +304,33 @@ config.drawer.addEventListener("click", function ({target}) {
         config.storage.set(formDatas.status, storedDatas);
         closeDrawer();
     }
+    if (target.classList.contains("btn-draft")) {
+        formDatas = getFormDatas(null, "draft");
+        formDatas.step = config.invoiceForm.getCurrentStep();
+        storedDatas = config.storage.get("draft") ?? [];
+        storedDatas[storedDatas.length] = formDatas;
+        config.storage.set("draft", storedDatas);
+        closeDrawer();
+    }
 }, false);
+config.dialog.addEventListener("cancel", function (event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    config.dialog.close("cancel");
+});
+config.dialog.addEventListener("close", function () {
+    if (config.dialog.returnValue === "delete") {
+        config.invoiceDetails.closest("step-by-step").gotoStep(0);
+    }
+});
 config.invoiceDetails.addEventListener("click", function ({target}) {
     let form;
-    let data = config.storage.get("pending")[0];
+    let data;
     if (target.classList.contains("back")) {
-        config.invoiceDetails.closest("step-by-step").previousStep();
+        config.invoiceDetails.closest("step-by-step").gotoStep(0);
     }
     if (target.classList.contains("btn-edit")) {
+        data = config.storage.get("pending")[0];
         form = config.invoiceForm;
         Object.entries(data).forEach(function ([key, value]) {
             if (form[key] !== undefined) {
@@ -275,9 +344,13 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         data.action = "edit ";
         config.drawerDispatcher.dispatch("draweropened", data);
         config.drawer.dataset.edit = "";
+        if (data.step !== undefined) {
+            config.invoiceForm.firstElementChild.gotoStep(data.step);
+        }
         document.body.dataset.drawer = "show";
     }
     if (target.classList.contains("btn-danger")) {
+        config.dialog.dataset.invoice = data.reference;
         config.dialog.showModal();
     }
 }, false);

@@ -533,6 +533,9 @@ label {
   .invoice__summary:is(:focus, :hover) {
       border: 1px solid var(--system-color-softBlue);
   }
+  :is([data-status="paid"], [data-status="draft"]) .paid {
+      display: none;
+  }
 .items-box {
   --radius: 0.5rem 0.5rem 0 0;
   --color-fill: var(--fill-items-box, hsl(231, 67%, 99%));

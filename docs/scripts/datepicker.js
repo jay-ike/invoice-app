@@ -55,7 +55,7 @@ function getInitialConfig() {
         },
         ignoreOnFocus: false,
         initDate: null,
-        locale: "en-GB",
+        locale: navigator.language,
         sundayFirst: false,
         yearSwitchable: false
     };
@@ -394,6 +394,10 @@ class Datepicker extends HTMLElement {
                 this.#config.input.value = this.#formatter.format(target.date);
                 this.#shown = false;
                 delete this.dataset.show;
+                this.dispatchEvent(new CustomEvent("dateselected", {
+                    bubbles: true,
+                    detail: {date: target.date}
+                }));
             }
             if (target.dataset.action === defaultActions[1]) {
                 this.#updateMonth((month) => month - 1);
