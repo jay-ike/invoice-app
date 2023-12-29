@@ -5,18 +5,26 @@ function updateContent(element, data) {
     element.textContent = data[property];
 }
 function updateAttributes(element, data) {
+    let entries;
     const {attributes} = element.dataset;
-    const entries = attributes.split(",").map((val) => val.split(":"));
-    entries.forEach(function ([attr, value]) {
-        element.setAttribute(attr, data[value]);
-    });
+    if (attributes !== undefined) {
+        entries = attributes.split(",").map((val) => val.split(":"));
+        entries.forEach(function ([attr, value]) {
+            element.setAttribute(attr, data[value]);
+        });
+        delete element.dataset.attributes;
+    }
 }
 function updateItem(item, data) {
-    let updatableElements = item.querySelectorAll("[data-property]");
+    let updatableElements = item.querySelectorAll("[data-property], [data-attributes]");
     updatableElements.forEach(function (elt) {
         const {property} = elt.dataset;
-        elt.textContent = data[property];
+        updateAttributes(elt, data);
+        if (property !== undefined) {
+            elt.textContent = data[property];
+        }
     });
+    updateAttributes(item, data);
 }
 function updateChildren(element, template, data) {
     const childrenDatas = data[element.dataset.for];
@@ -46,9 +54,8 @@ function parseElement(element) {
     return (data) => chain.forEach((fn) => fn(data));
 }
 function contentDispatcher(target) {
-    const selector = "[data-event]";
     const listeners = Array.from(
-        target.querySelectorAll(selector)
+        target.querySelectorAll("[data-event]")
     ).reduce(function (acc, element) {
         const {event} = element.dataset;
         if (acc[event] === undefined) {
@@ -58,14 +65,44 @@ function contentDispatcher(target) {
         }
         return acc;
     }, Object.create(null));
-    return {
-        dispatch(event, data) {
-            let eventListeners = listeners[event];
-            if (Array.isArray(eventListeners)) {
-                eventListeners.forEach((fn) => fn(data));
-            }
+    return function (event, data) {
+        let eventListeners = listeners[event];
+        if (Array.isArray(eventListeners)) {
+            eventListeners.forEach((fn) => fn(data));
         }
     };
 }
+function EventDispatcher() {
+    const self = Object.create(this);
+    let emitters = Array.from(document.querySelectorAll("[data-emit]")).reduce(
+        function (acc, emitter) {
+            acc[emitter.dataset.emit] = contentDispatcher(emitter);
+            return acc;
+        },
+        Object.create(null)
+    );
+    self.dispatch = function (event, data) {
+        if (emitters[event] !== undefined) {
+            emitters[event](event, data);
+        }
+    };
+    return self;
+}
+function sealerFactory() {
+    const weakmap = new WeakMap();
+    return Object.freeze({
+        seal(object) {
+            const box = Object.freeze(Object.create(null));
+            if (object?.id !== undefined) {
+                box.id = object.id;
+            }
+            weakmap.set(box, object);
+            return box;
+        },
+        unseal(box) {
+            return weakmap.get(box);
+        }
+    });
+}
 
-export {contentDispatcher};
+export {EventDispatcher, sealerFactory};

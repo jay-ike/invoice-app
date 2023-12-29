@@ -26,7 +26,7 @@
                 <p>It looks like no scripting is available some features may not work as expected</p>
             </noscript>
             <step-by-step class="y-scrollable" out-indicator="step-out">
-                <section class="column box">
+                <section class="column box" data-emit="invoicesupdated">
                     <div class="row no-gap content-bold">
                         <dl class="grow-2">
                             <dt class="heading-l">Invoices</dt>
@@ -67,13 +67,13 @@
                         </details>
                         <button id="new_invoice" data-icon="add-circle" class="row icon-start btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
-                    <div class="invoices stack grow-2">
-                        <dl class="blank-box invoice-grid invoice__summary extend-click" data-status="pending">
-                            <dt data-prefix="#">RT3080</dt>
-                            <dd class="label-text" data-prefix="Due ">19 Aug 2021</dd>
-                            <dd class="label-text">Melissa Clarke</dd>
-                            <dd>$ 4,032.33</dd>
-                            <dd class="box icon-start status-box">pending</dd>
+                    <div class="invoices stack grow-2" data-for="invoices" data-event="invoicesupdated">
+                        <dl class="blank-box invoice-grid invoice__summary extend-click" data-attributes="data-status:status,data-id:reference">
+                            <dt data-prefix="#" data-property="reference">RT3080</dt>
+                            <dd class="label-text" data-prefix="Due " data-property="dueDate">19 Aug 2021</dd>
+                            <dd class="label-text" data-property="clientName">Melissa Clarke</dd>
+                            <dd data-property="totalAmount">$ 4,032.33</dd>
+                            <dd class="box icon-start status-box" data-property="status">pending</dd>
                         </dl>
                     </div>
                     <div class="empty box center stack">
@@ -82,7 +82,7 @@
                         <p class="subtitle-text">Create an invoice by clicking the <strong>New <span class="sm-hide">Invoice</span></strong> button and get started</p>
                     </div>
                 </section>
-                <section class="box invoice__details column relative">
+                <section class="box invoice__details column relative" data-emit="previewrequested">
                     <button class="row btn back icon-start" data-icon="arrow_left">Go back</button>
                     <div class="invoice__status blank-box" data-event="previewrequested" data-attributes="data-status:status">
                         <dl class="row">
@@ -157,7 +157,7 @@
                 </section>
             </step-by-step>
 
-            <section class="drawer box column">
+            <section class="drawer box column" data-emit="draweropened">
                 <h2 class="heading-l"><span data-event="draweropened" data-property="action">new invoice</span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="reference"></span></h2>
                <ul class="step-indicator">
                 <li class="step-active">

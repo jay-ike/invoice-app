@@ -2,7 +2,7 @@
 import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
 import store from "./storage.js";
-import {contentDispatcher} from "./event-dispatcher.js";
+import {EventDispatcher} from "./event-dispatcher.js";
 
 const {CustomEvent, HTMLCollection, Intl, crypto, matchMedia} = window;
 const config = Object.create(null);
@@ -181,8 +181,7 @@ config.nextFormStep = document.querySelector("#next_step");
 config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
 config.storage = store();
-config.updateDrawer = contentDispatcher(config.drawer).dispatch;
-config.dispatchPreview = contentDispatcher(config.invoiceDetails).dispatch;
+config.dispatcher = new EventDispatcher();
 config.drawerMeta = Object.freeze({
     create: {action: "new invoice", cancel: "discard", proceed: "save & send"},
     edit: {action: "edit ", cancel: "cancel", proceed: "save changes"}
@@ -240,7 +239,7 @@ document.body.addEventListener("click", function ({target}) {
     }
     if (target.classList.contains("invoice__summary")) {
         data = config.storage.get("pending")[0];
-        config.dispatchPreview("previewrequested", data);
+        config.dispatcher.dispatch("previewrequested", data);
         target.closest("step-by-step").gotoStep(1);
     }
     if (target.classList.contains("back")) {
@@ -248,7 +247,7 @@ document.body.addEventListener("click", function ({target}) {
     }
     if (target.id === "new_invoice") {
         data = {action: "new invoice", reference: ""};
-        config.updateDrawer("draweropened", config.drawerMeta.create);
+        config.dispatcher.dispatch("draweropened", config.drawerMeta.create);
         document.body.dataset.drawer = "show";
     }
 }, false);
@@ -348,7 +347,7 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         notifyFormChange(form, {isValid: form.checkValidity()});
         Object.assign(drawerData, config.drawerMeta.edit);
         drawerData.reference = data.reference;
-        config.updateDrawer("draweropened", drawerData);
+        config.dispatcher.dispatch("draweropened", drawerData);
         config.drawer.dataset.edit = "";
         if (data.step !== undefined) {
             config.invoiceForm.firstElementChild.gotoStep(data.step);
@@ -362,5 +361,7 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         config.dialog.showModal();
     }
 }, false);
+config.dispatcher.dispatch("invoicesupdated", {invoices: config.storage.getAll()});
+
 StepByStep.define();
 Datepicker.define();
