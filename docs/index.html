@@ -82,7 +82,7 @@
                         <p class="subtitle-text">Create an invoice by clicking the <strong>New <span class="sm-hide">Invoice</span></strong> button and get started</p>
                     </div>
                 </section>
-                <section class="box invoice__details column">
+                <section class="box invoice__details column relative">
                     <button class="row btn back icon-start" data-icon="arrow_left">Go back</button>
                     <div class="invoice__status blank-box" data-event="previewrequested" data-attributes="data-status:status">
                         <dl class="row">
@@ -93,8 +93,8 @@
                             <button class="box btn-edit">edit</button>
                             <button class="box btn-danger">delete</button>
                             <button class="box btn-primary paid">mark as paid</button>
-
                         </div>
+                        <button class="icon-start transparent-box" data-icon="file-download" aria-label="print the invoice"></button>
                     </div>
                     <div class="blank-box stack grow-2 y-scrollable">
                         <dl class="invoice-grid invoice__desc label-text">
@@ -242,9 +242,9 @@
                    </step-by-step>
                </form>
                <div>
-					<button class="box btn-edit cancel" lang="en" data-prefix="discard" aria-label="cancel the ongoing operation"></button>
+					<button class="box btn-edit cancel" data-event="draweropened" data-property="cancel">discard</button>
 					<button class="box btn-draft">save as draft</button>
-					<button class="box btn-primary proceed" lang="en" data-prefix="save & send" aria-label="proceed the ongoing operation" disabled="true" autocomplete="off"></button>
+					<button class="box btn-primary proceed" data-event="draweropened" data-property="proceed" disabled="true" autocomplete="off">save & send</button>
                </div>
             </section>
         </main>
@@ -262,45 +262,39 @@
             </form>
         </dialog>
         <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" version="1.1" aria-hidden="true">
-            <symbol viewBox="0 0 24 24" id="trash" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M 9.5 2.9 C 9.9 2.4 10.5 2 11.2 2 H 13 C 13.7 2 14.3 2.4 14.7 2.9 L 15.6 4.3 H 19.4 C 19.8 4.3 20.2 4.6 20.2 5 C 20.2 5.5 19.8 5.8 19.4 5.8 H 4.8 C 4.4 5.8 4 5.5 4 5 C 4 4.6 4.4 4.3 4.8 4.3 H 8.6 L 9.5 2.9 Z M 15.1 22.2 H 9.1 C 6.8 22.2 5 20.4 5 18.1 V 7.1 H 19.2 V 18.1 C 19.2 20.4 17.3 22.2 15.1 22.2 Z M 10.1 10.3 C 10.5 10.3 10.8 10.7 10.8 11.1 V 18.1 C 10.8 18.6 10.5 18.9 10.1 18.9 C 9.7 18.9 9.3 18.6 9.3 18.1 L 9.3 11.1 C 9.3 10.7 9.7 10.3 10.1 10.3 Z M 14.1 10.3 C 14.5 10.3 14.9 10.7 14.9 11.1 V 18.1 C 14.9 18.6 14.5 18.9 14.1 18.9 C 13.7 18.9 13.4 18.6 13.4 18.1 V 11.1 C 13.4 10.7 13.7 10.3 14.1 10.3 Z" fill="currentColor" style="fill:var(--icon-fill, currentColor);" id="path1"/>
-            </symbol>
-            <symbol viewBox="0 0 24 24" id="invoice" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.21 0.084 h 0.588 a 0.084 0.084 90 0 1 0.084 0.084 v 0.6363 a 0.084 0.084 90 0 1 -0.1126 0.0794 l -0.0655 -0.0239 a 0.084 0.084 90 0 0 -0.063 0.0025 l -0.1025 0.0462 a 0.084 0.084 90 0 1 -0.0689 0 l -0.1025 -0.0462 a 0.084 0.084 90 0 0 -0.063 -0.0025 l -0.0655 0.0239 a 0.084 0.084 90 0 1 -0.1126 -0.0794 v -0.6363 c 0 -0.0462 0.0378 -0.084 0.084 -0.084 z m 0.126 0.1785 a 0.0315 0.0315 90 0 0 0 0.063 h 0.168 a 0.0315 0.0315 90 0 0 0 -0.063 h -0.168 z m 0 0.168 a 0.0315 0.0315 90 0 0 0 0.063 h 0.336 a 0.0315 0.0315 90 0 0 0 -0.063 h -0.336 z m 0 0.168 a 0.0315 0.0315 90 0 0 0 0.063 h 0.336 a 0.0315 0.0315 90 0 0 0 -0.063 h -0.336 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);" id="path2"/>
-            </symbol>
             <symbol viewBox="0 0 24 24" id="user-circle" fill="none">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M 22.2 12.1 A 10.1 10.1 90 0 1 12.1 22.2 A 10 10 90 0 1 2 12.1 A 10.1 10.1 90 1 1 22.2 12.1 Z M 12.1 19.2 A 7 7 90 0 0 17.1 17.1 A 5.9 5.9 90 0 0 12.1 14.2 A 5.9 5.9 90 0 0 7.1 17.1 A 7.1 7.1 90 0 0 12.1 19.2 Z M 12.1 12.1 A 3 3 90 1 0 12.1 6.1 A 3 3 90 0 0 12.1 12.1 Z" fill="currentColor" style="fill:var(--icon-fill, currentColor);" id="path4"/>
-            </symbol>
-            <symbol viewBox="0 0 24 24" id="file-download" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M 3.024 6.048 V 18.144 A 4.032 4.032 90 0 0 7.056 22.176 H 11.4312 A 4.032 4.032 90 0 0 12.348 22.0752 V 18.144 A 4.788 4.788 90 0 1 17.136 13.356 H 21.0672 A 4.032 4.032 90 0 0 21.168 12.4488 V 6.048 A 4.032 4.032 90 0 0 17.136 2.016 H 7.056 A 4.032 4.032 90 0 0 3.024 6.048 Z M 14.2824 20.9976 C 14.1504 21.1296 14.0112 21.2496 13.86 21.36 V 18.144 C 13.86 16.3296 15.3312 14.868 17.136 14.868 H 20.3616 C 20.2416 15.0192 20.1192 15.1608 19.9896 15.2904 L 14.2848 20.9952 Z M 12.9816 10.1424 L 12.8496 10.2528 V 6.0504 A 0.756 0.756 90 0 0 11.3376 6.0504 V 10.2528 A 0.4728 0.4728 90 0 1 11.2056 10.1424 L 9.6024 8.5392 A 0.756 0.756 90 1 0 8.5344 9.6072 L 10.1376 11.2104 A 2.772 2.772 90 0 0 14.0496 11.2104 L 15.6528 9.6072 A 0.756 0.756 90 0 0 14.5848 8.5392 L 12.9816 10.1424 Z" fill="currentColor" style="fill:var(--icon-fill, currentColor);" id="path6"/>
             </symbol>
             <symbol viewBox="0 0 12 9" id="checked" fill="none">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="m1 4 3.433 3.433L10.866 1" fill="currentColor" style="fill:var(--icon-fill, currentColor);" id="path11" pathLength="1" stroke-width="2"/>
             </symbol>
             <defs>
                 <clipPath id="arrow_left" clipPathUnits="objectBoundingBox">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.6077 0.2694 c 0.0136 0.0109 0.0158 0.0307 0.0049 0.0443 l -0.1523 0.1903 l 0.1523 0.1903 c 0.0109 0.0136 0.0087 0.0334 -0.0049 0.0443 c -0.0136 0.0109 -0.0334 0.0087 -0.0443 -0.0049 l -0.168 -0.21 c -0.0092 -0.0115 -0.0092 -0.0279 0 -0.0394 l 0.168 -0.21 c 0.0109 -0.0136 0.0307 -0.0158 0.0443 -0.0049 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.61 0.27 c 0.01 0.01 0.02 0.03 0 0.04 l -0.15 0.19 l 0.15 0.19 c 0.01 0.01 0.01 0.03 -0 0.04 c -0.01 0.01 -0.03 0.01 -0.04 -0 l -0.17 -0.21 c -0.01 -0.01 -0.01 -0.03 0 -0.04 l 0.17 -0.21 c 0.01 -0.01 0.03 -0.02 0.04 -0 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);"/>
                 </clipPath>
                 <clipPath id="arrow_down" clipPathUnits="objectBoundingBox">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.2694 0.4003 c 0.0109 -0.0136 0.0307 -0.0158 0.0443 -0.0049 l 0.1903 0.1523 l 0.1903 -0.1523 c 0.0136 -0.0109 0.0334 -0.0087 0.0443 0.0049 c 0.0109 0.0136 0.0087 0.0334 -0.0049 0.0443 l -0.21 0.168 c -0.0115 0.0092 -0.0279 0.0092 -0.0394 0 l -0.21 -0.168 c -0.0136 -0.0109 -0.0158 -0.0307 -0.0049 -0.0443 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.27 0.4 c 0.01 -0.01 0.03 -0.02 0.04 -0 l 0.19 0.15 l 0.19 -0.15 c 0.01 -0.01 0.03 -0.01 0.04 0 c 0.01 0.01 0.01 0.03 -0 0.04 l -0.21 0.17 c -0.01 0.01 -0.03 0.01 -0.04 0 l -0.21 -0.17 c -0.01 -0.01 -0.02 -0.03 -0 -0.04 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);"/>
                 </clipPath>
                 <clipPath id="calendar" clipPathUnits="objectBoundingBox">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.3675 0.084 a 0.0315 0.0315 90 0 0 -0.063 0 v 0.063 h -0.0105 a 0.168 0.168 90 0 0 -0.168 0.168 v 0.0315 h 0.756 v -0.0315 a 0.168 0.168 90 0 0 -0.168 -0.168 h -0.0105 v -0.063 a 0.0315 0.0315 90 0 0 -0.063 0 v 0.063 h -0.273 v -0.063 z m -0.2415 0.3255 h 0.756 v 0.3465 a 0.168 0.168 90 0 1 -0.168 0.168 h -0.42 a 0.168 0.168 90 0 1 -0.168 -0.168 v -0.3465 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.37 0.08 a 0.03 0.03 90 0 0 -0.06 0 v 0.06 h -0.01 a 0.17 0.17 90 0 0 -0.17 0.17 v 0.03 h 0.76 v -0.03 a 0.17 0.17 90 0 0 -0.17 -0.17 h -0.01 v -0.06 a 0.03 0.03 90 0 0 -0.06 0 v 0.06 h -0.27 v -0.06 z m -0.24 0.33 h 0.76 v 0.35 a 0.17 0.17 90 0 1 -0.17 0.17 h -0.42 a 0.17 0.17 90 0 1 -0.17 -0.17 v -0.35 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);"/>
                 </clipPath>
                 <clipPath id="add-circle" clipPathUnits="objectBoundingBox">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.924 0.504 a 0.42 0.42 90 1 1 -0.84 0 a 0.42 0.42 90 0 1 0.84 0 z m -0.42 -0.1995 c 0.0172 0 0.0315 0.0143 0.0315 0.0315 v 0.1365 h 0.1365 a 0.0315 0.0315 90 0 1 0 0.063 h -0.1365 v 0.1365 a 0.0315 0.0315 90 0 1 -0.063 0 v -0.1365 h -0.1365 a 0.0315 0.0315 90 0 1 0 -0.063 h 0.1365 v -0.1365 c 0 -0.0172 0.0143 -0.0315 0.0315 -0.0315 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);" id="path5"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.92 0.5 a 0.42 0.42 90 1 1 -0.84 0 a 0.42 0.42 90 0 1 0.84 0 z m -0.42 -0.2 c 0.02 0 0.03 0.01 0.03 0.03 v 0.14 h 0.14 a 0.03 0.03 90 0 1 0 0.06 h -0.14 v 0.14 a 0.03 0.03 90 0 1 -0.06 0 v -0.14 h -0.14 a 0.03 0.03 90 0 1 0 -0.06 h 0.14 v -0.14 c 0 -0.02 0.01 -0.03 0.03 -0.03 z" fill="currentColor" style="fill:var(--icon-fill, currentColor);" id="path5"/>
                 </clipPath>
                  <clipPath id="light_mode" clipPathUnits="objectBoundingBox">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.4992 0.052 c 0.0172 0 0.0312 0.014 0.0312 0.0312 v 0.0832 c 0 0.0172 -0.014 0.0312 -0.0312 0.0312 c -0.0172 0 -0.0312 -0.014 -0.0312 -0.0312 v -0.0832 c 0 -0.0172 0.014 -0.0312 0.0312 -0.0312 z m 0.208 0.4472 c 0 0.1149 -0.0931 0.208 -0.208 0.208 c -0.1149 0 -0.208 -0.0931 -0.208 -0.208 c 0 -0.1149 0.0931 -0.208 0.208 -0.208 c 0.1149 0 0.208 0.0931 0.208 0.208 z m -0.1768 0.3328 c 0 -0.0172 -0.014 -0.0312 -0.0312 -0.0312 c -0.0172 0 -0.0312 0.014 -0.0312 0.0312 v 0.0832 c 0 0.0172 0.014 0.0312 0.0312 0.0312 c 0.0172 0 0.0312 -0.014 0.0312 -0.0312 v -0.0832 z m 0.3561 -0.5564 c 0.0086 0.0149 0.0035 0.034 -0.0114 0.0426 l -0.0721 0.0416 c -0.0149 0.0086 -0.034 0.0035 -0.0426 -0.0114 c -0.0086 -0.0149 -0.0035 -0.034 0.0114 -0.0426 l 0.0721 -0.0416 c 0.0149 -0.0086 0.034 -0.0035 0.0426 0.0114 z m -0.6599 0.417 c 0.0149 -0.0086 0.02 -0.0277 0.0114 -0.0426 c -0.0086 -0.0149 -0.0277 -0.02 -0.0426 -0.0114 l -0.0721 0.0416 c -0.0149 0.0086 -0.02 0.0277 -0.0114 0.0426 c 0.0086 0.0149 0.0277 0.02 0.0426 0.0114 l 0.0721 -0.0416 z m -0.1147 -0.417 c 0.0086 -0.0149 0.0277 -0.02 0.0426 -0.0114 l 0.0721 0.0416 c 0.0149 0.0086 0.02 0.0277 0.0114 0.0426 c -0.0086 0.0149 -0.0277 0.02 -0.0426 0.0114 l -0.0721 -0.0416 c -0.0149 -0.0086 -0.02 -0.0277 -0.0114 -0.0426 z m 0.6911 0.363 c -0.0149 -0.0086 -0.034 -0.0035 -0.0426 0.0114 c -0.0086 0.0149 -0.0035 0.034 0.0114 0.0426 l 0.0721 0.0416 c 0.0149 0.0086 0.034 0.0035 0.0426 -0.0114 c 0.0086 -0.0149 0.0035 -0.034 -0.0114 -0.0426 l -0.0721 -0.0416 z" fill="currentColor" style="fill: var(--icon-fill, currentColor);"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.5 0.05 c 0.02 0 0.03 0.01 0.03 0.03 v 0.08 c 0 0.02 -0.01 0.03 -0.03 0.03 c -0.02 0 -0.03 -0.01 -0.03 -0.03 v -0.08 c 0 -0.02 0.01 -0.03 0.03 -0.03 z m 0.21 0.45 c 0 0.11 -0.09 0.21 -0.21 0.21 c -0.11 0 -0.21 -0.09 -0.21 -0.21 c 0 -0.11 0.09 -0.21 0.21 -0.21 c 0.11 0 0.21 0.09 0.21 0.21 z m -0.18 0.33 c 0 -0.02 -0.01 -0.03 -0.03 -0.03 c -0.02 0 -0.03 0.01 -0.03 0.03 v 0.08 c 0 0.02 0.01 0.03 0.03 0.03 c 0.02 0 0.03 -0.01 0.03 -0.03 v -0.08 z m 0.36 -0.56 c 0.01 0.01 0 0.03 -0.01 0.04 l -0.07 0.04 c -0.01 0.01 -0.03 0 -0.04 -0.01 c -0.01 -0.01 -0 -0.03 0.01 -0.04 l 0.07 -0.04 c 0.01 -0.01 0.03 -0 0.04 0.01 z m -0.66 0.42 c 0.01 -0.01 0.02 -0.03 0.01 -0.04 c -0.01 -0.01 -0.03 -0.02 -0.04 -0.01 l -0.07 0.04 c -0.01 0.01 -0.02 0.03 -0.01 0.04 c 0.01 0.01 0.03 0.02 0.04 0.01 l 0.07 -0.04 z m -0.11 -0.42 c 0.01 -0.01 0.03 -0.02 0.04 -0.01 l 0.07 0.04 c 0.01 0.01 0.02 0.03 0.01 0.04 c -0.01 0.01 -0.03 0.02 -0.04 0.01 l -0.07 -0.04 c -0.01 -0.01 -0.02 -0.03 -0.01 -0.04 z m 0.69 0.36 c -0.01 -0.01 -0.03 -0 -0.04 0.01 c -0.01 0.01 -0 0.03 0.01 0.04 l 0.07 0.04 c 0.01 0.01 0.03 0 0.04 -0.01 c 0.01 -0.01 0 -0.03 -0.01 -0.04 l -0.07 -0.04 z" fill="currentColor" style="fill: var(--icon-fill, currentColor);"/>
                 </clipPath>
                 <clipPath id="night_mode" clipPathUnits="objectBoundingBox">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.7613 0.6198 c -0.2122 0 -0.3827 -0.1705 -0.3827 -0.3827 c 0 -0.0416 0.0083 -0.079 0.0166 -0.1123 c -0.1581 0.0458 -0.2704 0.1955 -0.2704 0.3661 c 0 0.2121 0.1706 0.3827 0.3827 0.3827 c 0.1706 0 0.3203 -0.1123 0.3661 -0.2704 c -0.0333 0.0083 -0.0707 0.0166 -0.1123 0.0166 z" style="fill: var(--icon-fill, currentColor);"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.76 0.62 c -0.21 0 -0.38 -0.17 -0.38 -0.38 c 0 -0.04 0.01 -0.08 0.02 -0.11 c -0.16 0.05 -0.27 0.2 -0.27 0.37 c 0 0.21 0.17 0.38 0.38 0.38 c 0.17 0 0.32 -0.11 0.37 -0.27 c -0.03 0.01 -0.07 0.02 -0.11 0.02 z" style="fill: var(--icon-fill, currentColor);"/>
                 </clipPath>
                 <clipPath id="warning" clipPathUnits="objectBoundingBox">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.4147 0.1733 c 0.0368 -0.0647 0.1322 -0.0647 0.1691 0 l 0.3192 0.5602 c 0.0358 0.0629 -0.0108 0.1401 -0.0845 0.1401 h -0.6383 c -0.0737 0 -0.1203 -0.0772 -0.0845 -0.1401 l 0.3192 -0.5602 z m 0.1261 0.5339 c 0 0.023 -0.0186 0.0416 -0.0416 0.0416 c -0.023 0 -0.0416 -0.0186 -0.0416 -0.0416 c 0 -0.023 0.0186 -0.0416 0.0416 -0.0416 c 0.023 0 0.0416 0.0186 0.0416 0.0416 z m -0.0104 -0.3328 c 0 -0.0172 -0.014 -0.0312 -0.0312 -0.0312 c -0.0172 0 -0.0312 0.014 -0.0312 0.0312 v 0.208 c 0 0.0172 0.014 0.0312 0.0312 0.0312 c 0.0172 0 0.0312 -0.014 0.0312 -0.0312 v -0.208 z" style="fill: var(--icon-fill, currentColor);"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.41 0.17 c 0.04 -0.06 0.13 -0.06 0.17 0 l 0.32 0.56 c 0.04 0.06 -0.01 0.14 -0.08 0.14 h -0.64 c -0.07 0 -0.12 -0.08 -0.08 -0.14 l 0.32 -0.56 z m 0.13 0.53 c 0 0.02 -0.02 0.04 -0.04 0.04 c -0.02 0 -0.04 -0.02 -0.04 -0.04 c 0 -0.02 0.02 -0.04 0.04 -0.04 c 0.02 0 0.04 0.02 0.04 0.04 z m -0.01 -0.33 c 0 -0.02 -0.01 -0.03 -0.03 -0.03 c -0.02 0 -0.03 0.01 -0.03 0.03 v 0.21 c 0 0.02 0.01 0.03 0.03 0.03 c 0.02 0 0.03 -0.01 0.03 -0.03 v -0.21 z" style="fill: var(--icon-fill, currentColor);"/>
                 </clipPath>
                 <clipPath id="delete" clipPathUnits="objectBoundingBox">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.39 0.12 c 0.02 -0.02 0.04 -0.04 0.07 -0.04 h 0.08 c 0.03 0 0.05 0.01 0.07 0.04 l 0.04 0.06 h 0.16 c 0.02 0 0.03 0.01 0.03 0.03 c 0 0.02 -0.01 0.03 -0.03 0.03 h -0.6 c -0.02 0 -0.03 -0.01 -0.03 -0.03 c 0 -0.02 0.01 -0.03 0.03 -0.03 h 0.16 l 0.04 -0.06 z m 0.23 0.79 h -0.25 c -0.09 0 -0.17 -0.07 -0.17 -0.17 v -0.46 h 0.58 v 0.46 c 0 0.09 -0.07 0.17 -0.17 0.17 z m -0.21 -0.49 c 0.02 0 0.03 0.01 0.03 0.03 v 0.29 c 0 0.02 -0.01 0.03 -0.03 0.03 c -0.02 0 -0.03 -0.01 -0.03 -0.03 l 0 -0.29 c 0 -0.02 0.01 -0.03 0.03 -0.03 z m 0.17 0 c 0.02 0 0.03 0.01 0.03 0.03 v 0.29 c 0 0.02 -0.01 0.03 -0.03 0.03 c -0.02 0 -0.03 -0.01 -0.03 -0.03 v -0.29 c 0 -0.02 0.01 -0.03 0.03 -0.03 z" style="fill: var(--icon-fill, currentColor);"/>
+                </clipPath>
+                <clipPath id="file-download" clipPathUnits="objectBoundingBox">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="m 0.13 0.25 v 0.5 a 0.17 0.17 90 0 0 0.17 0.17 h 0.18 a 0.17 0.17 90 0 0 0.04 -0 v -0.16 a 0.2 0.2 90 0 1 0.2 -0.2 h 0.16 a 0.17 0.17 90 0 0 0 -0.04 v -0.27 a 0.17 0.17 90 0 0 -0.17 -0.17 h -0.42 a 0.17 0.17 90 0 0 -0.17 0.17 z m 0.47 0.62 c -0.01 0.01 -0.01 0.01 -0.02 0.02 v -0.13 c 0 -0.08 0.06 -0.14 0.14 -0.14 h 0.13 c -0 0.01 -0.01 0.01 -0.02 0.02 l -0.24 0.24 z m -0.05 -0.45 l -0.01 0 v -0.17 a 0.03 0.03 90 0 0 -0.06 0 v 0.17 a 0.02 0.02 90 0 1 -0.01 -0 l -0.07 -0.07 a 0.03 0.03 90 1 0 -0.04 0.04 l 0.07 0.07 a 0.12 0.12 90 0 0 0.16 0 l 0.07 -0.07 a 0.03 0.03 90 0 0 -0.04 -0.04 l -0.07 0.07 z" style="fill: var(--icon-fill, currentColor);"/>
                 </clipPath>
            </defs>
         </svg>

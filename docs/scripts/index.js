@@ -5,7 +5,7 @@ import store from "./storage.js";
 import {contentDispatcher} from "./event-dispatcher.js";
 
 const {CustomEvent, HTMLCollection, Intl, crypto, matchMedia} = window;
-const config = {};
+const config = Object.create(null);
 const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 const researchedTags = ["input", "select", "output"];
 const numberFormatter = new Intl.NumberFormat(
@@ -135,8 +135,8 @@ function getFormDatas(ref, status) {
     let result = Object.create(null);
     let amount = 0;
     const predicate = (elt) => (
-            researchedTags.includes(elt.tagName.toLowerCase())
-            && elt.checkValidity()
+        researchedTags.includes(elt.tagName.toLowerCase())
+        && elt.checkValidity()
     );
     result.items = [];
     const fieldsets = config.invoiceForm.querySelectorAll("fieldset");
@@ -181,8 +181,12 @@ config.nextFormStep = document.querySelector("#next_step");
 config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
 config.storage = store();
-config.drawerDispatcher = contentDispatcher(config.drawer);
+config.updateDrawer = contentDispatcher(config.drawer).dispatch;
 config.dispatchPreview = contentDispatcher(config.invoiceDetails).dispatch;
+config.drawerMeta = Object.freeze({
+    create: {action: "new invoice", cancel: "discard", proceed: "save & send"},
+    edit: {action: "edit ", cancel: "cancel", proceed: "save changes"}
+});
 
 config.invoiceForm.getDueDate = function () {
     const form = config.invoiceForm;
@@ -244,7 +248,7 @@ document.body.addEventListener("click", function ({target}) {
     }
     if (target.id === "new_invoice") {
         data = {action: "new invoice", reference: ""};
-        config.drawerDispatcher.dispatch("draweropened", data);
+        config.updateDrawer("draweropened", config.drawerMeta.create);
         document.body.dataset.drawer = "show";
     }
 }, false);
@@ -326,6 +330,7 @@ config.dialog.addEventListener("close", function () {
 config.invoiceDetails.addEventListener("click", function ({target}) {
     let form;
     let data;
+    let drawerData = {};
     if (target.classList.contains("back")) {
         config.invoiceDetails.closest("step-by-step").gotoStep(0);
     }
@@ -341,8 +346,9 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
             }
         });
         notifyFormChange(form, {isValid: form.checkValidity()});
-        data.action = "edit ";
-        config.drawerDispatcher.dispatch("draweropened", data);
+        Object.assign(drawerData, config.drawerMeta.edit);
+        drawerData.reference = data.reference;
+        config.updateDrawer("draweropened", drawerData);
         config.drawer.dataset.edit = "";
         if (data.step !== undefined) {
             config.invoiceForm.firstElementChild.gotoStep(data.step);
@@ -350,6 +356,8 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         document.body.dataset.drawer = "show";
     }
     if (target.classList.contains("btn-danger")) {
+        data = config.storage.get("pending") ?? [];
+        data = data[0] ?? {};
         config.dialog.dataset.invoice = data.reference;
         config.dialog.showModal();
     }

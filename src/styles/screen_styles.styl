@@ -528,8 +528,6 @@ step-by-step
     &[data-edit]
         --drafter-display: none
         --ref-display: inline
-        --cancel-text: "cancel"
-        --proceed-text: "save changes"
     & > div
         --prefix-color: currentColor
         --min-padding: .75em clamp(0.5em, 3cqi, 1.5em)
@@ -541,10 +539,6 @@ step-by-step
     .btn-draft
         margin-inline-start: auto
         display: var(--drafter-display, initial)
-    .cancel
-        --prefix: var(--cancel-text, unset)
-    .proceed
-        --prefix: var(--proceed-text, unset)
 .invoice__ref
     --prefix-color: initial
     --prefix: initial
@@ -666,15 +660,15 @@ noscript[data-status]
     margin-block-start: .5em
     margin-inline: .5em
     background-color: var(--system-color-lightRed)
-dialog:not([open])
-    transform: scale(0)
+dialog[open]
+    transform: scale(1)
 dialog
     --min-padding: clamp(.5em, 4cqi, 1.5em)
     --f-size: 1.2em
     color: var(--color-text, var(--system-color-darkBlue))
     container: dialog / inline-size
     inline-size: @css{min(480px, 80vi)}
-    transform: scale(1)
+    transform: scale(0)
     border: none
     z-index: 4
 
@@ -779,11 +773,14 @@ dialog
 
 @css{
 @media(prefers-reduced-motion: no-preference) {
-	.blank-box, .step-indicator li::before, .step-indicator li::after {
+	.invoice__summary, .step-indicator li::before, .step-indicator li::after {
 	    transition: color .35s ease-in, background-color, .35s ease-out;
 	}
-	:is(.drawer, input, select, [class*="btn"]), :is(.theme-switch, .icon-start)::before, .icon-end::after {
-	    transition: all .35s ease-out;
+	:is(.drawer, input, select, [class*="btn"]),
+    :is(.theme-switch, .icon-start)::before,
+    input[type="checkbox"] + svg,
+    .icon-end::after {
+	    transition: all .35s cubic-bezier(.25, .1, .3, 1.5);
 	}
 	step-by-step > * {
         transition: transform .35s ease-out;
@@ -791,5 +788,4 @@ dialog
     dialog.blank-box {
         transition: transform .35s cubic-bezier(.25, .1, .3, 1.5);
     }
-}
 }

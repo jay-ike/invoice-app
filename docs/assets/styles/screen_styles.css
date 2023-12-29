@@ -1,4 +1,3 @@
-
 :root {
 	--system-color-softBlue: hsl(252, 85%, 62%);
 	--system-color-lightBlue: hsl(252, 80%, 70%);
@@ -8,7 +7,7 @@
 	--system-color-pureOrange: hsl(34, 90%, 69%);
 	--system-color-grayishBlue: hsl(231, 20%, 27%);
 	--system-color-lightGrayishBlue: hsl(231, 67%, 99%);
-	--system-color-darkBlue: hsl(231, 28%, 7%);
+	--ystem-color-darkBlue: hsl(231, 28%, 7%);
 	--system-color-lightPurple: hsl(231, 73%, 93%);
 	--system-color-softPurple: hsl(231, 37%, 44%);
 	--system-color-darkPurple: hsl(233, 31%, 17%);
@@ -75,11 +74,14 @@
   gap: var(--s-space, 1.5em);
 }
 
-:is(.blank-box, .box) {
+:is(.blank-box, .transparent-box, .box) {
   padding: var(--min-padding, 1.5em);
   background-color: var(--color-fill, transparent);
   color: var(--color-text, currentColor);
   border-radius: var(--radius, 0);
+}
+.transparent-box {
+    --color-fill: transparent;
 }
 @layer utils {
   .invoice-grid {
@@ -215,8 +217,7 @@ button {
   min-inline-size: 4.5rem;
   min-block-size: 3rem;
 }
-[class*="btn"]:enabled:is(:focus,
-:hover) {
+[class*="btn"]:enabled:is(:focus, :hover) {
   color: var(--color-text-hover, var(--color-text));
   background-color: var(--color-fill-hover, transparent);
 }
@@ -225,8 +226,7 @@ button {
   background-color: transparent;
   color: var(--system-color-text);
 }
-:is(.btn-primary,
-.btn-danger) {
+:is(.btn-primary, .btn-danger) {
   --color-text: #fafafa;
   --color-text-hover: var(--system-color-lightGrayishBlue);
 }
@@ -255,7 +255,7 @@ button {
 .large-btn {
   --min-padding: var(--btn-padding, initial);
   --color-text: var(--color-labelText, var(--system-color-darkBlue));
-  --color-fill: var(--fill-items-box, var(--system-color-labelText));
+  --color-fill: var(--fill-items-box, hsl(225, 24%, 56%));
   --color-fill-hover: var(--fill-amount-box, hsl(231, 73%, 93%));
   --prefix-color: currentColor;
   inline-size: 100%;
@@ -281,7 +281,7 @@ label {
   font-weight: bold;
 }
 
-:is(.icon-start, .theme-switch)::before,.icon-end::after {
+:is(.icon-start, .theme-switch)::before, .icon-end::after {
   content: "";
   min-inline-size: var(--icon-size, 1.5em);
   aspect-ratio: var(--icon-ratio, 1);
@@ -291,7 +291,7 @@ label {
   clip-path: var(--icon-clip, none);
   border-radius: var(--icon-radius, 0px);
 }
-.icon-start:enabled:is(:hover,:focus)::before,.icon-end:enabled:is(:hover,:focus)::after {
+.icon-start:enabled:is(:hover,:focus)::before, .icon-end:enabled:is(:hover,:focus)::after {
   --icon-fill: var(--icon-fill-hover, currentColor);
   --icon-transform: var(--icon-hoverTransform, inherit);
 }
@@ -325,6 +325,17 @@ label {
   --min-padding: 0.75em clamp(0.5em, 2vw, 1.5em) 0.75em 0.5em;
   --icon-siize: 2em;
   --icon-clip: url(#add-circle);
+}
+[data-icon="file-download"] {
+    --icon-clip: url(#file-download);
+    --icon-size: 2.5em;
+    --icon-fill: var(--system-color-labelText);
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: 0;
+}
+[data-status="draft"] [data-icon="file-download"] {
+    display: none;
 }
 [data-icon="warning"] {
   --icon-clip: url(#warning);
@@ -435,8 +446,7 @@ label {
   margin: 0;
   opacity: 0;
 }
-.theme-switch:is(:focus,
-:hover) {
+.theme-switch:is(:focus, :hover) {
   --icon-fill: var(--system-color-lightPurple);
 }
 .theme-switch {
@@ -618,8 +628,6 @@ step-by-step > .step-out {
 .drawer[data-edit] {
   --drafter-display: none;
   --ref-display: inline;
-  --cancel-text: "cancel";
-  --proceed-text: "save changes";
 }
 .drawer > div {
   --prefix-color: currentColor;
@@ -634,20 +642,13 @@ step-by-step > .step-out {
   margin-inline-start: auto;
   display: var(--drafter-display, initial);
 }
-.drawer .cancel {
-  --prefix: var(--cancel-text, unset);
-}
-.drawer .proceed {
-  --prefix: var(--proceed-text, unset);
-}
 .invoice__ref {
   --prefix-color: initial;
   --prefix: initial;
   text-transform: uppercase;
   display: var(--ref-display, none);
 }
-.input-step > :is(div,
-date-picker) {
+.input-step > :is(div, date-picker) {
   display: flex;
   flex-flow: column-reverse nowrap;
 }
@@ -659,8 +660,7 @@ date-picker) {
   font-size: clamp(1.2em, 4cqi, 1.5em);
   color: var(--system-color-softBlue);
 }
-:is(input,
-select) {
+:is(input, select) {
   font-weight: bold;
   font-size: inherit;
   color: var(--system-color-text);
@@ -669,24 +669,19 @@ select) {
   border: 1px solid var(--input-bd-clr, var(--system-color-lightPurple));
   border-radius: 0.25em;
 }
-:is(input,
-select):is(:hover,
-:focus) {
+:is(input, select):is(:hover, :focus) {
   --input-bd-clr: var(--system-color-softBlue);
 }
-:is(input,
-select):invalid:not([data-new]) {
+:is(input, select):invalid:not([data-new]) {
   --input-bd-clr: var(--system-color-softRed);
 }
-:is(input,
-select):invalid:not([data-new]) ~ label {
+:is(input, select):invalid:not([data-new]) ~ label {
   color: var(--system-color-softRed);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
 }
-:is(input,
-select):invalid:not([data-new]) ~ label::after {
+:is(input, select):invalid:not([data-new]) ~ label::after {
   content: attr(data-error, "");
   font-size: 0.7em;
   text-transform: none;
@@ -782,7 +777,11 @@ date-picker .actions {
   display: inline-block;
   block-size: 2px;
   inset: var(--inset-before, auto 0 calc(0.85em - 1px));
-  background-image: var(--deco-img, linear-gradient(var(--gradient-dir, to right), var(--deco-color) calc(50% - 0.85em - 2px), transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0));
+  background-image: var(--deco-img, linear-gradient(
+    var(--gradient-dir, to right),
+    var(--deco-color) calc(50% - 0.85em - 2px),
+    transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0)
+  );
 }
 noscript[data-status] {
   --min-padding: 1em;
@@ -794,8 +793,8 @@ noscript[data-status] {
   margin-inline: 0.5em;
   background-color: var(--system-color-lightRed);
 }
-dialog:not([open]) {
-  transform: scale(0);
+dialog[open] {
+  transform: scale(1);
 }
 dialog {
   --min-padding: clamp(0.5em, 4cqi, 1.5em);
@@ -803,7 +802,7 @@ dialog {
   color: var(--color-text, var(--system-color-darkBlue));
   container: dialog/inline-size;
   inline-size: min(480px, 80vi);
-  transform: scale(1);
+  transform: scale(0);
   border: none;
   z-index: 4;
 }
@@ -813,9 +812,6 @@ dialog::backdrop {
 dialog h3 {
   text-transform: capitalize;
   color: var(--system-color-text);
-}
-dialog .row {
-  justify-content: end;
 }
 @media screen and (min-width: 480px) {
   :root {
@@ -946,16 +942,20 @@ dialog .row {
 }
 
 @media(prefers-reduced-motion: no-preference) {
-	.blank-box, .step-indicator li::before, .step-indicator li::after {
+	.invoice__summary, .step-indicator li::before, .step-indicator li::after {
 	    transition: color .35s ease-in, background-color, .35s ease-out;
 	}
-	:is(.drawer, input, select, [class*="btn"]), :is(.theme-switch, .icon-start)::before, .icon-end::after {
-	    transition: all .35s ease-out;
+	:is(.drawer, input, select, [class*="btn"]),
+    :is(.theme-switch, .icon-start)::before,
+    input[type="checkbox"] + svg,
+    .icon-end::after {
+	    transition: all .35s cubic-bezier(.25, .1, .3, 1.5);
 	}
 	step-by-step > * {
       transition: transform .35s ease-out;
 	}
-  dialog.blank-box {
+    dialog.blank-box {
       transition: transform .35s cubic-bezier(.25, .1, .3, 1.5);
-  }
+    }
 }
+
