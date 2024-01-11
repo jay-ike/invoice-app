@@ -180,6 +180,7 @@ config.stepIndicators = document.querySelectorAll(".step-indicator > li");
 config.nextFormStep = document.querySelector("#next_step");
 config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
+config.previewer = document.querySelector("#preview");
 config.storage = store();
 config.dispatch = new EventDispatcher().dispatch;
 config.drawerMeta = Object.freeze({
@@ -362,6 +363,9 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         config.dialog.dataset.invoice = data.reference;
         config.dispatch("dialogopened", data);
         config.dialog.showModal();
+    }
+    if (target.dataset.icon === "file-download") {
+        config.previewer.contentWindow.print();
     }
 }, false);
 config.dispatch("invoicesupdated", {invoices: config.storage.getAll()});

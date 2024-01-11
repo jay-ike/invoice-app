@@ -83,6 +83,10 @@
 .transparent-box {
     --color-fill: transparent;
 }
+[aria-hidden="true"] {
+    position: absolute;
+    clip-path: inset(50%);
+}
 @layer utils {
   .invoice-grid {
     display: grid;
@@ -910,7 +914,7 @@ dialog h3 {
   body {
     --y-offset: 0px;
     display: grid;
-    grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(clamp(618px, 60vi, 719px), 2.5fr) 1fr;
+    grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(clamp(618px, 60vi, 719px), 2fr) 1fr;
   }
   body > main {
     grid-area: main;
