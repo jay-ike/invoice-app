@@ -29,6 +29,16 @@ function storage() {
             }
         }
     }
+    function groupByStatus(invoices) {
+        return Object.values(invoices).reduce(function (acc, invoice) {
+            if (!Array.isArray(acc[invoice.status])) {
+                acc[invoice.status] = [invoice];
+            } else {
+                acc[invoice.status].push(invoice);
+            }
+            return acc;
+        }, Object.create(null));
+    }
     refs.all = Object.values(store).reduce(function (acc, value) {
         const invoices = deserializeInvoices(value);
         invoices.forEach(function (invoice) {
@@ -48,14 +58,7 @@ function storage() {
             let items;
             const deletedItem = refs.all[id];
             delete refs.all[id];
-            items = Object.values(refs.all).reduce(function (acc, invoice) {
-                if (!Array.isArray(acc[invoice.status])) {
-                    acc[invoice.status] = [invoice];
-                } else {
-                    acc[invoice.status].push(invoice);
-                }
-                return acc;
-            }, Object.create(null));
+            items = groupByStatus(refs.all);
             Object.entries(items).forEach(
                 ([key, value]) => updateStore(key, value)
             );
@@ -75,6 +78,15 @@ function storage() {
             if (Array.isArray(value)) {
                 refs.update(value);
             }
+        },
+        upsertById(id, newValue) {
+            let oldValue = refs.all[id] ?? {};
+            Object.assign(oldValue, newValue);
+            refs.all[id] = oldValue;
+            oldValue = groupByStatus(refs.all);
+            Object.entries(oldValue).forEach(
+                ([key, value]) => updateStore(key, value)
+            );
         }
     });
 }
