@@ -89,7 +89,7 @@
                             <dt>status</dt>
                             <dd class="box status-box icon-start" data-property="status" data-event="previewrequested">pending</dd>
                         </dl>
-                        <div class="box invoice__actions">
+                        <div class="box invoice__actions" data-event="previewrequested" data-attributes="data-id:reference">
                             <button class="box btn-edit">edit</button>
                             <button class="box btn-danger">delete</button>
                             <button class="box btn-primary paid">mark as paid</button>
@@ -248,11 +248,11 @@
                </div>
             </section>
         </main>
-        <dialog class="blank-box">
+        <dialog class="blank-box" data-emit="dialogopened">
             <form method="dialog" class="column">
                 <h3 class="heading-m">confirm deletion</h3>
                 <p>
-                <span data-suffix=" #XM0141">Are you sure you want to delete invoice</span>?
+                <span>Are you sure you want to delete invoice #<span data-event="dialogopened" data-property="reference"></span></span>?
                 <strong>This action cannot be undone.</strong>
                 </p>
                 <menu class="row">

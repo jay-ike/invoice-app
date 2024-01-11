@@ -1,55 +1,73 @@
-/*jslint browser*/
+/*jslint browser, this*/
 
-function updateContent(element, data) {
+function updateContent(element) {
     const {property} = element.dataset;
-    element.textContent = data[property];
+    if (property !== undefined) {
+        return function (data) {
+            element.textContent = data[property] ?? "";
+        };
+    }
 }
-function updateAttributes(element, data) {
+function updateAttributes(element) {
     let entries;
     const {attributes} = element.dataset;
     if (attributes !== undefined) {
         entries = attributes.split(",").map((val) => val.split(":"));
-        entries.forEach(function ([attr, value]) {
-            element.setAttribute(attr, data[value]);
+        entries = entries.map(function ([attr, value]) {
+            return (elt, data) => elt.setAttribute(attr, data[value]);
         });
         delete element.dataset.attributes;
+        return (data) => entries.forEach((fn) => fn(element, data));
     }
 }
-function updateItem(item, data) {
-    let updatableElements = item.querySelectorAll("[data-property], [data-attributes]");
-    updatableElements.forEach(function (elt) {
-        const {property} = elt.dataset;
-        updateAttributes(elt, data);
-        if (property !== undefined) {
-            elt.textContent = data[property];
-        }
+function updateItem(item) {
+    const selector = "[data-property], [data-attributes]";
+    let updatableElements = Array.from(item.querySelectorAll(selector));
+    let tmp;
+    updatableElements = updatableElements.map(function (elt) {
+        const chain = [];
+        chain[chain.length] = updateAttributes(elt);
+        chain[chain.length] = updateContent(elt);
+        return (data) => chain.filter(
+            (fn) => typeof fn === "function"
+        ).forEach((fn) => fn(data));
     });
-    updateAttributes(item, data);
-}
-function updateChildren(element, template, data) {
-    const childrenDatas = data[element.dataset.for];
-    element.textContent = "";
-    if (Array.isArray(childrenDatas)) {
-        childrenDatas.forEach(function (data) {
-            const item = template.cloneNode(true);
-            updateItem(item, data);
-            element.insertAdjacentElement("beforeend", item);
-        });
+    tmp = updateAttributes(item);
+    if (typeof tmp === "function") {
+        updatableElements[updatableElements.length] = tmp;
     }
+    return (data) => updatableElements.forEach((fn) => fn(data));
+}
+function updateChildren(element, template) {
+    return function (data = {}) {
+        let datas = data[element.dataset.for];
+        element.textContent = "";
+        if (Array.isArray(datas)) {
+            datas = datas.forEach(function (childData) {
+                const item = template.cloneNode(true);
+                updateItem(item)(childData);
+                element.insertAdjacentElement("beforeend", item);
+            });
+        }
+    };
 }
 function parseElement(element) {
-    const {attributes, property} = element.dataset;
+    const {property} = element.dataset;
     const chain = [];
     let template;
-    if (attributes !== undefined) {
-        chain[chain.length] = (data) => updateAttributes(element, data);
+    let tmp;
+
+    tmp = updateAttributes(element);
+    if (typeof tmp === "function") {
+        chain[chain.length] = tmp;
     }
     if (property !== undefined) {
-        chain[chain.length] = (data) => updateContent(element, data);
+        chain[chain.length] = updateContent(element);
     }
     if (element.dataset.for !== undefined) {
         template = element.firstElementChild.cloneNode(true);
-        chain[chain.length] = (data) => updateChildren(element, template, data);
+        element.textContent = "";
+        chain[chain.length] = updateChildren(element, template);
     }
     return (data) => chain.forEach((fn) => fn(data));
 }

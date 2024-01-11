@@ -181,7 +181,7 @@ config.nextFormStep = document.querySelector("#next_step");
 config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
 config.storage = store();
-config.dispatcher = new EventDispatcher();
+config.dispatch = new EventDispatcher().dispatch;
 config.drawerMeta = Object.freeze({
     create: {action: "new invoice", cancel: "discard", proceed: "save & send"},
     edit: {action: "edit ", cancel: "cancel", proceed: "save changes"}
@@ -238,8 +238,8 @@ document.body.addEventListener("click", function ({target}) {
         currentTheme = config.themeSwitches[currentTheme];
     }
     if (target.classList.contains("invoice__summary")) {
-        data = config.storage.get("pending")[0];
-        config.dispatcher.dispatch("previewrequested", data);
+        data = config.storage.getById(target.dataset.id);
+        config.dispatch("previewrequested", data);
         target.closest("step-by-step").gotoStep(1);
     }
     if (target.classList.contains("back")) {
@@ -247,7 +247,7 @@ document.body.addEventListener("click", function ({target}) {
     }
     if (target.id === "new_invoice") {
         data = {action: "new invoice", reference: ""};
-        config.dispatcher.dispatch("draweropened", config.drawerMeta.create);
+        config.dispatch("draweropened", config.drawerMeta.create);
         document.body.dataset.drawer = "show";
     }
 }, false);
@@ -322,7 +322,10 @@ config.dialog.addEventListener("cancel", function (event) {
     config.dialog.close("cancel");
 });
 config.dialog.addEventListener("close", function () {
-    if (config.dialog.returnValue === "delete") {
+    let {dialog, storage} = config;
+    if (dialog.returnValue === "delete") {
+        storage.deleteById(dialog.dataset.invoice);
+        config.dispatch("invoicesupdated", {invoices: storage.getAll()});
         config.invoiceDetails.closest("step-by-step").gotoStep(0);
     }
 });
@@ -334,7 +337,7 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         config.invoiceDetails.closest("step-by-step").gotoStep(0);
     }
     if (target.classList.contains("btn-edit")) {
-        data = config.storage.get("pending")[0];
+        data = config.storage.getById(target.parentElement.dataset.id);
         form = config.invoiceForm;
         Object.entries(data).forEach(function ([key, value]) {
             if (form[key] !== undefined) {
@@ -347,7 +350,7 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         notifyFormChange(form, {isValid: form.checkValidity()});
         Object.assign(drawerData, config.drawerMeta.edit);
         drawerData.reference = data.reference;
-        config.dispatcher.dispatch("draweropened", drawerData);
+        config.dispatch("draweropened", drawerData);
         config.drawer.dataset.edit = "";
         if (data.step !== undefined) {
             config.invoiceForm.firstElementChild.gotoStep(data.step);
@@ -355,13 +358,13 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         document.body.dataset.drawer = "show";
     }
     if (target.classList.contains("btn-danger")) {
-        data = config.storage.get("pending") ?? [];
-        data = data[0] ?? {};
+        data = config.storage.getById(target.parentElement.dataset.id);
         config.dialog.dataset.invoice = data.reference;
+        config.dispatch("dialogopened", data);
         config.dialog.showModal();
     }
 }, false);
-config.dispatcher.dispatch("invoicesupdated", {invoices: config.storage.getAll()});
+config.dispatch("invoicesupdated", {invoices: config.storage.getAll()});
 
 StepByStep.define();
 Datepicker.define();
