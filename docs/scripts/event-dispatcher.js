@@ -90,9 +90,9 @@ function contentDispatcher(target) {
         }
     };
 }
-function EventDispatcher() {
+function EventDispatcher(rootElement) {
     const self = Object.create(this);
-    let emitters = Array.from(document.querySelectorAll("[data-emit]")).reduce(
+    let emitters = Array.from(rootElement.querySelectorAll("[data-emit]")).reduce(
         function (acc, emitter) {
             acc[emitter.dataset.emit] = contentDispatcher(emitter);
             return acc;

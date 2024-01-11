@@ -547,7 +547,8 @@ label {
   .invoice__summary:is(:focus, :hover) {
       border: 1px solid var(--system-color-softBlue);
   }
-  :is([data-status="paid"], [data-status="draft"]) .paid {
+  :is([data-status="paid"], [data-status="draft"]) .paid,
+  [data-status="paid"] .btn-edit {
       display: none;
   }
 .items-box {

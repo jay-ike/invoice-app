@@ -4,7 +4,14 @@ import Datepicker from "./datepicker.js";
 import store from "./storage.js";
 import {EventDispatcher} from "./event-dispatcher.js";
 
-const {CustomEvent, HTMLCollection, Intl, crypto, matchMedia} = window;
+const {
+    CustomEvent,
+    HTMLCollection,
+    Intl,
+    MessageChannel,
+    crypto,
+    matchMedia
+} = window;
 const config = Object.create(null);
 const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 const researchedTags = ["input", "select", "output"];
@@ -173,6 +180,7 @@ function getFormDatas(ref, status) {
 }
 
 config.themeSwitches = {dark: "light", light: "dark"};
+config.channel = new MessageChannel();
 config.drawer = document.querySelector(".drawer");
 config.invoiceForm = document.querySelector("form#invoice_form");
 config.invoiceDetails = document.querySelector(".invoice__details");
@@ -182,7 +190,7 @@ config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
 config.previewer = document.querySelector("#preview");
 config.storage = store();
-config.dispatch = new EventDispatcher().dispatch;
+config.dispatch = new EventDispatcher(document).dispatch;
 config.drawerMeta = Object.freeze({
     create: {action: "new invoice", cancel: "discard", proceed: "save & send"},
     edit: {action: "edit ", cancel: "cancel", proceed: "save changes"}
@@ -240,6 +248,7 @@ document.body.addEventListener("click", function ({target}) {
     }
     if (target.classList.contains("invoice__summary")) {
         data = config.storage.getById(target.dataset.id);
+        config.channel.port1.postMessage(Object.assign({}, data));
         config.dispatch("previewrequested", data);
         target.closest("step-by-step").gotoStep(1);
     }
@@ -252,6 +261,13 @@ document.body.addEventListener("click", function ({target}) {
         document.body.dataset.drawer = "show";
     }
 }, false);
+config.previewer.addEventListener("load", function () {
+    config.previewer.contentWindow.postMessage(
+        "message port sent",
+        "*",
+        [config.channel.port2]
+    );
+});
 config.drawer.addEventListener("input", function ({target}) {
     let fieldset;
     let itemName;
