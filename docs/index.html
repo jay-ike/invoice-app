@@ -67,13 +67,13 @@
                         </details>
                         <button id="new_invoice" data-icon="add-circle" class="row icon-start btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
-                    <div class="invoices stack grow-2" data-for="invoices" data-event="invoicesupdated">
+                    <div class="invoices stack grow-2" data-for="invoices" data-event="invoicesupdated" data-memoized data-id="reference">
                         <dl class="blank-box invoice-grid invoice__summary extend-click" data-attributes="data-status:status,data-id:reference">
-                            <dt data-prefix="#" data-property="reference">RT3080</dt>
-                            <dd class="label-text" data-prefix="Due " data-property="dueDate">19 Aug 2021</dd>
-                            <dd class="label-text" data-property="clientName">Melissa Clarke</dd>
-                            <dd data-property="totalAmount">$ 4,032.33</dd>
-                            <dd class="box icon-start status-box" data-property="status">pending</dd>
+                            <dt data-prefix="#" data-property="reference"></dt>
+                            <dd class="label-text" data-prefix="Due " data-property="dueDate"></dd>
+                            <dd class="label-text" data-property="clientName"></dd>
+                            <dd data-property="totalAmount"></dd>
+                            <dd class="box icon-start status-box" data-property="status"></dd>
                         </dl>
                     </div>
                     <div class="empty box center stack">
@@ -87,7 +87,7 @@
                     <div class="invoice__status blank-box" data-event="previewrequested" data-attributes="data-status:status">
                         <dl class="row">
                             <dt>status</dt>
-                            <dd class="box status-box icon-start" data-property="status" data-event="previewrequested">pending</dd>
+                            <dd class="box status-box icon-start" data-property="status" data-event="previewrequested"></dd>
                         </dl>
                         <div class="box invoice__actions" data-event="previewrequested" data-attributes="data-id:reference">
                             <button class="box btn-edit">edit</button>
@@ -101,35 +101,35 @@
                         <dl class="invoice-grid invoice__desc label-text">
                             <div class="row">
                                 <div>
-                                    <dt class="content-bold" data-prefix="#" data-event="previewrequested" data-property="reference">XM9141</dt>
-                                    <dd data-event="previewrequested" data-property="description" >Graphic design</dd>
+                                    <dt class="content-bold" data-prefix="#" data-event="previewrequested" data-property="reference"></dt>
+                                    <dd data-event="previewrequested" data-property="description" ></dd>
                                 </div>
                                 <div>
-                                    <dt data-event="previewrequested" data-property="senderAddress">19 Union Terrace</dt>
-                                    <dd data-event="previewrequested" data-property="senderCity">London</dd>
-                                    <dd data-event="previewrequested" data-property="senderPostCode">31 EZ</dd>
-                                    <dd data-event="previewrequested" data-property="senderCountry">United Kingdom</dd>
+                                    <dt data-event="previewrequested" data-property="senderAddress"></dt>
+                                    <dd data-event="previewrequested" data-property="senderCity"></dd>
+                                    <dd data-event="previewrequested" data-property="senderPostCode"></dd>
+                                    <dd data-event="previewrequested" data-property="senderCountry"></dd>
                                 </div>
                             </div>
                             <div>
                                 <dt>Invoice Date</dt>
-                                <dd data-event="previewrequested" data-property="invoiceDate" class="content-bold">21 Aug 2023</dd>
+                                <dd data-event="previewrequested" data-property="invoiceDate" class="content-bold"></dd>
                             </div>
                             <div>
                                 <dt>Payment Due</dt>
-                                <dd class="content-bold" data-event="previewrequested" data-property="dueDate">20 Sept 2023</dd>
+                                <dd class="content-bold" data-event="previewrequested" data-property="dueDate"></dd>
                             </div>
                             <div>
                                 <dt>Bill To</dt>
-                                <dd data-event="previewrequested" data-property="clientName" class="content-bold">Alex Grim</dd>
-                                <dd data-event="previewrequested" data-property="clientAddress">84 Church Way</dd>
-                                <dd data-event="previewrequested" data-property="clientCity">Bradford</dd>
-                                <dd data-event="previewrequested" data-property="clientPostCode">BD1 9PB</dd>
-                                <dd data-event="previewrequested" data-property="clientCountry">United Kingdom</dd>
+                                <dd data-event="previewrequested" data-property="clientName" class="content-bold"></dd>
+                                <dd data-event="previewrequested" data-property="clientAddress"></dd>
+                                <dd data-event="previewrequested" data-property="clientCity"></dd>
+                                <dd data-event="previewrequested" data-property="clientPostCode"></dd>
+                                <dd data-event="previewrequested" data-property="clientCountry"></dd>
                             </div>
                             <div>
                                 <dt>Sent To</dt>
-                                <dd data-event="previewrequested" data-property="clientMail" class="content-bold">alexgrim@gmail.com</dd>
+                                <dd data-event="previewrequested" data-property="clientMail" class="content-bold"></dd>
                             </div>
                         </dl>
                         <div class="invoice__table">
@@ -151,7 +151,7 @@
                             </div>
                             <dl class="box amount-box segragator">
                                 <dt>grand total</dt>
-                                <dd class="content-bold" data-event="previewrequested" data-property="totalAmount">956.0</dd>
+                                <dd class="content-bold" data-event="previewrequested" data-property="totalAmount"></dd>
                             </dl>
                         </div>
                     </div>
@@ -159,20 +159,12 @@
             </step-by-step>
 
             <section class="drawer box column" data-emit="draweropened">
-                <h2 class="heading-l"><span data-event="draweropened" data-property="action">new invoice</span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="reference"></span></h2>
+                <h2 class="heading-l"><span data-event="draweropened" data-property="action"></span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="reference"></span></h2>
                <ul class="step-indicator">
-                <li class="step-active">
-                    <p>your informations</p>
-                </li>
-                <li>
-                    <p>your client informations</p>
-                </li>
-                <li>
-                    <p>terms of payments</p>
-                </li>
-                <li>
-                    <p>the billing items</p>
-                </li>
+                <li class="step-active"><p>your informations</p></li>
+                <li><p>your client informations</p></li>
+                <li><p>terms of payments</p></li>
+                <li><p>the billing items</p></li>
                </ul>
                <span class="segragator no-gap no-padding">
 					<button class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true" autocomplete="off">previous step</button>
@@ -243,7 +235,7 @@
                    </step-by-step>
                </form>
                <div>
-					<button class="box btn-edit cancel" data-event="draweropened" data-property="cancel">discard</button>
+					<button class="box btn-edit cancel" data-event="draweropened" data-property="cancel"></button>
 					<button class="box btn-draft">save as draft</button>
 					<button class="box btn-primary proceed" data-event="draweropened" data-property="proceed" disabled="true" autocomplete="off">save & send</button>
                </div>

@@ -36,17 +36,86 @@ function updateItem(item) {
     if (typeof tmp === "function") {
         updatableElements[updatableElements.length] = tmp;
     }
-    return (data) => updatableElements.forEach((fn) => fn(data));
+    return (data) => (
+        typeof data === "function"
+        ? data(item)
+        : updatableElements.forEach((fn) => fn(data))
+    );
 }
-function updateChildren(element, template) {
+function updateChildren(element, clone) {
+    const {id, memoized} = element.dataset;
+    const sealer = sealerFactory();
+    const keys = Object.create(null);
+    function addKey(id, fn) {
+        let key = sealer.seal(fn);
+        keys[id] = key;
+    }
+    function callFn(id, data) {
+        let fn = sealer.unseal(keys[id]);
+        if (typeof fn !== "function") {
+            return;
+        }
+        if (typeof data === "function") {
+            data(fn);
+        } else {
+            fn(data);
+        }
+    }
+    function remove(element) {
+        element.remove();
+    }
+    function add(item) {
+        element.insertAdjacentElement("beforeend", item);
+    }
+    function processMemoizedData(data) {
+        let fn;
+        if (data[id] === undefined) {
+            return;
+        }
+        if (keys[data[id]] !== undefined) {
+            callFn(data[id], data);
+        } else {
+            fn = updateItem(clone());
+            addKey(data[id], fn);
+            fn(data);
+            fn(add);
+        }
+    }
+    function updateMemoizedData(datas) {
+        datas.forEach(function itemUpdater(data) {
+            callFn(data[id], data);
+        });
+    }
+    function handleNewData(datas, updated) {
+        let currentIds;
+        let itemsToRemove;
+        if (updated) {
+            updateMemoizedData(datas);
+        } else {
+            currentIds = datas.map((data) => data[id]);
+            itemsToRemove = Object.keys(keys).filter(
+                (key) => !currentIds.includes(key)
+            );
+            datas.forEach(processMemoizedData);
+            itemsToRemove.forEach(function removeItem(key) {
+                callFn(key, (fn) => fn(remove));
+            });
+        }
+    }
     return function (data = {}) {
         let datas = data[element.dataset.for];
-        element.textContent = "";
-        if (Array.isArray(datas)) {
-            datas = datas.forEach(function (childData) {
-                const item = template.cloneNode(true);
-                updateItem(item)(childData);
-                element.insertAdjacentElement("beforeend", item);
+        const {update} = data;
+        if (!Array.isArray(datas)) {
+            return;
+        }
+        if (memoized !== undefined) {
+            handleNewData(datas, update);
+        } else {
+            element.textContent = "";
+            datas.forEach(function itemBuilder(childData) {
+                let fn = updateItem(clone());
+                fn(childData);
+                fn(add);
             });
         }
     };
@@ -54,7 +123,7 @@ function updateChildren(element, template) {
 function parseElement(element) {
     const {property} = element.dataset;
     const chain = [];
-    let template;
+    let cloner;
     let tmp;
 
     tmp = updateAttributes(element);
@@ -65,9 +134,10 @@ function parseElement(element) {
         chain[chain.length] = updateContent(element);
     }
     if (element.dataset.for !== undefined) {
-        template = element.firstElementChild.cloneNode(true);
+        tmp = element.firstElementChild.cloneNode(true);
+        cloner = () => tmp.cloneNode(true);
         element.textContent = "";
-        chain[chain.length] = updateChildren(element, template);
+        chain[chain.length] = updateChildren(element, cloner);
     }
     return (data) => chain.forEach((fn) => fn(data));
 }
@@ -92,7 +162,9 @@ function contentDispatcher(target) {
 }
 function EventDispatcher(rootElement) {
     const self = Object.create(this);
-    let emitters = Array.from(rootElement.querySelectorAll("[data-emit]")).reduce(
+    let emitters = Array.from(
+        rootElement.querySelectorAll("[data-emit]")
+    ).reduce(
         function (acc, emitter) {
             acc[emitter.dataset.emit] = contentDispatcher(emitter);
             return acc;

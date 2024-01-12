@@ -83,10 +83,10 @@ function storage() {
             let oldValue = refs.all[id] ?? {};
             Object.assign(oldValue, newValue);
             refs.all[id] = oldValue;
-            oldValue = groupByStatus(refs.all);
-            Object.entries(oldValue).forEach(
+            Object.entries(groupByStatus(refs.all)).forEach(
                 ([key, value]) => updateStore(key, value)
             );
+            return oldValue;
         }
     });
 }

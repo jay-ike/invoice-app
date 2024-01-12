@@ -119,6 +119,10 @@ function closeDrawer(formDatas) {
     if (formDatas !== undefined && config.drawer.dataset.edit !== undefined) {
         config.dispatch("previewrequested", formDatas);
         config.channel.port1.postMessage(formDatas);
+        config.dispatch(
+            "invoicesupdated",
+            {invoices: [formDatas], update: true}
+        );
     }
     delete document.body.dataset.drawer;
     delete config.drawer.dataset.edit;
@@ -306,7 +310,6 @@ config.drawer.addEventListener("formstatechanged", function ({detail}) {
 }, false);
 config.drawer.addEventListener("click", function ({target}) {
     let formDatas;
-    let storedDatas;
     const form = config.invoiceForm;
     const {dataset} = document.body;
     if (target.classList.contains("cancel")) {
@@ -329,15 +332,7 @@ config.drawer.addEventListener("click", function ({target}) {
     }
     if (target.classList.contains("proceed") && form.checkValidity()) {
         formDatas = getFormDatas(dataset.id);
-        config.storage.upsertById(formDatas.reference, formDatas);
-        closeDrawer(formDatas);
-    }
-    if (target.classList.contains("btn-draft")) {
-        formDatas = getFormDatas(null, "draft");
-        formDatas.step = config.invoiceForm.getCurrentStep();
-        storedDatas = config.storage.get("draft") ?? [];
-        storedDatas[storedDatas.length] = formDatas;
-        config.storage.set("draft", storedDatas);
+        formDatas = config.storage.upsertById(formDatas.reference, formDatas);
         closeDrawer(formDatas);
     }
 }, false);
