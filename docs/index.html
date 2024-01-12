@@ -89,7 +89,7 @@
                             <dt>status</dt>
                             <dd class="box status-box icon-start" data-property="status" data-event="previewrequested"></dd>
                         </dl>
-                        <div class="box invoice__actions" data-event="previewrequested" data-attributes="data-id:reference">
+                        <div class="box invoice__actions">
                             <button class="box btn-edit">edit</button>
                             <button class="box btn-danger">delete</button>
                             <button class="box btn-primary paid">mark as paid</button>
@@ -158,7 +158,7 @@
                 </section>
             </step-by-step>
 
-            <section class="drawer box column" data-emit="draweropened">
+            <section class="drawer box column" data-emit="draweropened" data-attributes="data-edit:edit">
                 <h2 class="heading-l"><span data-event="draweropened" data-property="action"></span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="reference"></span></h2>
                <ul class="step-indicator">
                 <li class="step-active"><p>your informations</p></li>

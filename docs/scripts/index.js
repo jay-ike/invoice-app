@@ -1,3 +1,4 @@
+
 /*jslint browser*/
 import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
@@ -189,6 +190,29 @@ function getFormDatas(ref, status) {
     result.status = status ?? "pending";
     return result;
 }
+function handleEdition() {
+    let data = config.storage.getById(document.body.dataset.id);
+    let form = config.invoiceForm;
+    const drawerData = Object.assign(
+        {reference: data.reference},
+        config.drawerMeta.edit
+    );
+    Object.entries(data).forEach(function formUpdater([key, value]) {
+        if (form.elements[key] !== undefined) {
+            form.elements[key].value = value;
+        }
+        if (key === "items") {
+            initializeItems(value);
+        }
+    });
+    notifyFormChange(form, {isValid: form.checkValidity()});
+    drawerData.reference = data.reference;
+    config.dispatch("draweropened", drawerData);
+    if (data.step !== undefined) {
+        config.invoiceForm.firstElementChild.gotoStep(data.step);
+    }
+    document.body.dataset.drawer = "show";
+}
 
 config.themeSwitches = {dark: "light", light: "dark"};
 config.channel = new MessageChannel();
@@ -204,7 +228,7 @@ config.storage = store();
 config.dispatch = new EventDispatcher(document).dispatch;
 config.drawerMeta = Object.freeze({
     create: {action: "new invoice", cancel: "discard", proceed: "save & send"},
-    edit: {action: "edit ", cancel: "cancel", proceed: "save changes"}
+    edit: {action: "edit ", cancel: "cancel", edit: "", proceed: "save changes"}
 });
 
 config.invoiceForm.getDueDate = function () {
@@ -308,7 +332,7 @@ config.drawer.addEventListener("formstatechanged", function ({detail}) {
     const {isValid} = detail;
     config.drawer.querySelector(".proceed").disabled = !isValid;
 }, false);
-config.drawer.addEventListener("click", function ({target}) {
+config.drawer.addEventListener("click", function drawerClickHandler({target}) {
     let formDatas;
     const form = config.invoiceForm;
     const {dataset} = document.body;
@@ -351,43 +375,28 @@ config.dialog.addEventListener("close", function () {
     }
 });
 config.invoiceDetails.addEventListener("click", function ({target}) {
-    let form;
     let data;
-    let drawerData = {};
     if (target.classList.contains("back")) {
         delete document.body.dataset.id;
         config.invoiceDetails.closest("step-by-step").gotoStep(0);
     }
     if (target.classList.contains("btn-edit")) {
-        data = config.storage.getById(document.body.dataset.id);
-        form = config.invoiceForm;
-        Object.entries(data).forEach(function ([key, value]) {
-            if (form[key] !== undefined) {
-                form[key].value = value;
-            }
-            if (key === "items") {
-                initializeItems(value);
-            }
-        });
-        notifyFormChange(form, {isValid: form.checkValidity()});
-        Object.assign(drawerData, config.drawerMeta.edit);
-        drawerData.reference = data.reference;
-        config.dispatch("draweropened", drawerData);
-        config.drawer.dataset.edit = "";
-        config.drawer.dataset.id = data.reference;
-
-        if (data.step !== undefined) {
-            config.invoiceForm.firstElementChild.gotoStep(data.step);
-        }
-        document.body.dataset.drawer = "show";
+        handleEdition();
     }
     if (target.classList.contains("btn-danger")) {
-        data = config.storage.getById(target.parentElement.dataset.id);
+        data = config.storage.getById(document.body.dataset.id);
         config.dispatch("dialogopened", data);
         config.dialog.showModal();
     }
     if (target.dataset.icon === "file-download") {
         config.previewer.contentWindow.print();
+    }
+    if (target.classList.contains("paid")) {
+        data = config.storage.getById(document.body.dataset.id);
+        data.status = "paid";
+        data = config.storage.upsertById(data.reference, data);
+        config.dispatch("previewrequested", data);
+        config.dispatch("invoicesupdated", {invoices: [data], update: true});
     }
 }, false);
 config.dispatch("invoicesupdated", {invoices: config.storage.getAll()});

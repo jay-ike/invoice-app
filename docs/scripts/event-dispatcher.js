@@ -14,7 +14,13 @@ function updateAttributes(element) {
     if (attributes !== undefined) {
         entries = attributes.split(",").map((val) => val.split(":"));
         entries = entries.map(function ([attr, value]) {
-            return (elt, data) => elt.setAttribute(attr, data[value]);
+            return function attributeUpdater(elt, data) {
+                if (data[value] !== undefined) {
+                    elt.setAttribute(attr, data[value]);
+                } else {
+                    elt.removeAttribute(attr);
+                }
+            }
         });
         delete element.dataset.attributes;
         return (data) => entries.forEach((fn) => fn(element, data));
@@ -123,7 +129,7 @@ function updateChildren(element, clone) {
 function parseElement(element) {
     const {property} = element.dataset;
     const chain = [];
-    let cloner;
+    let elementFactory;
     let tmp;
 
     tmp = updateAttributes(element);
@@ -135,9 +141,9 @@ function parseElement(element) {
     }
     if (element.dataset.for !== undefined) {
         tmp = element.firstElementChild.cloneNode(true);
-        cloner = () => tmp.cloneNode(true);
+        elementFactory = () => tmp.cloneNode(true);
         element.textContent = "";
-        chain[chain.length] = updateChildren(element, cloner);
+        chain[chain.length] = updateChildren(element, elementFactory);
     }
     return (data) => chain.forEach((fn) => fn(data));
 }
@@ -166,7 +172,15 @@ function EventDispatcher(rootElement) {
         rootElement.querySelectorAll("[data-emit]")
     ).reduce(
         function (acc, emitter) {
-            acc[emitter.dataset.emit] = contentDispatcher(emitter);
+            const {emit} = emitter.dataset;
+            let dispatch = contentDispatcher(emitter);
+            const update = updateAttributes(emitter);
+            acc[emit] = function emitter(event, data) {
+                if (typeof update === "function" && event === emit) {
+                    update(data);
+                }
+                dispatch(event, data);
+            };
             return acc;
         },
         Object.create(null)
