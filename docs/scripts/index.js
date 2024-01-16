@@ -2,7 +2,7 @@
 /*jslint browser*/
 import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
-import store from "./storage.js";
+import {invoiceStorage, storage, storedInvoices} from "./storage.js";
 import {EventDispatcher} from "./event-dispatcher.js";
 
 const {
@@ -204,8 +204,8 @@ function getFormDatas(ref, status) {
     result.status = status ?? "pending";
     return result;
 }
-function handleEdition() {
-    let data = config.storage.getById(document.body.dataset.id);
+async function handleEdition() {
+    let data = config.db.getById(document.body.dataset.id);
     let form = config.invoiceForm;
     const drawerData = Object.assign(
         {reference: data.reference},
@@ -227,9 +227,9 @@ function handleEdition() {
     }
     document.body.dataset.drawer = "show";
 }
-function submitInvoice(id, state) {
+async function submitInvoice(id, state) {
     let data = getFormDatas(id, state);
-    data = config.storage.upsertById(data.reference, data);
+    data = await config.db.upsert(data);
     closeDrawer(data);
 }
 function initializeInvoices(invoices) {
@@ -258,7 +258,6 @@ config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
 config.previewer = document.querySelector("#preview");
 config.filterForm = document.querySelector("#status-form");
-config.storage = store();
 config.drawerMeta = Object.freeze({
     create: {action: "new invoice", cancel: "discard", proceed: "save & send"},
     edit: {action: "edit ", cancel: "cancel", edit: "", proceed: "save changes"}
@@ -307,7 +306,7 @@ config.invoiceForm.addEventListener("dateselected", function ({detail}) {
     config.invoiceForm.selectedDate = date;
 });
 
-document.body.addEventListener("click", function ({target}) {
+document.body.addEventListener("click", async function ({target}) {
     const root = document.documentElement;
     let data;
     if (target.classList.contains("theme-switch")) {
@@ -315,7 +314,7 @@ document.body.addEventListener("click", function ({target}) {
         currentTheme = config.themeSwitches[currentTheme];
     }
     if (target.classList.contains("invoice__summary")) {
-        data = config.storage.getById(target.dataset.id);
+        data = await config.db.getById(target.dataset.id);
         config.channel.port1.postMessage(Object.assign({}, data));
         emitter.of("previewrequested").dispatch(data);
         document.body.dataset.id = data.reference;
@@ -330,16 +329,13 @@ document.body.addEventListener("click", function ({target}) {
         document.body.dataset.drawer = "show";
     }
 }, false);
-config.filterForm.addEventListener("input", function () {
+config.filterForm.addEventListener("input", async function () {
     let statuses = getSelectedStatuses();
     let invoices;
     if (statuses.length === 0) {
-        invoices = config.storage.getAll();
+        invoices = await config.db.getAll();
     } else {
-        invoices = statuses.map((status) => config.storage.get(status)).reduce(
-            (acc, results) => acc.concat(results ?? []),
-            []
-        );
+        invoices = await config.db.getByStatuses(statuses);
     }
     initializeInvoices(invoices);
 }, false);
@@ -419,17 +415,17 @@ config.dialog.addEventListener("close", function () {
         delete document.body.dataset.id;
     }
 });
-config.invoiceDetails.addEventListener("click", function ({target}) {
+config.invoiceDetails.addEventListener("click", async function ({target}) {
     let data;
     if (target.classList.contains("back")) {
         delete document.body.dataset.id;
         config.invoiceDetails.closest("step-by-step").gotoStep(0);
     }
     if (target.classList.contains("btn-edit")) {
-        handleEdition();
+        await handleEdition();
     }
     if (target.classList.contains("btn-danger")) {
-        data = config.storage.getById(document.body.dataset.id);
+        data = await config.db.getById(document.body.dataset.id);
         emitter.of("dialogopened").dispatch(data);
         config.dialog.showModal();
     }
@@ -437,16 +433,21 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         config.previewer.contentWindow.print();
     }
     if (target.classList.contains("paid")) {
-        data = config.storage.getById(document.body.dataset.id);
+        data = config.db.getById(document.body.dataset.id);
         data.status = "paid";
-        data = config.storage.upsertById(data.reference, data);
+        data = config.db.upsert(data);
         emitter.of("previewrequested").dispatch(data);
         emitter.of("invoicesupdated").dispatch(
             {invoices: [data], update: true}
         );
     }
 }, false);
-initializeInvoices(config.storage.getAll());
+(async function initialization() {
+    let invoices;
+    config.db = await invoiceStorage();
+    invoices = await config.db.getAll();
+    initializeInvoices(invoices);
+}());
 
 StepByStep.define();
 Datepicker.define();

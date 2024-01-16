@@ -1,93 +1,42 @@
 /*jslint browser*/
+import {openDB} from "./idb-min.js";
 
-function parseInvoices(value) {
-    try {
-        return JSON.parse(value);
-    } catch (error) {
-        if (SyntaxError.prototype.isPrototypeOf(error)) {
-            return value;
-        }
-    }
-}
-function deserializeInvoices(storedValue) {
-    let result = parseInvoices(storedValue);
-    if (Array.isArray(result)) {
-        return result;
-    }
-    return [];
-}
-function storage() {
-    const store = window.localStorage;
-    const isSupported = typeof window.Storage === "function";
-    const refs = Object.create(null);
-    function updateStore(key, value) {
-        try {
-            store.setItem(key, JSON.stringify(value));
-        } catch (error) {
-            if (window.DOMException.prototype.isPrototypeOf(error)) {
-                window.console.warn("failed to store data ", error);
-            }
-        }
-    }
-    function groupByStatus(invoices) {
-        return Object.values(invoices).reduce(function (acc, invoice) {
-            if (!Array.isArray(acc[invoice.status])) {
-                acc[invoice.status] = [invoice];
-            } else {
-                acc[invoice.status].push(invoice);
-            }
-            return acc;
-        }, Object.create(null));
-    }
-    refs.all = Object.values(store).reduce(function (acc, value) {
-        const invoices = deserializeInvoices(value);
-        invoices.forEach(function (invoice) {
-            acc[invoice.reference] = invoice;
-        });
-        return acc;
-    }, Object.create(null));
-    refs.update = function (invoices) {
-        const self = this;
-        invoices.forEach(function (invoice) {
-            self.all[invoice.reference] = invoice;
-        });
-    };
-
-    return Object.freeze({
-        deleteById(id) {
-            let items;
-            const deletedItem = refs.all[id];
-            delete refs.all[id];
-            items = groupByStatus(refs.all);
-            Object.entries(items).forEach(
-                ([key, value]) => updateStore(key, value)
+async function invoiceStorage(dbName = "jay-ike_invoices", version = 1) {
+    const inv_store = "invoice";
+    let result = Object.create(null);
+    const db = await openDB(dbName, version, {
+        async upgrade(db) {
+            const store = db.createObjectStore(
+                inv_store, {keyPath: "reference"}
             );
-            if (items[deletedItem.status] === undefined) {
-                store.removeItem(deletedItem.status);
-            }
-        },
-        get(key) {
-            let result = store.getItem(key);
-            return parseInvoices(result);
-        },
-        getAll: () => Object.values(refs.all),
-        getById: (id) => refs.all[id],
-        isSupported,
-        set(key, value) {
-            updateStore(key, value);
-            if (Array.isArray(value)) {
-                refs.update(value);
-            }
-        },
-        upsertById(id, newValue) {
-            let oldValue = refs.all[id] ?? {};
-            Object.assign(oldValue, newValue);
-            refs.all[id] = oldValue;
-            Object.entries(groupByStatus(refs.all)).forEach(
-                ([key, value]) => updateStore(key, value)
-            );
-            return oldValue;
+            store.createIndex("status", "status", {unique: false});
         }
     });
+    result.addMany = async function insertMany(invoices) {
+        let tx = db.transaction(inv_store, "readwrite");
+        let actions = invoices.map((elt) => tx.store.add(elt));
+        actions[actions.length] = tx.done;
+        await Promise.all(actions);
+    }
+    result.upsert = async function upsert(invoice) {
+        let oldValue = await db.get(inv_store, invoice.reference);
+        oldValue = Object.assign(oldValue ?? {}, invoice);
+        await db.put(inv_store, oldValue, oldValue.reference);
+        return oldValue;
+    };
+    result.getById = (reference) => db.get(inv_store, reference);
+    result.getAll = () => db.getAll(inv_store);
+    result.getAllByStatuses = async function fetchByStatuses(statuses) {
+        let result = [];
+        let request;
+        if (!Array.isArray(statuses)) {
+            return result;
+        }
+        request = await db.getAllFromIndex(inv_store, "status");
+        return request.filter((elt) => statuses.includes(elt.status));
+    };
+    result.deleteById = (reference) => db.delete(inv_store, reference);
+    return result;
 }
-export default storage;
+export {invoiceStorage};
+export default null;
