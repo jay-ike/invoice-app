@@ -21,7 +21,7 @@ async function invoiceStorage(dbName = "jay-ike_invoices", version = 1) {
     result.upsert = async function upsert(invoice) {
         let oldValue = await db.get(inv_store, invoice.reference);
         oldValue = Object.assign(oldValue ?? {}, invoice);
-        await db.put(inv_store, oldValue, oldValue.reference);
+        await db.put(inv_store, oldValue);
         return oldValue;
     };
     result.getById = (reference) => db.get(inv_store, reference);

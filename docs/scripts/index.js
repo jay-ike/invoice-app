@@ -2,7 +2,7 @@
 /*jslint browser*/
 import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
-import {invoiceStorage, storage, storedInvoices} from "./storage.js";
+import {invoiceStorage} from "./storage.js";
 import {EventDispatcher} from "./event-dispatcher.js";
 
 const {
@@ -205,7 +205,7 @@ function getFormDatas(ref, status) {
     return result;
 }
 async function handleEdition() {
-    let data = config.db.getById(document.body.dataset.id);
+    let data = await config.db.getById(document.body.dataset.id);
     let form = config.invoiceForm;
     const drawerData = Object.assign(
         {reference: data.reference},
@@ -335,7 +335,7 @@ config.filterForm.addEventListener("input", async function () {
     if (statuses.length === 0) {
         invoices = await config.db.getAll();
     } else {
-        invoices = await config.db.getByStatuses(statuses);
+        invoices = await config.db.getAllByStatuses(statuses);
     }
     initializeInvoices(invoices);
 }, false);
@@ -406,11 +406,13 @@ config.dialog.addEventListener("cancel", function (event) {
     event.stopImmediatePropagation();
     config.dialog.close("cancel");
 });
-config.dialog.addEventListener("close", function () {
-    let {dialog, storage} = config;
+config.dialog.addEventListener("close", async function () {
+    let {db, dialog} = config;
+    let invoices;
     if (dialog.returnValue === "delete") {
-        storage.deleteById(document.body.dataset.id);
-        emitter.of("invoicesupdated").dispatch({invoices: storage.getAll()});
+        await db.deleteById(document.body.dataset.id);
+        invoices = await db.getAll();
+        emitter.of("invoicesupdated").dispatch({invoices});
         config.invoiceDetails.closest("step-by-step").gotoStep(0);
         delete document.body.dataset.id;
     }
