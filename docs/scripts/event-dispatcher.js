@@ -4,7 +4,14 @@ function updateContent(element) {
     const {property} = element.dataset;
     if (property !== undefined) {
         return function (data) {
-            element.textContent = data[property] ?? "";
+            let value = property.split(".").reduce(function (acc, prop) {
+                return acc[prop];
+            }, data);
+            element.textContent = (
+                typeof value === "function"
+                ? value(data)
+                : value
+            );
         };
     }
 }
@@ -20,7 +27,7 @@ function updateAttributes(element) {
                 } else {
                     elt.removeAttribute(attr);
                 }
-            }
+            };
         });
         delete element.dataset.attributes;
         return (data) => entries.forEach((fn) => fn(element, data));
@@ -73,23 +80,34 @@ function updateChildren(element, clone) {
     function add(item) {
         element.insertAdjacentElement("beforeend", item);
     }
+    function addNewItem(data) {
+        let fn = updateItem(clone());
+        addKey(data[id], fn);
+        fn(data);
+        fn(add);
+
+    }
     function processMemoizedData(data) {
-        let fn;
         if (data[id] === undefined) {
             return;
         }
         if (keys[data[id]] !== undefined) {
-            callFn(data[id], data);
+            callFn(data[id], function preview(fn) {
+                fn(data);
+                fn(add)
+            });
         } else {
-            fn = updateItem(clone());
-            addKey(data[id], fn);
-            fn(data);
-            fn(add);
+            addNewItem(data);
         }
     }
     function updateMemoizedData(datas) {
         datas.forEach(function itemUpdater(data) {
-            callFn(data[id], data);
+            let key = keys[data[id]];
+            if (key === undefined) {
+                addNewItem(data);
+            } else {
+                callFn(data[id], data);
+            }
         });
     }
     function handleNewData(datas, updated) {
@@ -175,7 +193,7 @@ function EventDispatcher(rootElement) {
             const {emit} = emitter.dataset;
             let dispatch = contentDispatcher(emitter);
             const update = updateAttributes(emitter);
-            acc[emit] = function emitter(event, data) {
+            acc[emit] = function emitHandler(event, data) {
                 if (typeof update === "function" && event === emit) {
                     update(data);
                 }
@@ -189,6 +207,15 @@ function EventDispatcher(rootElement) {
         if (emitters[event] !== undefined) {
             emitters[event](event, data);
         }
+    };
+    self.of = function (emitter) {
+        return Object.freeze({
+            dispatch(data, event = emitter) {
+                if (emitters[emitter] !== undefined) {
+                    emitters[emitter](event, data);
+                }
+            }
+        });
     };
     return self;
 }

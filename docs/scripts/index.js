@@ -24,12 +24,26 @@ const dateFormatter = new Intl.DateTimeFormat(
     navigator.language,
     {day: "numeric", month: "short", year: "numeric"}
 );
+const emitter = new EventDispatcher(document);
 let currentTheme = (
     matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light"
 );
-
+function pluralize(count) {
+    return (
+        count > 1
+        ? "s"
+        : ""
+    );
+}
+function getCountDescription(invoices) {
+    return (
+        invoices.length > 0
+        ? "total " + invoices.length + " invoice" + pluralize(invoices.length)
+        : "no invoice"
+    );
+}
 function formatCurrencyString(cost) {
     const amount = Number.parseFloat(cost);
     if (Number.isFinite(amount)) {
@@ -109,6 +123,7 @@ function requestItemDeletion(item) {
 }
 function closeDrawer(formDatas) {
     const form = config.invoiceForm;
+    const updateMessage = {invoices: [formDatas], update: true};
     let selector = ".inv-item:first-of-type [data-icon='delete']";
     let deletionButton;
     deletionButton = form.querySelector(selector);
@@ -117,20 +132,19 @@ function closeDrawer(formDatas) {
     deletionButton.click();
     config.invoiceForm.reset();
     form.firstElementChild.gotoStep(0);
-    if (formDatas !== undefined && config.drawer.dataset.edit !== undefined) {
-        config.dispatch("previewrequested", formDatas);
-        config.channel.port1.postMessage(formDatas);
-        config.dispatch(
-            "invoicesupdated",
-            {invoices: [formDatas], update: true}
-        );
-    }
     delete document.body.dataset.drawer;
-    delete config.drawer.dataset.edit;
+    if (formDatas === undefined) {
+        return;
+    }
+    if (config.drawer.dataset.edit !== undefined) {
+        emitter.of("previewrequested").dispatch(formDatas);
+        config.channel.port1.postMessage(formDatas);
+    }
+    emitter.of("invoicesupdated").dispatch(updateMessage);
 }
 function updateFieldsDatas(fieldset, data) {
     let name = fieldset.name;
-    Object.entries(data).forEach(function ([key, value]) {
+    Object.entries(data ?? {}).forEach(function ([key, value]) {
         let itemElt = name + "-" + key;
         if (fieldset.elements[itemElt] !== undefined) {
             fieldset.elements[itemElt].value = value;
@@ -207,11 +221,30 @@ function handleEdition() {
     });
     notifyFormChange(form, {isValid: form.checkValidity()});
     drawerData.reference = data.reference;
-    config.dispatch("draweropened", drawerData);
+    emitter.of("draweropened").dispatch(drawerData);
     if (data.step !== undefined) {
         config.invoiceForm.firstElementChild.gotoStep(data.step);
     }
     document.body.dataset.drawer = "show";
+}
+function submitInvoice(id, state) {
+    let data = getFormDatas(id, state);
+    data = config.storage.upsertById(data.reference, data);
+    closeDrawer(data);
+}
+function initializeInvoices(invoices) {
+    emitter.of("invoicesupdated").dispatch({invoices});
+    emitter.of("invoicesupdated").dispatch(
+        {detail: getCountDescription(invoices)},
+        "invoicesfiltered"
+    );
+}
+function getSelectedStatuses() {
+    return Array.from(config.filterForm.elements).map((elt) => (
+        elt.checked ?? false
+        ? elt.name.replace(/selected/i, "")
+        : null
+    )).filter((elt) => elt !== null);
 }
 
 config.themeSwitches = {dark: "light", light: "dark"};
@@ -224,8 +257,8 @@ config.nextFormStep = document.querySelector("#next_step");
 config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
 config.previewer = document.querySelector("#preview");
+config.filterForm = document.querySelector("#status-form");
 config.storage = store();
-config.dispatch = new EventDispatcher(document).dispatch;
 config.drawerMeta = Object.freeze({
     create: {action: "new invoice", cancel: "discard", proceed: "save & send"},
     edit: {action: "edit ", cancel: "cancel", edit: "", proceed: "save changes"}
@@ -251,7 +284,6 @@ config.invoiceForm.firstElementChild.addEventListener(
         const indicators = config.stepIndicators;
         let {current, previous} = detail;
         let step = 1;
-
         if (previous > current) {
             step = -1;
         }
@@ -285,7 +317,7 @@ document.body.addEventListener("click", function ({target}) {
     if (target.classList.contains("invoice__summary")) {
         data = config.storage.getById(target.dataset.id);
         config.channel.port1.postMessage(Object.assign({}, data));
-        config.dispatch("previewrequested", data);
+        emitter.of("previewrequested").dispatch(data);
         document.body.dataset.id = data.reference;
         target.closest("step-by-step").gotoStep(1);
     }
@@ -294,9 +326,22 @@ document.body.addEventListener("click", function ({target}) {
     }
     if (target.id === "new_invoice") {
         data = {action: "new invoice", reference: ""};
-        config.dispatch("draweropened", config.drawerMeta.create);
+        emitter.of("draweropened").dispatch(config.drawerMeta.create);
         document.body.dataset.drawer = "show";
     }
+}, false);
+config.filterForm.addEventListener("input", function () {
+    let statuses = getSelectedStatuses();
+    let invoices;
+    if (statuses.length === 0) {
+        invoices = config.storage.getAll();
+    } else {
+        invoices = statuses.map((status) => config.storage.get(status)).reduce(
+            (acc, results) => acc.concat(results ?? []),
+            []
+        );
+    }
+    initializeInvoices(invoices);
 }, false);
 config.previewer.addEventListener("load", function () {
     config.previewer.contentWindow.postMessage(
@@ -335,7 +380,6 @@ config.drawer.addEventListener("formstatechanged", function ({detail}) {
 config.drawer.addEventListener("click", function drawerClickHandler({target}) {
     let formDatas;
     const form = config.invoiceForm;
-    const {dataset} = document.body;
     if (target.classList.contains("cancel")) {
         closeDrawer();
     }
@@ -354,10 +398,11 @@ config.drawer.addEventListener("click", function drawerClickHandler({target}) {
         requestItemDeletion(target.parentElement);
         notifyFormChange(target, {isValid: formDatas.checkValidity()});
     }
-    if (target.classList.contains("proceed") && form.checkValidity()) {
-        formDatas = getFormDatas(dataset.id);
-        formDatas = config.storage.upsertById(formDatas.reference, formDatas);
-        closeDrawer(formDatas);
+    if (target.classList.contains("proceed")) {
+        submitInvoice(document.body.dataset.id);
+    }
+    if (target.classList.contains("btn-draft")) {
+        submitInvoice(null, "draft");
     }
 }, false);
 config.dialog.addEventListener("cancel", function (event) {
@@ -369,7 +414,7 @@ config.dialog.addEventListener("close", function () {
     let {dialog, storage} = config;
     if (dialog.returnValue === "delete") {
         storage.deleteById(document.body.dataset.id);
-        config.dispatch("invoicesupdated", {invoices: storage.getAll()});
+        emitter.of("invoicesupdated").dispatch({invoices: storage.getAll()});
         config.invoiceDetails.closest("step-by-step").gotoStep(0);
         delete document.body.dataset.id;
     }
@@ -385,7 +430,7 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
     }
     if (target.classList.contains("btn-danger")) {
         data = config.storage.getById(document.body.dataset.id);
-        config.dispatch("dialogopened", data);
+        emitter.of("dialogopened").dispatch(data);
         config.dialog.showModal();
     }
     if (target.dataset.icon === "file-download") {
@@ -395,11 +440,13 @@ config.invoiceDetails.addEventListener("click", function ({target}) {
         data = config.storage.getById(document.body.dataset.id);
         data.status = "paid";
         data = config.storage.upsertById(data.reference, data);
-        config.dispatch("previewrequested", data);
-        config.dispatch("invoicesupdated", {invoices: [data], update: true});
+        emitter.of("previewrequested").dispatch(data);
+        emitter.of("invoicesupdated").dispatch(
+            {invoices: [data], update: true}
+        );
     }
 }, false);
-config.dispatch("invoicesupdated", {invoices: config.storage.getAll()});
+initializeInvoices(config.storage.getAll());
 
 StepByStep.define();
 Datepicker.define();

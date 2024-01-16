@@ -28,43 +28,37 @@
             <step-by-step class="y-scrollable" out-indicator="step-out">
                 <section class="column box" data-emit="invoicesupdated">
                     <div class="row no-gap content-bold">
-                        <dl class="grow-2">
+                        <dl class="grow-2 capitalize">
                             <dt class="heading-l">Invoices</dt>
-                            <dd class="subtitle-text">No invoices</dd>
+                            <dd class="subtitle-text" data-event="invoicesfiltered" data-property="detail">No invoice</dd>
                         </dl>
-                        <details class="relative">
-                            <summary class="box heading-s row icon-end" data-icon="arrow_down">Filter <span class="sm-hide">by status</span></summary>
+                        <div class="opt-filter relative" tabindex="0">
+                            <p class="box heading-s row icon-end" data-icon="arrow_down">Filter <span class="sm-hide">by status</span></p>
                             <form id="status-form" class="stack box" action="">
                                 <div class="inv-option row">
                                     <span class="status-option no-shrink">
                                         <input type="checkbox" name="draftSelected" id="o-draft">
-                                        <svg>
-                                            <use href="#checked"></use>
-                                        </svg>
+                                        <svg><use href="#checked"></use></svg>
                                     </span>
                                     <label for="o-draft">Draft</label>
                                 </div>
                                 <div class="inv-option row">
                                     <span class="status-option no-shrink">
                                         <input type="checkbox" name="paidSelected" id="o-paid">
-                                        <svg>
-                                            <use href="#checked"></use>
-                                        </svg>
+                                        <svg><use href="#checked"></use></svg>
                                     </span>
                                     <label for="o-paid">Paid</label>
                                 </div>
                                 <div class="inv-option row">
                                     <span class="status-option no-shrink">
                                         <input type="checkbox" name="pendingSelected" id="o-pending">
-                                        <svg>
-                                            <use href="#checked"></use>
-                                        </svg>
+                                        <svg><use href="#checked"></use></svg>
                                     </span>
                                     <label for="o-pending">Pending</label>
                                 </div>
 
                             </form>
-                        </details>
+                        </div>
                         <button id="new_invoice" data-icon="add-circle" class="row icon-start btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
                     <div class="invoices stack grow-2" data-for="invoices" data-event="invoicesupdated" data-memoized data-id="reference">
