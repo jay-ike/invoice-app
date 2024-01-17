@@ -2,60 +2,18 @@
 /*jslint browser*/
 import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
-import {invoiceStorage} from "./storage.js";
+import utils from "./storage.js";
 import {EventDispatcher} from "./event-dispatcher.js";
 
-const {
-    CustomEvent,
-    HTMLCollection,
-    Intl,
-    MessageChannel,
-    crypto,
-    matchMedia
-} = window;
+const {CustomEvent, HTMLCollection} = window;
 const config = Object.create(null);
-const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+const formatter = utils.getFormatter();
 const researchedTags = ["input", "select", "output"];
-const numberFormatter = new Intl.NumberFormat(
-    navigator.language,
-    {currency: "XAF", style: "currency"}
-);
-const dateFormatter = new Intl.DateTimeFormat(
-    navigator.language,
-    {day: "numeric", month: "short", year: "numeric"}
-);
 const emitter = new EventDispatcher(document);
-let currentTheme = (
-    matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light"
-);
-function pluralize(count) {
-    return (
-        count > 1
-        ? "s"
-        : ""
-    );
-}
-function getCountDescription(invoices) {
-    return (
-        invoices.length > 0
-        ? "total " + invoices.length + " invoice" + pluralize(invoices.length)
-        : "no invoice"
-    );
-}
-function formatCurrencyString(cost) {
-    const amount = Number.parseFloat(cost);
-    if (Number.isFinite(amount)) {
-        return numberFormatter.format(amount);
-    }
-    return "";
-}
-function getInvoiceRef() {
-    let numbers = new Uint8Array(6);
-    crypto.getRandomValues(numbers);
-    return numbers.reduce((acc, val) => acc + alphabet[val % 32], "");
-}
+const countInvoices = utils.getInvoicesDescriptor();
+const printActor = utils.frameActor(document.querySelector("iframe#preview"));
+let currentTheme = utils.getColorScheme();
+
 function notifyFormChange(formElement, detail) {
     const options = {bubbles: true};
     options.detail = detail ?? {isValid: formElement.form.checkValidity()};
@@ -138,7 +96,7 @@ function closeDrawer(formDatas) {
     }
     if (config.drawer.dataset.edit !== undefined) {
         emitter.of("previewrequested").dispatch(formDatas);
-        config.channel.port1.postMessage(formDatas);
+        printActor.send(formDatas);
     }
     emitter.of("invoicesupdated").dispatch(updateMessage);
 }
@@ -182,7 +140,7 @@ function getFormDatas(ref, status) {
                 item[parts[1]] = elt.value;
                 if (amountProps.includes(parts[1])) {
                     cost = Number.parseFloat(elt.value);
-                    item[parts[1] + "Amount"] = formatCurrencyString(cost);
+                    item[parts[1] + "Amount"] = formatter.formatCurrency(cost);
                 }
                 if (parts[1] === "total") {
                     amount += cost;
@@ -199,8 +157,8 @@ function getFormDatas(ref, status) {
     if (result.dueDate === undefined) {
         delete result.dueDate;
     }
-    result.totalAmount = formatCurrencyString(amount);
-    result.reference = ref ?? getInvoiceRef();
+    result.totalAmount = formatter.formatCurrency(amount);
+    result.reference = ref ?? utils.generateCode();
     result.status = status ?? "pending";
     return result;
 }
@@ -235,7 +193,7 @@ async function submitInvoice(id, state) {
 function initializeInvoices(invoices) {
     emitter.of("invoicesupdated").dispatch({invoices});
     emitter.of("invoicesupdated").dispatch(
-        {detail: getCountDescription(invoices)},
+        {detail: countInvoices(invoices)},
         "invoicesfiltered"
     );
 }
@@ -248,7 +206,6 @@ function getSelectedStatuses() {
 }
 
 config.themeSwitches = {dark: "light", light: "dark"};
-config.channel = new MessageChannel();
 config.drawer = document.querySelector(".drawer");
 config.invoiceForm = document.querySelector("form#invoice_form");
 config.invoiceDetails = document.querySelector(".invoice__details");
@@ -256,7 +213,6 @@ config.stepIndicators = document.querySelectorAll(".step-indicator > li");
 config.nextFormStep = document.querySelector("#next_step");
 config.prevFormStep = document.querySelector("#prev_step");
 config.dialog = document.querySelector("dialog");
-config.previewer = document.querySelector("#preview");
 config.filterForm = document.querySelector("#status-form");
 config.drawerMeta = Object.freeze({
     create: {action: "new invoice", cancel: "discard", proceed: "save & send"},
@@ -269,7 +225,7 @@ config.invoiceForm.getDueDate = function () {
     terms *= 24 * 3600000;
     if (Number.isFinite(terms) && form.selectedDate !== undefined) {
         terms += Date.parse(form.selectedDate);
-        return dateFormatter.format(terms);
+        return formatter.formatDate(terms);
     }
 };
 config.invoiceForm.getCurrentStep = function () {
@@ -315,7 +271,7 @@ document.body.addEventListener("click", async function ({target}) {
     }
     if (target.classList.contains("invoice__summary")) {
         data = await config.db.getById(target.dataset.id);
-        config.channel.port1.postMessage(Object.assign({}, data));
+        printActor.send(Object.assign({}, data));
         emitter.of("previewrequested").dispatch(data);
         document.body.dataset.id = data.reference;
         target.closest("step-by-step").gotoStep(1);
@@ -339,13 +295,6 @@ config.filterForm.addEventListener("input", async function () {
     }
     initializeInvoices(invoices);
 }, false);
-config.previewer.addEventListener("load", function () {
-    config.previewer.contentWindow.postMessage(
-        "message port sent",
-        "*",
-        [config.channel.port2]
-    );
-});
 config.drawer.addEventListener("input", function ({target}) {
     let fieldset;
     let itemName;
@@ -432,7 +381,7 @@ config.invoiceDetails.addEventListener("click", async function ({target}) {
         config.dialog.showModal();
     }
     if (target.dataset.icon === "file-download") {
-        config.previewer.contentWindow.print();
+        printActor.requestPrint();
     }
     if (target.classList.contains("paid")) {
         data = config.db.getById(document.body.dataset.id);
@@ -446,7 +395,7 @@ config.invoiceDetails.addEventListener("click", async function ({target}) {
 }, false);
 (async function initialization() {
     let invoices;
-    config.db = await invoiceStorage();
+    config.db = await utils.invoiceStorage();
     invoices = await config.db.getAll();
     initializeInvoices(invoices);
 }());
