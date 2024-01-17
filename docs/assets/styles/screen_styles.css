@@ -807,6 +807,9 @@ noscript[data-status] {
 dialog[open] {
   transform: scale(1);
 }
+dialog menu.row {
+    --i-alignment: end;
+}
 dialog {
   --min-padding: clamp(0.5em, 4cqi, 1.5em);
   --f-size: 1.2em;

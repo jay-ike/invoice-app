@@ -2,7 +2,7 @@
 /*jslint browser*/
 import StepByStep from "./step-by-step.js";
 import Datepicker from "./datepicker.js";
-import utils from "./storage.js";
+import utils from "./utils.js";
 import {EventDispatcher} from "./event-dispatcher.js";
 
 const {CustomEvent, HTMLCollection} = window;
