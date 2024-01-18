@@ -30,7 +30,7 @@
                     <div class="row no-gap content-bold">
                         <dl class="grow-2 capitalize">
                             <dt class="heading-l">Invoices</dt>
-                            <dd class="subtitle-text" data-event="invoicesfiltered" data-property="detail">No invoice</dd>
+                            <dd class="subtitle-text" data-event="invoicesfiltered" data-property="{detail}">No invoice</dd>
                         </dl>
                         <div class="opt-filter relative" tabindex="0">
                             <p class="box heading-s row icon-end" data-icon="arrow_down">Filter <span class="sm-hide">by status</span></p>
@@ -62,12 +62,12 @@
                         <button id="new_invoice" data-icon="add-circle" class="row icon-start btn-primary box">New <span class="sm-hide">Invoice</span></button>
                     </div>
                     <div class="invoices stack grow-2" data-for="invoices" data-event="invoicesupdated" data-memoized data-id="reference">
-                        <button type="button" class="blank-box invoice-grid invoice__summary" data-attributes="data-status:status,data-id:reference">
-                            <span data-prefix="#" data-property="reference"></span>
-                            <span class="label-text" data-prefix="Due " data-property="dueDate"></span>
-                            <span class="label-text" data-property="clientName"></span>
-                            <span data-property="totalAmount"></span>
-                            <span class="box icon-start status-box" data-property="status"></span>
+                        <button type="button" class="blank-box invoice-grid invoice__summary" data-attributes="data-status:{status},data-id:{reference},aria-label:invoice number {reference}">
+                            <span data-prefix="#" data-property="{reference}"></span>
+                            <span class="label-text" data-fallback="not assigned" data-prefix="Due " data-property="{dueDate}"></span>
+                            <span class="label-text" data-property="{clientName}"></span>
+                            <span data-property="{totalAmount}"></span>
+                            <span class="box icon-start status-box" data-property="{status}"></span>
                         </button>
                     </div>
                     <div class="empty box center stack">
@@ -78,10 +78,10 @@
                 </section>
                 <section class="box invoice__details column relative" data-emit="previewrequested">
                     <button type="button" class="row btn back icon-start" data-icon="arrow_left">Go back</button>
-                    <div class="invoice__status blank-box" data-event="previewrequested" data-attributes="data-status:status">
+                    <div class="invoice__status blank-box" data-event="previewrequested" data-attributes="data-status:{status}">
                         <dl class="row">
                             <dt>status</dt>
-                            <dd class="box status-box icon-start" data-property="status" data-event="previewrequested"></dd>
+                            <dd class="box status-box icon-start" data-property="{status}" data-event="previewrequested"></dd>
                         </dl>
                         <div class="box invoice__actions">
                             <button class="box btn-edit">edit</button>
@@ -95,35 +95,35 @@
                         <dl class="invoice-grid invoice__desc label-text">
                             <div class="row">
                                 <div>
-                                    <dt class="content-bold" data-prefix="#" data-event="previewrequested" data-property="reference"></dt>
-                                    <dd data-event="previewrequested" data-property="description" ></dd>
+                                    <dt class="content-bold" data-prefix="#" data-event="previewrequested" data-property="{reference}"></dt>
+                                    <dd data-event="previewrequested" data-property="{description}" ></dd>
                                 </div>
                                 <div>
-                                    <dt data-event="previewrequested" data-property="senderAddress"></dt>
-                                    <dd data-event="previewrequested" data-property="senderCity"></dd>
-                                    <dd data-event="previewrequested" data-property="senderPostCode"></dd>
-                                    <dd data-event="previewrequested" data-property="senderCountry"></dd>
+                                    <dt data-event="previewrequested" data-property="{senderAddress}"></dt>
+                                    <dd data-event="previewrequested" data-property="{senderCity}"></dd>
+                                    <dd data-event="previewrequested" data-property="{senderPostCode}"></dd>
+                                    <dd data-event="previewrequested" data-property="{senderCountry}"></dd>
                                 </div>
                             </div>
                             <div>
                                 <dt>Invoice Date</dt>
-                                <dd data-event="previewrequested" data-property="invoiceDate" class="content-bold"></dd>
+                                <dd data-event="previewrequested" data-property="{invoiceDate}" class="content-bold"></dd>
                             </div>
                             <div>
                                 <dt>Payment Due</dt>
-                                <dd class="content-bold" data-event="previewrequested" data-property="dueDate"></dd>
+                                <dd class="content-bold" data-event="previewrequested" data-property="{dueDate}"></dd>
                             </div>
                             <div>
                                 <dt>Bill To</dt>
-                                <dd data-event="previewrequested" data-property="clientName" class="content-bold"></dd>
-                                <dd data-event="previewrequested" data-property="clientAddress"></dd>
-                                <dd data-event="previewrequested" data-property="clientCity"></dd>
-                                <dd data-event="previewrequested" data-property="clientPostCode"></dd>
-                                <dd data-event="previewrequested" data-property="clientCountry"></dd>
+                                <dd data-event="previewrequested" data-property="{clientName}" class="content-bold"></dd>
+                                <dd data-event="previewrequested" data-property="{clientAddress}"></dd>
+                                <dd data-event="previewrequested" data-property="{clientCity}"></dd>
+                                <dd data-event="previewrequested" data-property="{clientPostCode}"></dd>
+                                <dd data-event="previewrequested" data-property="{clientCountry}"></dd>
                             </div>
                             <div>
                                 <dt>Sent To</dt>
-                                <dd data-event="previewrequested" data-property="clientMail" class="content-bold"></dd>
+                                <dd data-event="previewrequested" data-property="{clientMail}" class="content-bold"></dd>
                             </div>
                         </dl>
                         <div class="invoice__table">
@@ -136,24 +136,24 @@
                                 </dl>
                                 <div data-for="items" data-event="previewrequested">
                                     <dl  role="row" class="invoice-grid invoice__item content-bold">
-                                        <dt role="gridcell" data-property="name">Banner Design</dt>
-                                        <dd role="gridcell" data-suffix=" x " data-property="qty" class="label-text">1</dd>
-                                        <dd role="gridcell" class="label-text" data-property="priceAmount">156.0</dd>
-                                        <dd role="gridcell" data-property="totalAmount">156.0</dd>
+                                        <dt role="gridcell" data-property="{name}">Banner Design</dt>
+                                        <dd role="gridcell" data-suffix=" x " data-property="{qty}" class="label-text">1</dd>
+                                        <dd role="gridcell" class="label-text" data-property="{priceAmount}">156.0</dd>
+                                        <dd role="gridcell" data-property="{totalAmount}">156.0</dd>
                                     </dl>
                                 </div>
                             </div>
                             <dl class="box amount-box segragator">
                                 <dt>grand total</dt>
-                                <dd class="content-bold" data-event="previewrequested" data-property="totalAmount"></dd>
+                                <dd class="content-bold" data-event="previewrequested" data-property="{totalAmount}"></dd>
                             </dl>
                         </div>
                     </div>
                 </section>
             </step-by-step>
 
-            <section class="drawer box column" data-emit="draweropened" data-attributes="data-edit:edit,data-status:status">
-                <h2 class="heading-l"><span data-event="draweropened" data-property="action"></span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="reference"></span></h2>
+            <section class="drawer box column" data-emit="draweropened" data-attributes="data-edit:{edit},data-status:{status}">
+                <h2 class="heading-l"><span data-event="draweropened" data-property="{action}"></span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="{reference}"></span></h2>
                <ul class="step-indicator">
                 <li class="step-active"><p>your informations</p></li>
                 <li><p>your client informations</p></li>
@@ -229,17 +229,17 @@
                    </step-by-step>
                </form>
                <div>
-					<button class="box btn-edit cancel" data-event="draweropened" data-property="cancel"></button>
+					<button class="box btn-edit cancel" data-event="draweropened" data-property="{cancel}"></button>
 					<button class="box btn-draft">save as draft</button>
-					<button class="box btn-primary proceed" data-event="draweropened" data-property="proceed" disabled="true" autocomplete="off">save & send</button>
+					<button class="box btn-primary proceed" data-event="draweropened" data-property="{proceed}" disabled="true" autocomplete="off">save & send</button>
                </div>
             </section>
         </main>
-        <dialog class="blank-box center" data-emit="dialogopened">
+        <dialog class="blank-box center" data-emit="dialogopened" title="invoice deletion popup">
             <form method="dialog" class="column">
                 <h3 class="heading-m">confirm deletion</h3>
                 <p>
-                <span>Are you sure you want to delete invoice #<span data-event="dialogopened" data-property="reference"></span></span>?
+                <span>Are you sure you want to delete invoice #<span data-event="dialogopened" data-property="{reference}"></span></span>?
                 <strong>This action cannot be undone.</strong>
                 </p>
                 <menu class="row">

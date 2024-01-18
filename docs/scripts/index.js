@@ -393,12 +393,12 @@ config.invoiceDetails.addEventListener("click", async function ({target}) {
         );
     }
 }, false);
-(async function initialization() {
+document.addEventListener("DOMContentLoaded", async function () {
     let invoices;
     config.db = await utils.invoiceStorage();
     invoices = await config.db.getAll();
     initializeInvoices(invoices);
-}());
+});
 
 StepByStep.define();
 Datepicker.define();

@@ -1,17 +1,43 @@
 /*jslint browser, this*/
 
-function updateContent(element) {
-    const {property} = element.dataset;
-    if (property !== undefined) {
-        return function (data) {
-            let value = property.split(".").reduce(function (acc, prop) {
-                return acc[prop];
-            }, data);
-            element.textContent = (
+const syntax = /\{([^{}:\s]+)\}/g;
+function parsedTemplate(data, string) {
+    let result = string.replace(
+        syntax,
+        function replacer(original, path) {
+            let value;
+            try {
+               value = path.split(".").reduce(
+                   (acc, val) => acc[val] ?? original,
+                   data
+               );
+            return (
                 typeof value === "function"
                 ? value(data)
                 : value
             );
+
+            } catch (ignore) {
+                return original;
+            }
+        }
+    );
+    return (
+        result === string
+        ? undefined
+        : result
+    );
+
+
+}
+function updateContent(element) {
+    const {fallback, property} = element.dataset;
+    delete element.dataset.fallback;
+    delete element.dataset.property;
+    delete element.dataset.event;
+    if (property !== undefined) {
+        return function (data) {
+            element.textContent = parsedTemplate(data, property) ?? fallback;
         };
     }
 }
@@ -22,8 +48,9 @@ function updateAttributes(element) {
         entries = attributes.split(",").map((val) => val.split(":"));
         entries = entries.map(function ([attr, value]) {
             return function attributeUpdater(elt, data) {
-                if (data[value] !== undefined) {
-                    elt.setAttribute(attr, data[value]);
+                const attributeValue = parsedTemplate(data, value);
+                if (attributeValue !== undefined) {
+                    elt.setAttribute(attr, attributeValue);
                 } else {
                     elt.removeAttribute(attr);
                 }

@@ -10,26 +10,26 @@
     <body class="stack" data-emit="invoiceupdated">
         <div class="segragator">
             <ul class="medium-text" id="sender_infos">
-                <li data-event="invoiceupdated" data-property="senderAddress"></li>
-                <li data-event="invoiceupdated" data-property="senderCity"></li>
-                <li data-event="invoiceupdated" data-property="senderPostCode"></li>
-                <li data-event="invoiceupdated" data-property="senderCountry"></li>
+                <li data-event="invoiceupdated" data-property="{senderAddress}"></li>
+                <li data-event="invoiceupdated" data-property="{senderCity}"></li>
+                <li data-event="invoiceupdated" data-property="{senderPostCode}"></li>
+                <li data-event="invoiceupdated" data-property="{senderCountry}"></li>
             </ul>
             <dl id="reciever_infos" class="medium-text">
                 <dt class="primary-text">Invoice to</dt>
-                <dd data-event="invoiceupdated" data-property="clientName"></dd>
-                <dd data-event="invoiceupdated" data-property="clientMail"></dd>
-                <dd data-event="invoiceupdated" data-property="clientAddress"></dd>
-                <dd data-event="invoiceupdated" data-property="clientCity"></dd>
-                <dd data-event="invoiceupdated" data-property="clientPostCode"></dd>
-                <dd data-event="invoiceupdated" data-property="clientCountry"></dd>
+                <dd data-event="invoiceupdated" data-property="{clientName}"></dd>
+                <dd data-event="invoiceupdated" data-property="{clientMail}"></dd>
+                <dd data-event="invoiceupdated" data-property="{clientAddress}"></dd>
+                <dd data-event="invoiceupdated" data-property="{clientCity}"></dd>
+                <dd data-event="invoiceupdated" data-property="{clientPostCode}"></dd>
+                <dd data-event="invoiceupdated" data-property="{clientCountry}"></dd>
             </dl>
         </div>
         <div class="details">
-            <p><strong>Invoice Date:  </strong><span data-event="invoiceupdated" data-property="invoiceDate"></span></p>
-            <p><strong>Reference  </strong> #<span data-event="invoiceupdated" data-property="reference"></span></p>
+            <p><strong>Invoice Date:  </strong><span data-event="invoiceupdated" data-property="{invoiceDate}"></span></p>
+            <p><strong>Reference  </strong> #<span data-event="invoiceupdated" data-property="{reference}"></span></p>
         </div>
-        <p id="description"><strong>Project Description:  </strong><span data-event="invoiceupdated" data-property="description"></span></p>
+        <p id="description"><strong>Project Description:  </strong><span data-event="invoiceupdated" data-property="{description}"></span></p>
         <table>
             <thead>
                 <tr>
@@ -41,16 +41,16 @@
             </thead>
             <tbody data-event="invoiceupdated" data-for="items">
                 <tr>
-                    <td data-property="name"></td>
-                    <td data-property="qty"></td>
-                    <td data-property="priceAmount"></td>
-                    <td data-property="totalAmount"></td>
+                    <td data-property="{name}"></td>
+                    <td data-property="{qty}"></td>
+                    <td data-property="{priceAmount}"></td>
+                    <td data-property="{totalAmount}"></td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <th scope="row">amount due</th>
-                    <td class="align-end" colspan="3" data-event="invoiceupdated" data-property="totalAmount"></td>
+                    <td class="align-end" colspan="3" data-event="invoiceupdated" data-property="{totalAmount}"></td>
                 </tr>
             </tfoot>
         </table>
