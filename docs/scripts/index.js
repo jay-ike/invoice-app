@@ -166,7 +166,7 @@ async function handleEdition() {
     let data = await config.db.getById(document.body.dataset.id);
     let form = config.invoiceForm;
     const drawerData = Object.assign(
-        {reference: data.reference},
+        {reference: data.reference, status: data.status},
         config.drawerMeta.edit
     );
     Object.entries(data).forEach(function formUpdater([key, value]) {
@@ -347,7 +347,7 @@ config.drawer.addEventListener("click", function drawerClickHandler({target}) {
         submitInvoice(document.body.dataset.id);
     }
     if (target.classList.contains("btn-draft")) {
-        submitInvoice(null, "draft");
+        submitInvoice(document.body.dataset.id, "draft");
     }
 }, false);
 config.dialog.addEventListener("cancel", function (event) {
