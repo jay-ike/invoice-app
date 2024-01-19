@@ -77,18 +77,18 @@
                     </div>
                 </section>
                 <section class="box invoice__details column relative" data-emit="previewrequested">
-                    <button type="button" class="row btn back icon-start" data-icon="arrow_left">Go back</button>
+                    <button type="button" class="row btn back icon-start" data-icon="arrow_left" aria-label="go back">Go back</button>
                     <div class="invoice__status blank-box" data-event="previewrequested" data-attributes="data-status:{status}">
                         <dl class="row">
                             <dt>status</dt>
                             <dd class="box status-box icon-start" data-property="{status}" data-event="previewrequested"></dd>
                         </dl>
                         <div class="box invoice__actions">
-                            <button class="box btn-edit">edit</button>
-                            <button class="box btn-danger">delete</button>
-                            <button class="box btn-primary paid">mark as paid</button>
+                            <button aria-label="edit" class="box btn-edit">edit</button>
+                            <button aria-label="delete" class="box btn-danger">delete</button>
+                            <button aria-label="mark as paid" class="box btn-primary paid">mark as paid</button>
                         </div>
-                        <button type="button" class="icon-end row transparent-box" data-icon="file-download">print invoice</button>
+                        <button aria-label="print invoice" type="button" class="icon-end row transparent-box" data-icon="file-download">print invoice</button>
                         <iframe id="preview" src="./print-preview.html" aria-hidden="true"></iframe>
                     </div>
                     <div class="blank-box stack grow-2 y-scrollable">
@@ -161,8 +161,8 @@
                 <li><p>the billing items</p></li>
                </ul>
                <span class="segragator no-gap no-padding">
-					<button class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true" autocomplete="off">previous step</button>
-					<button class="box row icon-end" id="next_step" type="button" data-icon="arrow_right">next step</button>
+					<button aria-label="previous step" class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true" autocomplete="off">previous step</button>
+					<button aria-label="next step" class="box row icon-end" id="next_step" type="button" data-icon="arrow_right">next step</button>
                </span>
                <form id="invoice_form" action="" class="grow-2 y-scrollable">
                    <step-by-step out-indicator="step-out">
@@ -224,14 +224,14 @@
 							</div>
                             <button class="box no-padding icon-start" form="invoice_form" data-icon="delete" aria-label="delete the invoice item" type="button"></button>
                         </fieldset>
-                        <button type="button" class="large-btn box" data-prefix="+ ">add new item</button>
+                        <button aria-label="add new item" type="button" class="large-btn box" data-prefix="+ ">add new item</button>
                     </div>
                    </step-by-step>
                </form>
                <div>
-					<button class="box btn-edit cancel" data-event="draweropened" data-property="{cancel}"></button>
-					<button class="box btn-draft">save as draft</button>
-					<button class="box btn-primary proceed" data-event="draweropened" data-property="{proceed}" disabled="true" autocomplete="off">save & send</button>
+                   <button class="box btn-edit cancel" data-event="draweropened" data-property="{cancel}" data-attributes="aria-label:{cancel}" aria-label="cancel"></button>
+					<button aria-label="save as draft" class="box btn-draft">save as draft</button>
+                    <button class="box btn-primary proceed" data-event="draweropened" data-property="{proceed}" data-attributes="aria-label:{proceed}" aria-label="save & send" disabled="true" autocomplete="off">save & send</button>
                </div>
             </section>
         </main>
@@ -243,8 +243,8 @@
                 <strong>This action cannot be undone.</strong>
                 </p>
                 <menu class="row">
-                    <button value="cancel" class="box btn-edit cancel">cancel</button>
-                    <button value="delete" class="box btn-danger delete">delete</button>
+                    <button aria-label="cancel" value="cancel" class="box btn-edit cancel">cancel</button>
+                    <button aria-label="delete" value="delete" class="box btn-danger delete">delete</button>
                 </menu>
             </form>
         </dialog>
