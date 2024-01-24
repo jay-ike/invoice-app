@@ -384,9 +384,9 @@ config.invoiceDetails.addEventListener("click", async function ({target}) {
         printActor.requestPrint();
     }
     if (target.classList.contains("paid")) {
-        data = config.db.getById(document.body.dataset.id);
+        data = await config.db.getById(document.body.dataset.id);
         data.status = "paid";
-        data = config.db.upsert(data);
+        data = await config.db.upsert(data);
         emitter.of("previewrequested").dispatch(data);
         emitter.of("invoicesupdated").dispatch(
             {invoices: [data], update: true}

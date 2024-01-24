@@ -193,6 +193,8 @@ function parseElement(element) {
     return (data) => chain.forEach((fn) => fn(data));
 }
 function contentDispatcher(target) {
+    let {attributes, emit} = target.dataset;
+    let handlers;
     const listeners = Array.from(
         target.querySelectorAll("[data-event]")
     ).reduce(function (acc, element) {
@@ -204,6 +206,12 @@ function contentDispatcher(target) {
         }
         return acc;
     }, Object.create(null));
+    if (attributes !== undefined) {
+        handlers = listeners[emit] ?? [];
+        handlers[handlers.length] = updateAttributes(target);
+        listeners[emit] = handlers;
+    }
+
     return function (event, data) {
         let eventListeners = listeners[event];
         if (Array.isArray(eventListeners)) {
@@ -218,14 +226,7 @@ function EventDispatcher(rootElement) {
     ).reduce(
         function (acc, emitter) {
             const {emit} = emitter.dataset;
-            let dispatch = contentDispatcher(emitter);
-            const update = updateAttributes(emitter);
-            acc[emit] = function emitHandler(event, data) {
-                if (typeof update === "function" && event === emit) {
-                    update(data);
-                }
-                dispatch(event, data);
-            };
+            acc[emit] = contentDispatcher(emitter);
             return acc;
         },
         Object.create(null)
