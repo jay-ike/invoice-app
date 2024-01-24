@@ -15,7 +15,7 @@
             <nav class="box row">
                 <button aria-label="Theme switcher" class="box theme-switch">
                 </button>
-                <svg width="32px" height="32px" class="self-center">
+                <svg width="32" height="32" class="self-center">
                     <title>An Icon illustrating a user avatar</title>
                     <use href="#user-circle"></use>
                 </svg>
@@ -71,7 +71,7 @@
                         </button>
                     </div>
                     <div class="empty box center stack">
-                        <img src="./assets/Email campaign_Flatline 2.svg" alt="An Illustration of a woman in purple shirt holding a speaker for an email campaign" width="194px" height="160px">
+                        <img src="./assets/Email campaign_Flatline 2.svg" alt="An Illustration of a woman in purple shirt holding a speaker for an email campaign" width="194" height="160">
                         <h3 style="--space: 2em;" class="heading-m">There is nothing here</h3>
                         <p class="subtitle-text">Create an invoice by clicking the <strong>New <span class="sm-hide">Invoice</span></strong> button and get started</p>
                     </div>
@@ -127,20 +127,20 @@
                             </div>
                         </dl>
                         <div class="invoice__table">
-                            <div class="box items-box stack" role="grid">
-                                <dl  role="rowheader" class="invoice-grid invoice__item sm-hide label-text">
-                                    <dt role="columnheader">item Name</dt>
-                                    <dd role="columnheader">qty.</dd>
-                                    <dd role="columnheader">price</dd>
-                                    <dd role="columnheader">total</dd>
-                                </dl>
-                                <div data-for="items" data-event="previewrequested">
-                                    <dl  role="row" class="invoice-grid invoice__item content-bold">
-                                        <dt role="gridcell" data-property="{name}">Banner Design</dt>
-                                        <dd role="gridcell" data-suffix=" x " data-property="{qty}" class="label-text">1</dd>
-                                        <dd role="gridcell" class="label-text" data-property="{priceAmount}">156.0</dd>
-                                        <dd role="gridcell" data-property="{totalAmount}">156.0</dd>
-                                    </dl>
+                            <div class="box items-box stack" role="grid" aria-label="invoice details">
+                                <div  role="rowheader" class="invoice-grid invoice__item sm-hide label-text">
+                                    <div role="columnheader">item Name</div>
+                                    <div role="columnheader">qty.</div>
+                                    <div role="columnheader">price</div>
+                                    <div role="columnheader">total</div>
+                                </div>
+                                <div data-for="items" data-event="previewrequested" role="rowgroup">
+                                    <div  role="row" class="invoice-grid invoice__item content-bold">
+                                        <div role="gridcell" data-property="{name}">Banner Design</div>
+                                        <div role="gridcell" data-suffix=" x " data-property="{qty}" class="label-text">1</div>
+                                        <div role="gridcell" class="label-text" data-property="{priceAmount}">156.0</div>
+                                        <div role="gridcell" data-property="{totalAmount}">156.0</div>
+                                    </div>
                                 </div>
                             </div>
                             <dl class="box amount-box segragator">

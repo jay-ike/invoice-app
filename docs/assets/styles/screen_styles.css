@@ -83,12 +83,13 @@
 .transparent-box {
     --color-fill: transparent;
 }
-[aria-hidden="true"] {
+:where([aria-hidden="true"], .invoice__table [role="rowheader"]) {
     position: absolute;
     clip-path: inset(50%);
 }
 @layer utils {
-  .invoice-grid {
+  .invoice-grid,
+  .invoice__table :is([role="row"], [role="rowheader"]) {
     display: grid;
     grid-template: var(--invoice-grid);
     align-items: var(--item-alignment, var(--alignment, center));
@@ -534,7 +535,7 @@ inv-option > label::before {
   --prefix-color: currentColor;
   text-transform: capitalize;
 }
-.invoice__item {
+.invoice__table :is([role="row"]) {
   --invoice-grid: "ref ref total" "date name total"/auto 1fr;
   --s-space: 1em;
   gap: 1ch;
@@ -852,13 +853,16 @@ dialog h3 {
     --row-dir: row;
     justify-content: space-between;
   }
-  .invoice__item {
+  .invoice__table :is([role="row"], [role="rowheader"]) {
     --invoice-grid: "ref date name total"/1.5fr 0.5fr 1fr 1fr;
     --suffix: "";
-    text-align: end;
   }
-  .invoice__item > :first-child {
-    text-align: start;
+  .invoice__table :is([role="columnheader"], [role="gridcell"]):where(* + *) {
+      text-align: end;
+  }
+  .invoice__table [role="rowheader"] {
+      position:initial;
+      clip-path: none;
   }
   .invoice__summary {
     --min-padding: 1em clamp(0.5em, 2cqi, 1.5em);
