@@ -1,0 +1,65 @@
+
+
+.sm-hide {
+    display: none;
+}
+
+.inv-option > label::before {
+  content: "";
+  inset: 0;
+  position: absolute;
+}
+.inv-option {
+  --r-space: 1em;
+  --label-color: var(--system-color-text);
+  position: relative;
+  cursor: pointer;
+}
+.inv-option:is(:focus-within, :hover) {
+  --checkbox-border: 2px solid var(--system-color-softBlue);
+}
+.inv-option > :is(span, div) {
+  --icon-fill: none;
+  display: inline-block;
+  position: relative;
+  isolation: isolate;
+}
+.inv-option :is(span, div, input, svg) {
+    inline-size: 1.5rem;
+    aspect-ratio: 1;
+}
+.inv-option :is(input[type="checkbox"], svg) {
+    position: absolute;
+}
+.inv-option svg {
+  background-color: var(--fill, var(--system-color-checkboxFill));
+  border-radius: 0.25rem;
+  z-index: -1;
+  stroke: #fff;
+  stroke-dashoffset: 1;
+  stroke-dasharray: 1;
+  padding: 0.15em;
+  border: var(--checkbox-border, none);
+}
+.inv-option input[type="checkbox"] {
+    margin: 0;
+    opacity: 0;
+}
+input:checked + svg {
+  --fill: var(--system-color-softBlue);
+  stroke-dashoffset: 0;
+}
+
+
+@media screen and (min-width: 480px) {
+    .sm-hide:not(.invoice-grid) {
+        display: initial;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference){
+    .inv-option input:checked + svg {
+	    transition: stroke-dashoffset .35s cubic-bezier(.25, .1, .3, 1.5);
+    }
+
+}
