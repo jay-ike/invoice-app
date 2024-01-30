@@ -63,7 +63,7 @@ img {
 :is(button, fieldset) {
     border: none;
 }
-dialog {
+dialog:not(.drawer) {
     position: fixed;
     inset: 0;
     margin: auto;
@@ -894,15 +894,11 @@ dialog h3 {
     border-block-end: 1px solid var(--system-color-grayishBlue);
   }
   #root {
-    --y-offset: 0px;
     display: grid;
     grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(clamp(618px, 60vi, 719px), 2fr) 1fr;
   }
   #root > main {
     grid-area: main;
-  }
-  .drawer {
-    --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em);
   }
 }
 @media (prefers-color-scheme: dark) {
@@ -931,7 +927,7 @@ dialog h3 {
 	.invoice__summary, .step-indicator li::before, .step-indicator li::after {
 	    transition: color .35s ease-in, background-color, .35s ease-out;
 	}
-	:is(.drawer, input, select, [class*="btn"]),
+	:is(input, select, [class*="btn"]),
     :is(.theme-switch, .icon-start)::before,
     #status-form,
     .icon-end::after {

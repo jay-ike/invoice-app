@@ -63,9 +63,9 @@ function InvoiceAdder(props) {
               </For>
             </form>
           </div>
-          <button id="new_invoice" aria-label="new invoice" data-icon="add-circle" class="row icon-start btn-primary box">New <span class={utils["sm-hide"]}>Invoice</span></button>
+          <button id="new_invoice" aria-label="new invoice" data-icon="add-circle" class="row icon-start btn-primary box" onClick={() => props.onNewInvoice()}>New <span class={utils["sm-hide"]}>Invoice</span></button>
         </div>
     );
 }
 
-export default Object.freeze(InvoiceAdder);
+export default InvoiceAdder;

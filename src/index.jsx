@@ -1,10 +1,15 @@
 /* @refresh reload */
+import stepByStep from "./step-by-step.js";
+import datePicker from "./datepicker.js";
 import { render } from 'solid-js/web';
 
 import './index.css';
 import App from './App';
 
 const root = document.getElementById('root');
+
+stepByStep.define("step-by-step");
+datePicker.define("date-picker");
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(
