@@ -1,5 +1,6 @@
-import {For, createSignal} from "solid-js";
+import {For, createMemo, createSignal} from "solid-js";
 import FormInvoiceItem from "./form-invoice-item";
+import utils from "../utils.js";
 
 function Indicator(props) {
     return (
@@ -13,34 +14,68 @@ function Indicator(props) {
     );
 }
 function Drawer(props) {
+    const generator = utils.numberGenerator();
     const components = Object.create(null);
     const steps = ["your informations", "your client informations", "terms of payments", "the billing items"];
     const [currentStep, setCurentStep] = createSignal(0);
-    components.stepper = () => document.querySelector(".drawer step-by-step");
-    components.prev = () => document.querySelector("#prev_step");
-    components.next = () => document.querySelector("#next_step");
+    const [items, setItems] = createSignal(props.items ?? [{id: generator.next(), valid: false}]);
+    const [formValid, setFormValidity] = createSignal(false);
+    const itemAddition = createMemo(() => (
+        items().some((elt) => elt.valid === false)
+        ? {disabled: true}
+        : {}
+    ));
+    const formValidity = createMemo( () => (
+        formValid()
+        ? {}
+        : {disabled: true}
+    ));
+    function updateValidity(isValid, index) {
+        const allItems = Array.from(items());
+        allItems[index].valid = isValid;
+        setItems(allItems);
+    }
+    function removeItem(index) {
+        let all = items();
+        all = all.slice(0, index).concat(all.slice(index + 1));
+        if (all.length === 0) {
+            all = [{id: generator.next(), valid: false}];
+        }
+        setItems(all);
+    }
+    function addItem() {
+        setItems(items().concat([{id: generator.next(), valid: false}]));
+        setFormValidity(components.form.checkValidity());
+    }
+    function requestNextFormStep() {
+        const selector = "step-by-step > :not(.step-out) :is(input,select)";
+        let inputFields = Array.from(components.form.querySelectorAll(selector));
+        if (allFieldsValid(inputFields)) {
+            components.form.firstElementChild.nextStep();
+        }
+    }
+    function allFieldsValid(fields) {
+        return fields.every(function (field) {
+            delete field.dataset.new;
+            return field.checkValidity();
+        });
+    }
     function stepUpdater({detail}) {
         const {current} = detail;
-        const prevBtn = components.prev();
-        const nextBtn = components.next();
         if (current > 0) {
-            prevBtn.disabled = false;
+            components.prev.disabled = false;
         } else {
-           prevBtn.disabled = true;
+           components.prev.disabled = true;
         }
         if (current === steps.length - 1) {
-            nextBtn.disabled = true;
+            components.next.disabled = true;
         } else {
-            nextBtn.disabled = false;
+            components.next.disabled = false;
         }
         setCurentStep(current);
-
     }
     function previousStep() {
-        components.stepper().previousStep();
-    }
-    function nextStep() {
-        components.stepper().nextStep();
+        components.form.firstElementChild.previousStep();
     }
     function discardDrawer() {
         props.onClose();
@@ -53,15 +88,21 @@ function Drawer(props) {
             return acc;
         }, Object.create(null));
     }
+    function handleInput({target}) {
+        if (target.dataset.new === undefined) {
+            target.dataset.new = "";
+        }
+        setFormValidity(components.form.checkValidity());
+    }
     return (
             <section class="drawer box column" data-emit="draweropened" data-attributes="data-edit:{edit},data-status:{status}" {...parseDescriptor(["status", "edit"])}>
                <h2 class="heading-l"><span data-event="draweropened" data-property="{action}">{props.descriptor.action}</span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="{reference}">{props.descriptor.reference ?? ""}</span></h2>
                <Indicator current={currentStep} steps={steps} />
                <span class="segragator no-gap no-padding">
-					<button aria-label="previous step" class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true" autocomplete="off" onClick={previousStep}>previous step</button>
-					<button aria-label="next step" class="box row icon-end" id="next_step" type="button" data-icon="arrow_right" onClick={nextStep}>next step</button>
+					<button ref={components.prev} aria-label="previous step" class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true" autocomplete="off" onClick={previousStep}>previous step</button>
+					<button ref={components.next} aria-label="next step" class="box row icon-end" id="next_step" type="button" data-icon="arrow_right" onClick={requestNextFormStep}>next step</button>
                </span>
-               <form id="invoice_form" action="" class="grow-2 y-scrollable">
+               <form ref={components.form} id="invoice_form" action="" class="grow-2 y-scrollable" onInput={handleInput}>
                  <step-by-step out-indicator="step-out" on:indexupdated={stepUpdater}>
                    <fieldset class="input-step stack" name="senderInfos">
                         <legend>bill from</legend>
@@ -74,7 +115,7 @@ function Drawer(props) {
                         <legend>bill to</legend>
                         <div><input type="text" id="bt-name" name="clientName" autocomplete="name" data-new required/><label for="bt-name" data-error="can't be empty">client's name</label></div>
                         <div>
-							<input type="email" id="bt-email" name="clientMail" autocomplete="email" data-new required pattern="^[a-zA-Z0-9\._%\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"/>
+							<input type="email" id="bt-email" name="clientMail" autocomplete="email" data-new required />
 							<label for="bt-email" data-error="invalid email address">client's email</label>
 						</div>
                         <div><input type="text" id="bt-street" name="clientAddress" autocomplete="address-line1"/><label for="bt-street">street address</label></div>
@@ -102,15 +143,21 @@ function Drawer(props) {
                     </fieldset>
                     <div class="stack">
                         <h3 class="heading-m primary-text">item list</h3>
-                        <FormInvoiceItem />
-                        <button aria-label="add new item" type="button" class="large-btn box" data-prefix="+ ">add new item</button>
+                        <For each={items()} key="id">
+                            {
+                                function itemBuilder(validity, index) {
+                                    return <FormInvoiceItem index={index} updateValidity={updateValidity} isValid={validity} onRemove={removeItem}/>
+                                }
+                            }
+                        </For>
+                        <button aria-label="add new item" type="button" class="large-btn box" data-prefix="+ " {...itemAddition()} onClick={addItem}>add new item</button>
                     </div>
                    </step-by-step>
                </form>
                <div>
                    <button class="box btn-edit cancel" data-event="draweropened" data-property="{cancel}" data-attributes="aria-label:{cancel}" aria-label={props.descriptor.cancel} onClick={discardDrawer}>{props.descriptor.cancel}</button>
 					<button aria-label="save as draft" class="box btn-draft">save as draft</button>
-                    <button class="box btn-primary proceed" data-event="draweropened" data-property="{proceed}" data-attributes="aria-label:{proceed}" aria-label={props.descriptor.proceed} disabled="true" autocomplete="off">{props.descriptor.proceed}</button>
+                    <button class="box btn-primary proceed" data-event="draweropened" data-property="{proceed}" data-attributes="aria-label:{proceed}" aria-label={props.descriptor.proceed} {...formValidity()} autocomplete="off">{props.descriptor.proceed}</button>
                </div>
             </section>
     );

@@ -30,7 +30,6 @@
 	--system-text-body: 0.8125rem;
 	--system-color-disabled: var(--color-disabled, hsla(233, 31%, 17%, 0.6));
 
-  --system-theme-clip: var(--theme-clip, url(#night_mode))
 }
 :is(*, ::before, ::after) {
     box-sizing: border-box;
@@ -444,9 +443,9 @@ button {
   --icon-fill: var(--system-color-lightPurple);
 }
 .theme-switch {
-  --icon-size: 32px;
-  --icon-clip: var(--system-theme-clip);
-  border-inline-end: 1px solid var(--system-color-grayishBlue);
+    --icon-size: 32px;
+    --icon-clip: var(--theme-clip, url("#light_mode"));
+    border-inline-end: 1px solid var(--system-color-grayishBlue);
 }
 .banner {
   --alignment: stretch;
@@ -487,7 +486,7 @@ button {
   display: var(--deco-display, block);
   block-size: clamp(5em, 10vmin, 8em);
 }
-.inv-item {
+.item-grid {
   --invoice-grid: "ref ref ref ref" "date name total status" / minmax(48px, .25fr) minmax(8ch, .5fr) minmax(8ch, .5fr) auto;
   --invoice-gap: 0.5em;
   --icon-fill-hover: var(--system-color-softRed);
@@ -496,13 +495,13 @@ button {
   --input-padding: 0.5em;
   --s-space: var(--c-space, clamp(0.5em, 2vb, 1.5em));
 }
-.inv-item output {
+.item-grid output {
   font-weight: bold;
   color: var(--system-color-captionText);
   block-size: 2em;
   padding: var(--input-padding);
 }
-.inv-item.input-step {
+.item-grid.input-step {
   padding: 0;
 }
 .invoice__table {
@@ -879,10 +878,10 @@ dialog h3 {
     inline-size: clamp(480px, 69vi, 616px);
     border-radius: 0 1.25em 1.25em 0;
   }
-  .inv-item {
+  .item-grid {
     --invoice-grid: "ref date name total status" / minmax(min(214px, 30%), 1fr) minmax(48px, .25fr) minmax(min(20%, 100px),.35fr) minmax(min(20%, 100px), .35fr) 2rem;
   }
-  .inv-item:not(:first-of-type) label {
+  .item-grid:not(:first-of-type) label {
     clip-path: inset(50%);
     position: absolute;
   }
@@ -942,7 +941,9 @@ dialog h3 {
     --fill-items-box: #252946;
     --fill-amount-box: #0d0f17;
     --color-disabled: rgba(251,251,254,0.6);
-    --theme-clip: url("#light_mode");
+  }
+  .theme-switch:not([data-theme="light"] *) {
+      --theme-clip: url(#night_mode);
   }
 }
 
@@ -950,7 +951,7 @@ dialog h3 {
 	.step-indicator li::before, .step-indicator li::after {
 	    transition: color .35s ease-in, background-color, .35s ease-out;
 	}
-	:is(input, select, [class*="btn"]),
+	:is(.drawer, input, select, [class*="btn"]),
     :is(.theme-switch, .icon-start)::before,
     #status-form,
     .icon-end::after {

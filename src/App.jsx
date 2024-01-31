@@ -9,7 +9,6 @@ function App() {
     const drawerDescriptor = {
         action: "new invoice",
         cancel: "discard",
-        edit: "",
         proceed: "save & send"
     };
 

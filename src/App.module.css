@@ -96,10 +96,7 @@ input:checked + svg {
 }
 
 @media screen and (min-width: 768px) {
-    .drawer {
-        --y-offset: 0px;
-        --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em);
-    }
+
 }
 
 @media (prefers-reduced-motion: no-preference){
