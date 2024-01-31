@@ -1,13 +1,12 @@
 import {For, createSignal} from "solid-js";
-import style from "../App.module.css";
 import FormInvoiceItem from "./form-invoice-item";
 
 function Indicator(props) {
     return (
-        <ul class={style["step-indicator"]}>
+        <ul class="step-indicator">
             <For each={props.steps}>
                 {
-                    (step, index) => <li class={props.current() >= index() ? style["step-active"] : ""}><p>{step}</p></li>
+                    (step, index) => <li class={props.current() >= index() ? "step-active" : ""}><p>{step}</p></li>
                 }
             </For>
         </ul>
@@ -17,7 +16,7 @@ function Drawer(props) {
     const components = Object.create(null);
     const steps = ["your informations", "your client informations", "terms of payments", "the billing items"];
     const [currentStep, setCurentStep] = createSignal(0);
-    components.stepper = () => document.querySelector("." + props.name + " step-by-step");
+    components.stepper = () => document.querySelector(".drawer step-by-step");
     components.prev = () => document.querySelector("#prev_step");
     components.next = () => document.querySelector("#next_step");
     function stepUpdater({detail}) {
@@ -46,9 +45,17 @@ function Drawer(props) {
     function discardDrawer() {
         props.onClose();
     }
+    function parseDescriptor(lookupProps) {
+        return Object.entries(props.descriptor).filter(
+            ([key, val]) => lookupProps.includes(key) && val !== null
+        ).reduce(function descriptorReducer(acc, [key, val]) {
+            acc["data-" + key] = val;
+            return acc;
+        }, Object.create(null));
+    }
     return (
-            <section class={props.name + " box column"} data-emit="draweropened" data-attributes="data-edit:{edit},data-status:{status}">
-               <h2 class="heading-l"><span data-event="draweropened" data-property="{action}"></span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="{reference}"></span></h2>
+            <section class="drawer box column" data-emit="draweropened" data-attributes="data-edit:{edit},data-status:{status}" {...parseDescriptor(["status", "edit"])}>
+               <h2 class="heading-l"><span data-event="draweropened" data-property="{action}">{props.descriptor.action}</span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="{reference}">{props.descriptor.reference ?? ""}</span></h2>
                <Indicator current={currentStep} steps={steps} />
                <span class="segragator no-gap no-padding">
 					<button aria-label="previous step" class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true" autocomplete="off" onClick={previousStep}>previous step</button>
@@ -101,9 +108,9 @@ function Drawer(props) {
                    </step-by-step>
                </form>
                <div>
-                   <button class="box btn-edit cancel" data-event="draweropened" data-property="{cancel}" data-attributes="aria-label:{cancel}" aria-label="cancel" onClick={discardDrawer}></button>
+                   <button class="box btn-edit cancel" data-event="draweropened" data-property="{cancel}" data-attributes="aria-label:{cancel}" aria-label={props.descriptor.cancel} onClick={discardDrawer}>{props.descriptor.cancel}</button>
 					<button aria-label="save as draft" class="box btn-draft">save as draft</button>
-                    <button class="box btn-primary proceed" data-event="draweropened" data-property="{proceed}" data-attributes="aria-label:{proceed}" aria-label="save & send" disabled="true" autocomplete="off">save & send</button>
+                    <button class="box btn-primary proceed" data-event="draweropened" data-property="{proceed}" data-attributes="aria-label:{proceed}" aria-label={props.descriptor.proceed} disabled="true" autocomplete="off">{props.descriptor.proceed}</button>
                </div>
             </section>
     );

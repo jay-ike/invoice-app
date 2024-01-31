@@ -29,7 +29,6 @@
 	--system-heading-small: 0.9375rem;
 	--system-text-body: 0.8125rem;
 	--system-color-disabled: var(--color-disabled, hsla(233, 31%, 17%, 0.6));
-  --invoice-grid: "ref . name" ".  .   ." 1rem "date . status" "total . status" / minmax(10ch, 1fr) .5fr .75fr;
 
   --system-theme-clip: var(--theme-clip, url(#night_mode))
 }
@@ -73,6 +72,34 @@ select {
 }
 option[value=""] {
     display: none;
+}
+@layer utils {
+    :is([class$="grid"]:not(date-picker *), [role^="row"]) {
+        --default-template: "ref . name" ".  .   ." 1rem "date . status" "total . status" / minmax(10ch, 1fr) .5fr .75fr;
+        display: grid;
+        grid-template: var(--invoice-grid, var(--default-template));
+        align-items: var(--item-alignment, var(--alignment, center));
+        gap: var(--invoice-gap, initial);
+        container: invoice/inline-size;
+  }
+  :where([class$="grid"], [role^="row"]) > :first-child {
+    grid-area: ref;
+  }
+  :where([class$="grid"], [role^="row"])> :nth-child(2) {
+    grid-area: date;
+  }
+  :where([class$="grid"], [role^="row"]) > :nth-child(3) {
+    grid-area: name;
+  }
+  :where([class$="grid"], [role^="row"]) > :nth-child(4) {
+    grid-area: total;
+  }
+  :where([class$="grid"], [role^="row"]) > :nth-child(5) {
+    grid-area: status;
+  }
+  .sm-hide {
+    display: none;
+  }
 }
 @font-face {
   font-family: "Spartan";
@@ -448,20 +475,7 @@ button {
   max-inline-size: 25ch;
   white-space: pre-wrap;
 }
-.blank-box.invoice__summary {
-    min-inline-size: 100%;
-}
-.invoice__summary {
-  --status-padding: var(--box-padding, 0.75rem clamp(0.5rem, 5cqi, 1.5rem));
-  --f-size: 1em;
-  --f-size-diff: 0.2;
-  --f-size-fluid: 4cqi;
-  --s-space: 1rem;
-  --label-weight: 500;
-  font-weight: bold;
-  padding: clamp(0.5em, 5cqi, 1.5em);
-  box-shadow: 0 2px 8px 0 var(--system-color-shadow);
-}
+
 .invoice__details {
   --min-padding: clamp(0.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em);
   --invoice-grid: "ref ." "date total" "name total" "status status"/1fr 1fr;
@@ -510,9 +524,7 @@ button {
   --color-fill: var(--system-color-blank);
 }
 
-  .invoice__summary:is(:focus-visible, :hover) {
-      border: 1px solid var(--system-color-softBlue);
-  }
+
   :is([data-status="paid"], [data-status="draft"]) .paid,
   [data-status="paid"] .btn-edit {
       display: none;
@@ -575,8 +587,9 @@ step-by-step > .step-out {
   visibility: hidden;
   opacity: 0;
 }
-[data-drawer="show"] {
-  --x-offset: 0px;
+[data-drawer="show"] .drawer {
+    --x-offset: 0px;
+    visibility: visible;
 }
 .drawer {
   --translateY: var(--y-offset, 72px);
@@ -591,6 +604,7 @@ step-by-step > .step-out {
   text-transform: capitalize;
   inline-size: 100%;
   z-index: 1;
+  visibility: hidden;
 }
 .drawer h2 {
   --prefix-color: currentColor;
@@ -610,6 +624,72 @@ step-by-step > .step-out {
   justify-content: end;
   container: actions/inline-size;
   background-color: var(--system-color-fillPrimary);
+}
+.drawer .btn-draft {
+  margin-inline-start: auto;
+  display: var(--drafter-display, initial);
+}
+.step-indicator {
+    --deco-size: 1.7em;
+    --bdr-width: 2px;
+    --deco-color: var(--system-color-labelText);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    font-size: 0.8em;
+}
+.step-indicator p {
+    position: var(--content-position, absolute);
+    clip-path: var(--content-clip, inset(50%));
+}
+.step-indicator > .step-active {
+  --deco-color: var(--system-color-darkPurple);
+  --deco-bg: var(--deco-color);
+  --deco-colorText: #fafafa;
+}
+.step-indicator > * {
+  padding-block: var(--b-padding, 0 2em);
+  counter-increment: indicator;
+  position: relative;
+  text-align: center;
+}
+.step-indicator > *:first-child {
+  --deco-img: linear-gradient(var(--gradient-dir, to right), transparent calc(var(--deco-size) + 2px), var(--deco-color) 0);
+  --deco-margin: 0 auto;
+  text-align: start;
+}
+.step-indicator > *:last-child {
+  --deco-img: linear-gradient(var(--gradient-dir, to right), var(--deco-color) calc(100% - var(--deco-size) - 4px), transparent 0);
+  --deco-margin: auto 0;
+  text-align: end;
+}
+.step-indicator > *:not(:last-child, :first-child) {
+  padding-inline: var(--i-padding, 0.5em);
+}
+.step-indicator > *::after {
+  content: counters(indicator, ".");
+  color: var(--deco-colorText, currentColor);
+  position: absolute;
+  display: inline-grid;
+  place-content: center;
+  border: var(--bdr-width) solid var(--deco-color);
+  border-radius: 50%;
+  inline-size: var(--deco-size);
+  aspect-ratio: 1;
+  inset: var(--inset-after, auto 0 0);
+  margin-inline: var(--deco-margin, auto);
+  background-color: var(--deco-bg, transparent);
+}
+.step-indicator > *::before {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  block-size: 2px;
+  inset: var(--inset-before, auto 0 calc(0.85em - 1px));
+  background-image: var(--deco-img, linear-gradient(
+    var(--gradient-dir, to right),
+    var(--deco-color) calc(50% - 0.85em - 2px),
+    transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0)
+  );
 }
 .drawer .btn-draft {
   margin-inline-start: auto;
@@ -697,63 +777,20 @@ date-picker .actions {
   align-items: center;
   grid-column: -1/1;
 }
-.step-indicator {
-  --deco-size: 1.7em;
-  --bdr-width: 2px;
-  --deco-color: var(--system-color-labelText);
+.calendar-grid * {
+    grid-area: auto;
 }
-.step-indicator p {
-  display: var(--content-display, none);
-}
-.step-indicator > .step-active {
-  --deco-color: var(--system-color-darkPurple);
-  --deco-bg: var(--deco-color);
-  --deco-colorText: #fafafa;
-}
-.step-indicator > * {
-  padding-block: var(--b-padding, 0 2em);
-  counter-increment: indicator;
-  position: relative;
-  text-align: center;
-}
-.step-indicator > *:first-child {
-  --deco-img: linear-gradient(var(--gradient-dir, to right), transparent calc(var(--deco-size) + 2px), var(--deco-color) 0);
-  --deco-margin: 0 auto;
-  text-align: start;
-}
-.step-indicator > *:last-child {
-  --deco-img: linear-gradient(var(--gradient-dir, to right), var(--deco-color) calc(100% - var(--deco-size) - 4px), transparent 0);
-  --deco-margin: auto 0;
-  text-align: end;
-}
-.step-indicator > *:not(:last-child, :first-child) {
-  padding-inline: var(--i-padding, 0.5em);
-}
-.step-indicator > *::after {
-  content: counters(indicator, ".");
-  color: var(--deco-colorText, currentColor);
+date-picker > .calendar-grid {
+  font-weight: bold;
+  display: var(--calendar-display, none);
+  grid-template-columns: repeat(7, auto);
   position: absolute;
-  display: inline-grid;
-  place-content: center;
-  border: var(--bdr-width) solid var(--deco-color);
-  border-radius: 50%;
-  inline-size: var(--deco-size);
-  aspect-ratio: 1;
-  inset: var(--inset-after, auto 0 0);
-  margin-inline: var(--deco-margin, auto);
-  background-color: var(--deco-bg, transparent);
-}
-.step-indicator > *::before {
-  content: "";
-  position: absolute;
-  display: inline-block;
-  block-size: 2px;
-  inset: var(--inset-before, auto 0 calc(0.85em - 1px));
-  background-image: var(--deco-img, linear-gradient(
-    var(--gradient-dir, to right),
-    var(--deco-color) calc(50% - 0.85em - 2px),
-    transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0)
-  );
+  inset-block-start: var(--bottom, calc(100% + .5rem));
+  background-color: var(--system-color-blank);
+  border-radius: .5rem;
+  padding: .35em .75em 1em;
+  gap: .25em;
+  box-shadow: 0 4px 8px 0 var(--system-color-shadow);
 }
 noscript[data-status] {
   --min-padding: 1em;
@@ -797,9 +834,6 @@ dialog h3 {
   }
 }
 @media screen and (min-width: 480px) {
-  :root {
-    --invoice-grid: "ref date name total status arrow"/8ch 1fr 1fr minmax(auto, 0.75fr) auto 1.5em;
-  }
   .sm-hide {
     display: initial;
   }
@@ -824,22 +858,7 @@ dialog h3 {
       position:initial;
       clip-path: none;
   }
-  .invoice__summary {
-    --min-padding: 1em clamp(0.5em, 2cqi, 1.5em);
-    --box-padding: 0.625em clamp(0.5em, 2cqi, 1em);
-    --f-size-fluid: 2.5cqi;
-    --f-size-diff: 0.2;
-    gap: 0.5em;
-  }
-  .invoice__summary::after {
-    content: "";
-    inline-size: 1.5em;
-    aspect-ratio: 1;
-    background-color: var(--deco-fill, var(--system-color-softBlue));
-    clip-path: url("#arrow_left");
-    transform: rotateZ(180deg);
-    grid-area: arrow;
-  }
+
   .invoice__status {
     --inline-alignment: start;
     display: flex;
@@ -859,7 +878,6 @@ dialog h3 {
   .drawer {
     inline-size: clamp(480px, 69vi, 616px);
     border-radius: 0 1.25em 1.25em 0;
-    visibility: hidden;
   }
   .inv-item {
     --invoice-grid: "ref date name total status" / minmax(min(214px, 30%), 1fr) minmax(48px, .25fr) minmax(min(20%, 100px),.35fr) minmax(min(20%, 100px), .35fr) 2rem;
@@ -878,7 +896,8 @@ dialog h3 {
     background-color: var(--system-color-backdropFill);
   }
   .step-indicator {
-    --content-display: block;
+    --content-clip: none;
+    --content-position: static;
   }
 }
 @media screen and (min-width: 768px) {
@@ -892,6 +911,10 @@ dialog h3 {
   .banner .theme-switch {
     border-inline: none;
     border-block-end: 1px solid var(--system-color-grayishBlue);
+  }
+  .drawer {
+      --y-offset: 0px;
+      --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em);
   }
   #root {
     display: grid;
@@ -924,7 +947,7 @@ dialog h3 {
 }
 
 @media(prefers-reduced-motion: no-preference) {
-	.invoice__summary, .step-indicator li::before, .step-indicator li::after {
+	.step-indicator li::before, .step-indicator li::after {
 	    transition: color .35s ease-in, background-color, .35s ease-out;
 	}
 	:is(input, select, [class*="btn"]),

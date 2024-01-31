@@ -2,11 +2,16 @@ import {createEffect, createSignal} from "solid-js";
 import Nav from "./components/header.jsx";
 import InvoiceAdder from "./components/invoice-adder.jsx";
 import Drawer from "./components/drawer.jsx";
-import style from "./App.module.css";
 
 function App() {
     const [invoices, setInvoices] = createSignal([]);
     const [drawerVisible, showDrawer] = createSignal(false);
+    const drawerDescriptor = {
+        action: "new invoice",
+        cancel: "discard",
+        edit: "",
+        proceed: "save & send"
+    };
 
     createEffect(function drawerHandler() {
         if (drawerVisible() === true) {
@@ -23,7 +28,7 @@ function App() {
                 <section className="column box">
                     <InvoiceAdder allInvoices={invoices} onNewInvoice={() => showDrawer(true)}/>
                 </section>
-                <Drawer name={style.drawer} onClose={() => showDrawer(false)}/>
+                <Drawer onClose={() => showDrawer(false)} descriptor={drawerDescriptor}/>
             </main>
         </>
     );
