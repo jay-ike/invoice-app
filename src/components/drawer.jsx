@@ -14,22 +14,32 @@ function Indicator(props) {
     );
 }
 function Drawer(props) {
-    const generator = utils.numberGenerator();
+    let generator = utils.numberGenerator();
+    const formatter = utils.getFormatter();
     const components = Object.create(null);
     const steps = ["your informations", "your client informations", "terms of payments", "the billing items"];
     const [currentStep, setCurentStep] = createSignal(0);
-    const [items, setItems] = createSignal(props.items ?? [{id: generator.next(), valid: false}]);
-    const [formValid, setFormValidity] = createSignal(false);
+    const [items, setItems] = createSignal(props.data?.items ?? [{id: generator.next(), valid: false}]);
+    const [formState, setFormState] = createSignal({valid: false});
     const itemAddition = createMemo(() => (
         items().some((elt) => elt.valid === false)
         ? {disabled: true}
         : {}
     ));
-    const formValidity = createMemo( () => (
-        formValid()
+    const formValidity = createMemo(() => (
+        formState().valid
         ? {}
         : {disabled: true}
     ));
+
+    function getDueDate() {
+        let terms = Number.parseInt(components.form.elements.paymentTerms.value);
+        terms *= 24 * 3600000;
+        terms += Date.parse(formState().selectedDate);
+        if (Number.isFinite(terms)) {
+            return formatter.formatDate(terms);
+        }
+    }
     function updateValidity(isValid, index) {
         const allItems = Array.from(items());
         allItems[index].valid = isValid;
@@ -44,8 +54,16 @@ function Drawer(props) {
         setItems(all);
     }
     function addItem() {
+        const state = Object.assign({}, formState());
         setItems(items().concat([{id: generator.next(), valid: false}]));
-        setFormValidity(components.form.checkValidity());
+        state.valid = components.form.checkValidity();
+        setFormState(state);
+    }
+    function handleDateSelection({detail}) {
+        const {date} = detail;
+        const state = Object.assign({}, formState());
+        state.selectedDate = date;
+        setFormState(state);
     }
     function requestNextFormStep() {
         const selector = "step-by-step > :not(.step-out) :is(input,select)";
@@ -79,6 +97,13 @@ function Drawer(props) {
     }
     function discardDrawer() {
         props.onClose();
+        Array.from(components.form.querySelectorAll("input[required]")).forEach(
+            function (elt) {
+                elt.dataset.new = "";
+            }
+        );
+        generator = utils.numberGenerator();
+        components.form.reset();
     }
     function parseDescriptor(lookupProps) {
         return Object.entries(props.descriptor).filter(
@@ -89,20 +114,67 @@ function Drawer(props) {
         }, Object.create(null));
     }
     function handleInput({target}) {
+        const state = Object.assign({}, formState());
         if (target.dataset.new === undefined) {
             target.dataset.new = "";
         }
-        setFormValidity(components.form.checkValidity());
+        state.valid = components.form.checkValidity();
+        setFormState(state);
+    }
+    function getInvoiceData(status) {
+        const itemSyntax = /^(item-\d+)-(\w+)$/
+        let data = new FormData(components.form);
+        data = Array.from(data.entries()).reduce(function (acc, [key, val]) {
+            let itemNumber;
+            let itemProp;
+            let tmp ={};
+            if (key.match(itemSyntax)) {
+                [itemNumber, itemProp] = key.replace(itemSyntax, "$1 $2").split(" ");
+                tmp[itemProp] = val;
+                acc.items[itemNumber] = Object.assign(acc.items[itemNumber] ?? {}, tmp);
+            } else {
+                acc[key] = val;
+            }
+            return acc;
+        }, {items:{}});
+        data.items = Object.values(data.items).map(function ({name, price, qty}) {
+            let result = {name, price, qty};
+            const quantity = Number.parseInt(qty, 10);
+            const unitPrice = Number.parseFloat(price);
+
+            if (Number.isFinite(quantity * unitPrice)) {
+                result.priceAmount = formatter.formatCurrency(unitPrice);
+                result.total = quantity * unitPrice;
+                result.totalAmount = formatter.formatCurrency(result.total);
+            }
+            return result;
+        });
+        if (getDueDate() !== undefined) {
+            data.dueDate = getDueDate();
+        }
+        data.status = status;
+        data.reference = props.data?.reference ?? utils.generateCode();
+        return data;
+    }
+    function draftInvoice() {
+        const data = getInvoiceData("draft");
+        props.onDrafted(data);
+        discardDrawer();
+    }
+    function proceedInvoice() {
+        const data = getInvoiceData("pending");
+        props.onProceeded(data);
+        discardDrawer();
     }
     return (
-            <section class="drawer box column" data-emit="draweropened" data-attributes="data-edit:{edit},data-status:{status}" {...parseDescriptor(["status", "edit"])}>
-               <h2 class="heading-l"><span data-event="draweropened" data-property="{action}">{props.descriptor.action}</span><span class="invoice__ref" data-prefix="#" data-event="draweropened" data-property="{reference}">{props.descriptor.reference ?? ""}</span></h2>
+            <section class="drawer box column" {...parseDescriptor(["status", "edit"])}>
+               <h2 class="heading-l"><span>{props.descriptor.action}</span><span class="invoice__ref" data-prefix="#">{props.data?.reference ?? ""}</span></h2>
                <Indicator current={currentStep} steps={steps} />
                <span class="segragator no-gap no-padding">
 					<button ref={components.prev} aria-label="previous step" class="box row icon-start" id="prev_step" type="button" data-icon="arrow_left" disabled="true" autocomplete="off" onClick={previousStep}>previous step</button>
 					<button ref={components.next} aria-label="next step" class="box row icon-end" id="next_step" type="button" data-icon="arrow_right" onClick={requestNextFormStep}>next step</button>
                </span>
-               <form ref={components.form} id="invoice_form" action="" class="grow-2 y-scrollable" onInput={handleInput}>
+               <form ref={components.form} id="invoice_form" action="" class="grow-2 y-scrollable" onInput={handleInput} on:dateselected={handleDateSelection}>
                  <step-by-step out-indicator="step-out" on:indexupdated={stepUpdater}>
                    <fieldset class="input-step stack" name="senderInfos">
                         <legend>bill from</legend>
@@ -155,9 +227,9 @@ function Drawer(props) {
                    </step-by-step>
                </form>
                <div>
-                   <button class="box btn-edit cancel" data-event="draweropened" data-property="{cancel}" data-attributes="aria-label:{cancel}" aria-label={props.descriptor.cancel} onClick={discardDrawer}>{props.descriptor.cancel}</button>
-					<button aria-label="save as draft" class="box btn-draft">save as draft</button>
-                    <button class="box btn-primary proceed" data-event="draweropened" data-property="{proceed}" data-attributes="aria-label:{proceed}" aria-label={props.descriptor.proceed} {...formValidity()} autocomplete="off">{props.descriptor.proceed}</button>
+                   <button class="box btn-edit cancel" aria-label={props.descriptor.cancel} onClick={discardDrawer}>{props.descriptor.cancel}</button>
+					<button aria-label="save as draft" class="box btn-draft" onClick={draftInvoice}>save as draft</button>
+                    <button class="box btn-primary proceed" aria-label={props.descriptor.proceed} onClick={proceedInvoice} {...formValidity()} autocomplete="off">{props.descriptor.proceed}</button>
                </div>
             </section>
     );

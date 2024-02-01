@@ -27,7 +27,7 @@ function App() {
                 <section className="column box">
                     <InvoiceAdder allInvoices={invoices} onNewInvoice={() => showDrawer(true)}/>
                 </section>
-                <Drawer onClose={() => showDrawer(false)} descriptor={drawerDescriptor}/>
+                <Drawer onClose={() => showDrawer(false)} descriptor={drawerDescriptor} onDrafted={console.log} onProceeded={console.log}/>
             </main>
         </>
     );
