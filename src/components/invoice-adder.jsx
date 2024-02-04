@@ -35,7 +35,7 @@ function InvoiceAdder(props) {
     });
 
     createEffect(function optionsUpdated() {
-        console.log(options());
+        props.invoiceFiltered(options());
     });
 
     function check(option) {

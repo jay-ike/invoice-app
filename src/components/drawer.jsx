@@ -97,7 +97,7 @@ function Drawer(props) {
     }
     function discardDrawer() {
         props.onClose();
-        Array.from(components.form.querySelectorAll("input[required]")).forEach(
+        components.form.querySelectorAll("input[required]").forEach(
             function (elt) {
                 elt.dataset.new = "";
             }
@@ -156,14 +156,9 @@ function Drawer(props) {
         data.reference = props.data?.reference ?? utils.generateCode();
         return data;
     }
-    function draftInvoice() {
-        const data = getInvoiceData("draft");
-        props.onDrafted(data);
-        discardDrawer();
-    }
-    function proceedInvoice() {
-        const data = getInvoiceData("pending");
-        props.onProceeded(data);
+    function saveInvoice(type) {
+        const data = getInvoiceData(type);
+        props.onSave(data);
         discardDrawer();
     }
     return (
@@ -228,8 +223,8 @@ function Drawer(props) {
                </form>
                <div>
                    <button class="box btn-edit cancel" aria-label={props.descriptor.cancel} onClick={discardDrawer}>{props.descriptor.cancel}</button>
-					<button aria-label="save as draft" class="box btn-draft" onClick={draftInvoice}>save as draft</button>
-                    <button class="box btn-primary proceed" aria-label={props.descriptor.proceed} onClick={proceedInvoice} {...formValidity()} autocomplete="off">{props.descriptor.proceed}</button>
+					<button aria-label="save as draft" class="box btn-draft" onClick={() => saveInvoice("draft")}>save as draft</button>
+                    <button class="box btn-primary proceed" aria-label={props.descriptor.proceed} onClick={() => saveInvoice("pending")} {...formValidity()} autocomplete="off">{props.descriptor.proceed}</button>
                </div>
             </section>
     );
