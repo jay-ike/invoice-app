@@ -1,4 +1,4 @@
-import {createEffect, createSignal} from "solid-js";
+import {createEffect, createSignal, onMount} from "solid-js";
 import Nav from "./components/header.jsx";
 import InvoiceAdder from "./components/invoice-adder.jsx";
 import Drawer from "./components/drawer.jsx";
@@ -15,7 +15,7 @@ function App() {
     };
     let db;
 
-    document.addEventListener("DOMContentLoaded", async function () {
+    onMount(async function dbInitializer() {
         let storedInvoices;
         db = await utils.invoiceStorage();
         storedInvoices = await db.getAll();
