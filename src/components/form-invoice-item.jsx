@@ -32,7 +32,7 @@ function invoiceItemField(props) {
                  </div>
                  <div>
                      <input type="text" id={"item-" + (props.index() + 1) + "-price"} name={"item-" + (props.index() + 1) + "-price"} pattern="^\\d+(\.\\d+)?$" inputmode="decimal" required data-new onInput={({target}) => setPrice(target.value)}/>
-				     <label for="">price</label>
+				     <label for={"item-" + (props.index() + 1) + "-price"}>price</label>
 				 </div>
                  <div>
                      <output name={"item-" + (props.index() + 1) + "-total"} id={"item-" + (props.index() + 1) + "-total"} for={"item-" + (props.index() + 1) + "-qty item-" + (props.index() + 1) + "-price"}>{total()}</output>

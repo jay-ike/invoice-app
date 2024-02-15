@@ -10,17 +10,17 @@ function InvoiceList(props) {
     });
     return (
      <>
-        <div ref={list} class="invoices column grow-2" data-for="invoices" data-event="invoicesupdated" data-memoized data-id="reference">
+        <div ref={list} class={styles["invoices"] + " column grow-2"}>
            <For each={props.invoices()} id="reference">
                 {
                     (invoice) => (
-                        <button type="button" class={"blank-box " + styles["summary-grid"] + " invoice-grid"} aria-label={"invoice number " + invoice.reference}>
-                            <span data-prefix="#">{invoice.reference}</span>
-                            <span class="label-text" data-prefix="due ">{invoice.dueDate ?? "not assigned"}</span>
-                            <span class="label-text">{invoice.clientName}</span>
-                            <span >{invoice.totalAmount}</span>
-                            <span class="box icon-start status-box" data-status={invoice.status}>{invoice.status}</span>
-                        </button>
+                        <article class="blank-box invoice-grid" aria-label={"invoice number " + invoice.reference}>
+                             <a href={"/invoice/" + invoice.reference} data-prefix="#">{invoice.reference}</a>
+                             <p class="label-text" data-prefix="due ">{invoice.dueDate ?? "not assigned"}</p>
+                             <p class="label-text">{invoice.clientName}</p>
+                             <p>{invoice.totalAmount}</p>
+                             <p class="box icon-start status-box" data-status={invoice.status}>{invoice.status}</p>
+                        </article>
                     )
 
                 }

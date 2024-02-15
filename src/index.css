@@ -96,7 +96,7 @@ option[value=""] {
   :where([class$="grid"], [role^="row"]) > :nth-child(5) {
     grid-area: status;
   }
-  .sm-hide {
+  .sm-hide:not([class$="grid"]) {
     display: none;
   }
 }
@@ -832,11 +832,8 @@ dialog h3 {
   }
 }
 @media screen and (min-width: 480px) {
-  .sm-hide {
+  .sm-hide:not([class$="grid"]) {
     display: initial;
-  }
-  .invoice-grid.sm-hide {
-    display: grid;
   }
   .invoice__desc {
     --invoice-grid: "ref ref ref" "date total status" "name total ."/1fr 1fr 1fr;
