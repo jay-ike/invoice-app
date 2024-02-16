@@ -1,11 +1,11 @@
-import {createEffect, createSignal, onMount} from "solid-js";
+import {createEffect, createSignal} from "solid-js";
 import Nav from "./components/header.jsx";
 import InvoiceAdder from "./components/invoice-adder.jsx";
 import Drawer from "./components/drawer.jsx";
 import InvoiceList from "./components/invoice-list.jsx";
-import utils from "./utils.js";
 
-function App() {
+function App(props) {
+    let db;
     const [invoices, setInvoices] = createSignal([]);
     const [drawerVisible, showDrawer] = createSignal(false);
     const drawerDescriptor = {
@@ -13,13 +13,9 @@ function App() {
         cancel: "discard",
         proceed: "save & send"
     };
-    let db;
-
-    onMount(async function dbInitializer() {
-        let storedInvoices;
-        db = await utils.invoiceStorage();
-        storedInvoices = await db.getAll();
-        setInvoices(storedInvoices);
+    props.data.then(function (value) {
+        db = value.db;
+        setInvoices(value.storedInvoices);
     });
     createEffect(function drawerHandler() {
         if (drawerVisible() === true) {

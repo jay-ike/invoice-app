@@ -7,10 +7,11 @@ function getColorScheme() {
     );
 }
 function Nav () {
+    const {dataset} = document.documentElement;
     const themes = {light: "dark", dark: "light"};
-    const [currentTheme, setCurrentTheme] = createSignal();
-    createEffect(function themeUpdater(prev) {
-        document.documentElement.dataset.theme = currentTheme();
+    const [currentTheme, setCurrentTheme] = createSignal(dataset.theme);
+    createEffect(function themeUpdater() {
+        dataset.theme = currentTheme() ?? "";
     });
     function updateTheme() {
         setCurrentTheme(themes[currentTheme() ?? getColorScheme()]);

@@ -1,23 +1,34 @@
 /* @refresh reload */
-import stepByStep from "./step-by-step.js";
-import datePicker from "./datepicker.js";
 import {lazy} from "solid-js";
 import {render} from 'solid-js/web';
 import {Router} from "@solidjs/router";
+import InvoiceDetails from "./Invoice-Details.jsx";
+import stepByStep from "./step-by-step.js";
+import datePicker from "./datepicker.js";
+import utils from "./utils.js";
 
 import './index.css';
 
-function InvoiceDetails() {
-    return <div>I'm just a dummy detail</div>;
+async function load({params}) {
+    const db = await utils.invoiceStorage();
+    const invoice = await db.getById(params.id);
+    return {db, invoice};
+}
+async function loadInvoices() {
+    const db = await utils.invoiceStorage();
+    const storedInvoices = await db.getAll();
+    return {db, storedInvoices};
 }
 const root = document.getElementById('root');
 const routes = [
     {
         component: InvoiceDetails,
+        load,
         path: "/invoice/:id"
     },
     {
         component: lazy(() => import("./App.jsx")),
+        load: loadInvoices,
         path: "/"
     }
 ];
