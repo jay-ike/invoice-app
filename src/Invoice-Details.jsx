@@ -1,8 +1,19 @@
-import { createSignal, For } from "solid-js";
+import { createSignal, createEffect, createMemo, For } from "solid-js";
 import Nav from "./components/header.jsx";
+import Drawer from "./components/drawer.jsx";
 
 function InvoiceDetails(props) {
     const [invoice, setInvoice] = createSignal({ items: [] });
+    const [drawerVisible, showDrawer] = createSignal(false);
+    const descriptor = createMemo(function () {
+        return {
+            action: "edit ",
+            cancel: "cancel",
+            edit: "",
+            proceed: "save changes",
+            status: invoice().status
+        };
+    });
     let dialog;
     let db;
     props.data.then(function(value) {
@@ -11,6 +22,17 @@ function InvoiceDetails(props) {
             setInvoice(value.invoice);
         }
     });
+    createEffect(function drawerHandler() {
+        if (drawerVisible() === true) {
+            document.body.dataset.drawer = "show";
+        } else {
+            delete document.body.dataset.drawer;
+        }
+    });
+
+    function openDrawer () {
+        showDrawer(true);
+    }
 
     function openModal() {
         dialog.showModal();
@@ -23,8 +45,12 @@ function InvoiceDetails(props) {
         const {returnValue} = event.target;
         if (returnValue === "delete") {
             await db.deleteById(invoice().reference);
-            window.history.back();
+            window.location.replace("/");
         }
+    }
+    async function updateInvoice(data) {
+        await db.upsert(data);
+        setInvoice(data);
     }
     return (
         <>
@@ -38,7 +64,7 @@ function InvoiceDetails(props) {
                             <dd class="box status-box icon-start" data-property="{status}" data-event="previewrequested">{invoice().status ?? ""}</dd>
                         </dl>
                         <div class="box invoice__actions">
-                            <button aria-label="edit" class="box btn-edit">edit</button>
+                            <button aria-label="edit" class="box btn-edit" onClick={openDrawer}>edit</button>
                             <button aria-label="delete" class="box btn-danger" onClick={openModal}>delete</button>
                             <button aria-label="mark as paid" class="box btn-primary paid">mark as paid</button>
                         </div>
@@ -110,6 +136,7 @@ function InvoiceDetails(props) {
                         </div>
                     </div>
                 </section>
+                <Drawer descriptor={descriptor()} invoice={invoice} onClose={() => showDrawer(false)} onSave={updateInvoice}/>
             </main>
             <dialog ref={dialog} class="blank-box center" title="invoice deletion popup" onClose={handleClosedModal} onCancel={handleCancelation}>
                 <form method="dialog" class="column">

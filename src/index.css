@@ -590,7 +590,7 @@ button {
     inset-block-end: 0;
     inset-inline: 0;
     container: action/inline-size;
-    z-index: 2;
+    z-index: 1;
     display: flex;
     justify-content: center;
     gap: clamp(0.5em, 4vmin, 1em);

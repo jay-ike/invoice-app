@@ -1,4 +1,4 @@
-import {createEffect, createSignal} from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import Nav from "./components/header.jsx";
 import InvoiceAdder from "./components/invoice-adder.jsx";
 import Drawer from "./components/drawer.jsx";
@@ -13,7 +13,7 @@ function App(props) {
         cancel: "discard",
         proceed: "save & send"
     };
-    props.data.then(function (value) {
+    props.data.then(function(value) {
         db = value.db;
         setInvoices(value.storedInvoices);
     });
@@ -46,13 +46,13 @@ function App(props) {
 
     return (
         <>
-            <Nav/>
+            <Nav />
             <main>
                 <section className="column box">
-                    <InvoiceAdder allInvoices={invoices} onNewInvoice={() => showDrawer(true)} invoiceFiltered={filterInvoices}/>
+                    <InvoiceAdder allInvoices={invoices} onNewInvoice={() => showDrawer(true)} invoiceFiltered={filterInvoices} />
                     <InvoiceList invoices={invoices} />
                 </section>
-                <Drawer onClose={() => showDrawer(false)} descriptor={drawerDescriptor} onSave={saveInvoice}/>
+                <Drawer onClose={() => showDrawer(false)} descriptor={drawerDescriptor} onSave={saveInvoice} />
             </main>
         </>
     );
