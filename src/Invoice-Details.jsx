@@ -1,19 +1,36 @@
-import {createSignal, For} from "solid-js";
+import { createSignal, For } from "solid-js";
 import Nav from "./components/header.jsx";
 
 function InvoiceDetails(props) {
-    const [invoice, setInvoice] = createSignal({items:[]});
-    props.data.then(function (value) {
+    const [invoice, setInvoice] = createSignal({ items: [] });
+    let dialog;
+    let db;
+    props.data.then(function(value) {
         if (value.invoice !== undefined) {
+            db = value.db;
             setInvoice(value.invoice);
         }
-        console.log(value.invoice);
     });
+
+    function openModal() {
+        dialog.showModal();
+    }
+    function handleCancelation(event) {
+        event.preventDefault();
+        dialog.close("cancel");
+    }
+    async function handleClosedModal(event) {
+        const {returnValue} = event.target;
+        if (returnValue === "delete") {
+            await db.deleteById(invoice().reference);
+            window.history.back();
+        }
+    }
     return (
         <>
-             <Nav/>
-             <main>
-                 <section class="box invoice__details column relative" data-emit="previewrequested">
+            <Nav />
+            <main>
+                <section class="box invoice__details column relative" data-emit="previewrequested">
                     <a href="/" class="row back-btn icon-start" data-icon="arrow_left">Go back</a>
                     <div class="invoice__status blank-box" data-status={invoice().status ?? ""} data-event="previewrequested" data-attributes="data-status:{status}">
                         <dl class="row">
@@ -22,7 +39,7 @@ function InvoiceDetails(props) {
                         </dl>
                         <div class="box invoice__actions">
                             <button aria-label="edit" class="box btn-edit">edit</button>
-                            <button aria-label="delete" class="box btn-danger">delete</button>
+                            <button aria-label="delete" class="box btn-danger" onClick={openModal}>delete</button>
                             <button aria-label="mark as paid" class="box btn-primary paid">mark as paid</button>
                         </div>
                         <button aria-label="print invoice" type="button" class="icon-end row transparent-box" data-icon="file-download">print invoice</button>
@@ -65,7 +82,7 @@ function InvoiceDetails(props) {
                         </dl>
                         <div class="invoice__table">
                             <div class="box items-box stack" role="grid" aria-label="invoice details">
-                                <div  role="rowheader" class="sm-hide label-text grid">
+                                <div role="rowheader" class="sm-hide label-text grid">
                                     <div role="columnheader">item Name</div>
                                     <div role="columnheader">qty.</div>
                                     <div role="columnheader">price</div>
@@ -75,11 +92,11 @@ function InvoiceDetails(props) {
                                     <For each={invoice().items}>
                                         {
                                             (invoice) => (
-                                                <div  role="row" class="content-bold invoice-grid">
-                                                <div role="gridcell" data-property="{name}">{invoice.name}</div>
-                                                <div role="gridcell" data-suffix=" x " data-property="{qty}" class="label-text">{invoice.qty}</div>
-                                                <div role="gridcell" class="label-text" data-property="{priceAmount}">{invoice.priceAmount}</div>
-                                                <div role="gridcell" data-property="{totalAmount}">{invoice.totalAmount}</div>
+                                                <div role="row" class="content-bold invoice-grid">
+                                                    <div role="gridcell" data-property="{name}">{invoice.name}</div>
+                                                    <div role="gridcell" data-suffix=" x " data-property="{qty}" class="label-text">{invoice.qty}</div>
+                                                    <div role="gridcell" class="label-text" data-property="{priceAmount}">{invoice.priceAmount}</div>
+                                                    <div role="gridcell" data-property="{totalAmount}">{invoice.totalAmount}</div>
                                                 </div>
                                             )
                                         }
@@ -93,8 +110,20 @@ function InvoiceDetails(props) {
                         </div>
                     </div>
                 </section>
-
-             </main>
+            </main>
+            <dialog ref={dialog} class="blank-box center" title="invoice deletion popup" onClose={handleClosedModal} onCancel={handleCancelation}>
+                <form method="dialog" class="column">
+                    <h3 class="heading-m">confirm deletion</h3>
+                    <p>
+                        <span>Are you sure you want to delete invoice #<span data-event="dialogopened" data-property="{reference}">{invoice().reference}</span></span>?
+                        <strong>This action cannot be undone.</strong>
+                    </p>
+                    <menu class="row">
+                        <button aria-label="cancel" value="cancel" class="box btn-edit cancel">cancel</button>
+                        <button aria-label="delete" value="delete" class="box btn-danger delete">delete</button>
+                    </menu>
+                </form>
+            </dialog>
         </>
     );
 }
