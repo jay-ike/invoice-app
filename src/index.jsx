@@ -2,7 +2,6 @@
 import {lazy} from "solid-js";
 import {render} from 'solid-js/web';
 import {Router} from "@solidjs/router";
-import InvoiceDetails from "./Invoice-Details.jsx";
 import stepByStep from "./step-by-step.js";
 import datePicker from "./datepicker.js";
 import utils from "./utils.js";
@@ -22,7 +21,7 @@ async function loadInvoices() {
 const root = document.getElementById('root');
 const routes = [
     {
-        component: InvoiceDetails,
+        component: lazy(() => import("./Invoice-Details.jsx")),
         load,
         path: "/invoice/:id"
     },
@@ -30,6 +29,10 @@ const routes = [
         component: lazy(() => import("./App.jsx")),
         load: loadInvoices,
         path: "/"
+    },
+    {
+        component: lazy(() => import("./Invoice-Print.jsx")),
+        path: "/invoice-preview"
     }
 ];
 

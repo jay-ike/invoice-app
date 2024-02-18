@@ -1,8 +1,10 @@
-import { createSignal, createEffect, createMemo, For } from "solid-js";
+import { createSignal, createEffect, createMemo, onMount, For } from "solid-js";
 import Nav from "./components/header.jsx";
 import Drawer from "./components/drawer.jsx";
+import utils from "./utils.js";
 
 function InvoiceDetails(props) {
+    let actor;
     const [invoice, setInvoice] = createSignal({ items: [] });
     const [drawerVisible, showDrawer] = createSignal(false);
     const descriptor = createMemo(function () {
@@ -16,10 +18,14 @@ function InvoiceDetails(props) {
     });
     const elements = Object.create(null);
     let db;
+    onMount(function () {
+        actor = utils.frameActor(elements.frame);
+    });
     props.data.then(function(value) {
         if (value.invoice !== undefined) {
             db = value.db;
             setInvoice(value.invoice);
+            actor.send(value.invoice);
         }
     });
     createEffect(function drawerHandler() {
@@ -29,7 +35,6 @@ function InvoiceDetails(props) {
             delete document.body.dataset.drawer;
         }
     });
-
     function openDrawer () {
         showDrawer(true);
     }
@@ -51,6 +56,7 @@ function InvoiceDetails(props) {
     async function updateInvoice(data) {
         await db.upsert(data);
         setInvoice(data);
+        actor.send(data);
     }
     async function markAsPaid() {
         const data = Object.assign({}, invoice());
@@ -73,8 +79,8 @@ function InvoiceDetails(props) {
                             <button aria-label="delete" class="box btn-danger" onClick={openModal}>delete</button>
                             <button aria-label="mark as paid" class="box btn-primary paid" onClick={markAsPaid}>mark as paid</button>
                         </div>
-                        <button aria-label="print invoice" type="button" class="icon-end row transparent-box" data-icon="file-download">print invoice</button>
-                        <iframe id="preview" src="./print-preview.html" aria-hidden="true"></iframe>
+                        <button aria-label="print invoice" type="button" class="icon-end row transparent-box" data-icon="file-download" onClick={() => actor.requestPrint()}>print invoice</button>
+                        <iframe ref={elements.frame} id="preview" src="/invoice-preview" aria-hidden="true"></iframe>
                     </div>
                     <div class="blank-box stack grow-2 y-scrollable">
                         <dl class="invoice__desc label-text invoice-grid">
