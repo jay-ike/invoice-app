@@ -72,7 +72,7 @@ tfoot td:last-child {
     font-size: var(--system-text-large);
     font-weight: 900;
 }
-tbody > tr + tr > :first-child::before {
+tbody > tr:not(:first-child) > :first-child::before {
   content: "";
   position: absolute;
   block-size: 2pt;

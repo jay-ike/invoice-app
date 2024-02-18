@@ -935,11 +935,11 @@ dialog h3 {
         --y-offset: 0px;
         --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em);
     }
-    #root {
+    #app-wrapper {
         display: grid;
         grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(clamp(618px, 60vi, 719px), 2fr) 1fr;
     }
-    #root > main {
+    #app-wrapper > main {
         grid-area: main;
     }
 }

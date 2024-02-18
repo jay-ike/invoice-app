@@ -45,7 +45,7 @@ function App(props) {
     }
 
     return (
-        <>
+        <div id="app-wrapper">
             <Nav />
             <main>
                 <section className="column box">
@@ -54,7 +54,7 @@ function App(props) {
                 </section>
                 <Drawer onClose={() => showDrawer(false)} descriptor={drawerDescriptor} onSave={saveInvoice} />
             </main>
-        </>
+        </div>
     );
 }
 

@@ -1,4 +1,4 @@
-import {For, createEffect, createMemo, createSignal} from "solid-js";
+import {For, createEffect, createMemo, createSignal, onMount} from "solid-js";
 import FormInvoiceItem from "./form-invoice-item";
 import utils from "../utils.js";
 
@@ -20,28 +20,24 @@ function Drawer(props) {
     const components = Object.create(null);
     const steps = ["your informations", "your client informations", "terms of payments", "the billing items"];
     const [currentStep, setCurentStep] = createSignal(0);
-    const [items, setItems] = createSignal([]);
+    const [items, setItems] = createSignal([{id: generator.next(), valid: false}]);
     const [formState, setFormState] = createSignal({valid: false});
-    const itemAddition = createMemo(() => (
-        items().some((elt) => elt.valid === false)
-        ? {disabled: true}
-        : {}
-    ));
     const formValidity = createMemo(() => (
         formState().valid
         ? {}
         : {disabled: true}
     ));
-    const drawerItems = createMemo(() => (
-        items().length > 0
-        ? items()
-        : [{}]
+    const itemAddition = createMemo(() => (
+        items().some((elt) => elt.valid === false)
+        ? {disabled: true}
+        : {}
     ));
     if (typeof props.invoice === "function") {
         dataSignal = props.invoice;
         createEffect(function () {
-            const items = dataSignal().items;
-            setItems(items);
+            if(dataSignal().items?.length > 0) {
+                setItems(dataSignal().items);
+            }
         });
     } else {
         dataSignal = function () {
@@ -138,8 +134,9 @@ function Drawer(props) {
         setFormState(state);
     }
     function getInvoiceData(status) {
-        const itemSyntax = /^(item-\d+)-(\w+)$/
+        const itemSyntax = /^(item-\d+)-(\w+)$/;
         let data = new FormData(components.form);
+        let total;
         data = Array.from(data.entries()).reduce(function (acc, [key, val]) {
             let itemNumber;
             let itemProp;
@@ -168,6 +165,10 @@ function Drawer(props) {
         if (getDueDate() !== undefined) {
             data.dueDate = getDueDate();
         }
+        total = data.items.reduce((acc, val) => acc + val.total, 0);
+        if (Number.isFinite(total)) {
+            data.totalAmount = formatter.formatCurrency(total);
+        }
         data.status = status;
         data.reference = dataSignal().reference ?? utils.generateCode();
         return data;
@@ -177,6 +178,9 @@ function Drawer(props) {
         props.onSave(data);
         discardDrawer();
     }
+    onMount(function () {
+        setFormState({valid: components.form.checkValidity()});
+    });
     return (
             <section class="drawer box column" {...parseDescriptor(["status", "edit"])}>
                <h2 class="heading-l"><span>{props.descriptor.action}</span><span class="invoice__ref" data-prefix="#">{dataSignal().reference ?? ""}</span></h2>
@@ -226,7 +230,7 @@ function Drawer(props) {
                     </fieldset>
                     <div class="stack">
                         <h3 class="heading-m primary-text">item list</h3>
-                        <For each={drawerItems()} key="id">
+                        <For each={items()} key="id">
                             {
                                 function itemBuilder(data, index) {
                                     return <FormInvoiceItem index={index} updateValidity={updateValidity} itemData={data} onRemove={removeItem}/>

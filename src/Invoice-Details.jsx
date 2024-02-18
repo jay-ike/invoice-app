@@ -14,7 +14,7 @@ function InvoiceDetails(props) {
             status: invoice().status
         };
     });
-    let dialog;
+    const elements = Object.create(null);
     let db;
     props.data.then(function(value) {
         if (value.invoice !== undefined) {
@@ -35,29 +35,34 @@ function InvoiceDetails(props) {
     }
 
     function openModal() {
-        dialog.showModal();
+        elements.dialog.showModal();
     }
     function handleCancelation(event) {
         event.preventDefault();
-        dialog.close("cancel");
+        elements.dialog.close("cancel");
     }
     async function handleClosedModal(event) {
         const {returnValue} = event.target;
         if (returnValue === "delete") {
             await db.deleteById(invoice().reference);
-            window.location.replace("/");
+            elements.backLink.click();
         }
     }
     async function updateInvoice(data) {
         await db.upsert(data);
         setInvoice(data);
     }
+    async function markAsPaid() {
+        const data = Object.assign({}, invoice());
+        data.status = "paid";
+        await updateInvoice(data);
+    }
     return (
-        <>
+        <div id="app-wrapper">
             <Nav />
             <main>
                 <section class="box invoice__details column relative" data-emit="previewrequested">
-                    <a href="/" class="row back-btn icon-start" data-icon="arrow_left">Go back</a>
+                    <a ref={elements.backLink} href="/" class="row back-btn icon-start" data-icon="arrow_left">Go back</a>
                     <div class="invoice__status blank-box" data-status={invoice().status ?? ""} data-event="previewrequested" data-attributes="data-status:{status}">
                         <dl class="row">
                             <dt>status</dt>
@@ -66,7 +71,7 @@ function InvoiceDetails(props) {
                         <div class="box invoice__actions">
                             <button aria-label="edit" class="box btn-edit" onClick={openDrawer}>edit</button>
                             <button aria-label="delete" class="box btn-danger" onClick={openModal}>delete</button>
-                            <button aria-label="mark as paid" class="box btn-primary paid">mark as paid</button>
+                            <button aria-label="mark as paid" class="box btn-primary paid" onClick={markAsPaid}>mark as paid</button>
                         </div>
                         <button aria-label="print invoice" type="button" class="icon-end row transparent-box" data-icon="file-download">print invoice</button>
                         <iframe id="preview" src="./print-preview.html" aria-hidden="true"></iframe>
@@ -138,7 +143,7 @@ function InvoiceDetails(props) {
                 </section>
                 <Drawer descriptor={descriptor()} invoice={invoice} onClose={() => showDrawer(false)} onSave={updateInvoice}/>
             </main>
-            <dialog ref={dialog} class="blank-box center" title="invoice deletion popup" onClose={handleClosedModal} onCancel={handleCancelation}>
+            <dialog ref={elements.dialog} class="blank-box center" title="invoice deletion popup" onClose={handleClosedModal} onCancel={handleCancelation}>
                 <form method="dialog" class="column">
                     <h3 class="heading-m">confirm deletion</h3>
                     <p>
@@ -151,7 +156,7 @@ function InvoiceDetails(props) {
                     </menu>
                 </form>
             </dialog>
-        </>
+        </div>
     );
 }
 export default InvoiceDetails;
