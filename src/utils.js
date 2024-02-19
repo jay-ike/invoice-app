@@ -132,11 +132,22 @@ async function invoiceStorage(dbName = "jay-ike_invoices", version = 1) {
     result.deleteById = (reference) => db.delete(inv_store, reference);
     return result;
 }
+function numberGenerator() {
+    let initial = 1;
+    return Object.freeze({
+        next() {
+            const result = initial;
+            initial += 1;
+            return result;
+        }
+    });
+}
 export default Object.freeze({
     frameActor,
     generateCode,
     getColorScheme,
     getFormatter,
     getInvoicesDescriptor,
-    invoiceStorage
+    invoiceStorage,
+    numberGenerator
 });

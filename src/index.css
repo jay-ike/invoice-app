@@ -1,0 +1,987 @@
+:root {
+	--system-color-softBlue: hsl(252, 85%, 62%);
+	--system-color-lightBlue: hsl(252, 80%, 70%);
+	--system-color-softRed: hsl(0, 71%, 47%);
+	--system-color-lightRed: hsl(0, 100%, 80%);
+	--system-color-limeGreen: hsl(160, 67%, 52%);
+	--system-color-pureOrange: hsl(34, 90%, 69%);
+	--system-color-grayishBlue: hsl(231, 20%, 27%);
+	--system-color-lightGrayishBlue: hsl(231, 67%, 99%);
+	--ystem-color-darkBlue: hsl(231, 28%, 7%);
+	--system-color-lightPurple: hsl(231, 73%, 93%);
+	--system-color-softPurple: hsl(231, 37%, 44%);
+	--system-color-darkPurple: hsl(233, 31%, 17%);
+	--system-color-fillPrimary: var(--page-bg, hsl(240, 27%, 98%));
+	--system-color-blank: var(--color-blank, #fff);
+	--system-color-labelText: var(--color-labelText, var(--system-color-softPurple));
+	--system-color-captionText: var(--color-captionText, hsl(230, 75%, 59%));
+	--system-color-labelFill: var(--color-labelFill, var(--system-color-lightGrayishBlue));
+	--system-color-labelHover: var(--color-labelHover, var(--system-color-lightPurple));
+	--system-color-text: var(--color-text, var(--system-color-darkBlue));
+	--system-color-shadow: var(--color-shadow, hsl(231, 38%, 90%));
+	--system-color-checkboxFill: var(--color-checkboxFill, var(--system-color-lightPurple));
+	--system-color-info: var(--color-info, var(--system-color-lightPurple));
+	--system-color-infoFill: var(--color-infoFill, var(--system-color-grayishBlue));
+    --system-color-backdropFill: hsla(231, 28%, 7%, 0.4);
+
+	--system-heading-large: 2.25rem;
+	--system-heading-medium: 1.5rem;
+	--system-heading-small: 0.9375rem;
+	--system-text-body: 0.8125rem;
+	--system-color-disabled: var(--color-disabled, hsla(233, 31%, 17%, 0.6));
+    --theme-clip: url(#night_mode);
+
+}
+:is(*, ::before, ::after) {
+    box-sizing: border-box;
+}
+
+:is(h1, h2, h3, h4) {
+    line-height: 1.2;
+}
+
+:is(body, h1, h2, h3, dl, dt, dd, p) {
+    margin:0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+:is(ul, ol, fieldset, legend) {
+    margin: 0;
+    padding: 0;
+}
+
+:is(summary, ul) {
+    list-style: none;
+}
+
+:is(button, fieldset) {
+    border: none;
+}
+dialog:not(.drawer) {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+}
+select {
+    text-transform: inherit;
+}
+option[value=""] {
+    display: none;
+}
+[data-theme="dark"] {
+    --color-text: var(--system-color-lightGrayishBlue);
+    --color-blank: var(--system-color-darkPurple);
+    --color-labelText: var(--system-color-lightPurple);
+    --color-labelFill: var(--system-color-grayishBlue);
+    --color-labelHover: #fff;
+    --color-shadow: rgba(224,228,250,0.1);
+    --page-bg: #141624;
+    --color-checkboxFill: var(--page-bg);
+    --color-editText: hsl(231, 38%, 80%);
+    --color-captionText: var(--color-editText);
+    --input-bd-clr: #252946;
+    --color-info: var(--system-color-grayishBlue);
+    --color-infoFill: var(--system-color-lightPurple);
+    --fill-items-box: #252946;
+    --fill-amount-box: #0d0f17;
+    --color-disabled: rgba(251,251,254,0.6);
+    --theme-clip: url(#light_mode);
+}
+@layer utils {
+    :is([class$="grid"]:not(date-picker *), [role="row"], [role="rowheader"]) {
+        --default-template: "ref . name" ".  .   ." 1rem "date . status" "total . status" / minmax(10ch, 1fr) .5fr .75fr;
+        display: grid;
+        grid-template: var(--invoice-grid, var(--default-template));
+        align-items: var(--item-alignment, var(--alignment, center));
+        gap: var(--invoice-gap, initial);
+        container: invoice/inline-size;
+    }
+    :where([class$="grid"], [role="row"], [role="rowheader"]) > :first-child {
+        grid-area: ref;
+    }
+    :where([class$="grid"], [role="row"], [role="rowheader"])> :nth-child(2) {
+        grid-area: date;
+    }
+    :where([class$="grid"], [role="row"], [role="rowheader"]) > :nth-child(3) {
+        grid-area: name;
+    }
+    :where([class$="grid"], [role="row"], [role="rowheader"]) > :nth-child(4) {
+        grid-area: total;
+    }
+    :where([class$="grid"], [role="row"], [role="rowheader"]) > :nth-child(5) {
+        grid-area: status;
+    }
+    .sm-hide:not([class$="grid"]) {
+        display: none;
+    }
+}
+@font-face {
+  font-family: "Spartan";
+  src: url("./assets/LeagueSpartan-VariableFont_wght.ttf") format("truetype");
+  font-variant-ligatures: common-ligatures discretionary-ligatures historical-ligatures;
+  font-feature-settings: "zero";
+}
+.stack > * + * {
+  margin-block-start: var(--s-space, 1.5em);
+}
+
+:is(.row, .column, .segragator) {
+  display: flex;
+  align-items: var(--alignment, center);
+  gap: var(--r-space, var(--c-space, 1.5em));
+  justify-content: var(--i-alignment, start);
+}
+.grow-2 {
+  flex-grow: 2;
+}
+.no-shrink {
+  flex-shrink: 0;
+}
+.segragator {
+  --i-alignment: space-between;
+  flex-flow: var(--direction, row) var(--wrap, nowrap);
+}
+.row {
+  --alignment: var(--row-align, center);
+  flex-flow: var(--row-dir, row) var(--wrap, nowrap);
+}
+.column {
+  --alignment: var(--col-align, stretch);
+  flex-flow: var(--col-dir, column) var(--wrap, nowrap);
+}
+.center {
+  display: grid;
+  place-items: center;
+  place-content: center;
+  gap: var(--s-space, 1.5em);
+}
+
+:is(.blank-box, .transparent-box, .box) {
+  padding: var(--min-padding, 1.5em);
+  background-color: var(--color-fill, transparent);
+  color: var(--color-text, currentColor);
+  border-radius: var(--radius, 0);
+}
+.transparent-box {
+    --color-fill: transparent;
+}
+:where([aria-hidden="true"], .visually-hidden) {
+    position: absolute;
+    clip-path: inset(50%);
+}
+
+
+body {
+  font-family: Spartan, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  font-weight: 500;
+  font-variant-ligatures: common-ligatures;
+  font-variant-numeric: slashed-zero;
+  color: var(--system-color-text);
+  background-color: var(--system-color-fillPrimary);
+  accent-color: var(--system-color-softBlue);
+  caret-color: var(--system-color-softBlue);
+  overflow: hidden;
+}
+section {
+  --color-fill: var(--system-color-fillPrimary);
+  --min-padding: 1.5em clamp(0.5em, 4cqi, 1.5em) 0.5em;
+  block-size: calc(100lvb - min(7rem, 72px));
+}
+:is(button, .capitalize) {
+    text-transform: capitalize;
+}
+button {
+  font-weight: 900;
+  font-size: clamp(0.75em, 4cqi, 1em);
+}
+.heading-l {
+  --f-size: var(--system-heading-large);
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+.heading-m {
+  --f-size: var(--system-heading-medium);
+  line-height: 1.1;
+  letter-spacing: -0.75px;
+}
+.heading-s {
+  --f-size: var(--system-heading-small);
+  line-height: 1;
+  letter-spacing: -0.25px;
+}
+.self-center {
+  place-self: center;
+}
+.y-scrollable {
+  overflow: hidden auto;
+}
+.no-gap {
+  --r-space: 0;
+  --c-space: 0;
+}
+.no-padding {
+  --min-padding: 0;
+}
+.primary-text {
+  color: var(--system-color-softBlue);
+  font-weight: var(--weight, inherit);
+}
+.subtitle-text {
+  color: var(--color-labelText, hsl(230, 75%, 59%));
+  font-weight: 500;
+}
+[class*="btn"] {
+  --radius: 1.5rem;
+  --r-space: 0.25em;
+  min-inline-size: 4.5rem;
+  min-block-size: 3rem;
+}
+[class*="btn"]:enabled:is(:focus-visible, :hover) {
+  color: var(--color-text-hover, var(--color-text));
+  background-color: var(--color-fill-hover, transparent);
+}
+.back-btn {
+  align-self: start;
+  background-color: transparent;
+  color: var(--system-color-text);
+}
+:is(.btn-primary, .btn-danger) {
+  --color-text: #fafafa;
+  --color-text-hover: var(--system-color-lightGrayishBlue);
+}
+.btn-primary {
+  --color-fill: var(--system-color-softBlue);
+  --color-fill-hover: var(--system-color-lightBlue);
+}
+.btn-primary:disabled {
+  --color-fill: hsl(251, 8%, 76%);
+  --color-text: hsl(45, 54%, 22%);
+}
+.btn-danger {
+  --color-fill: var(--system-color-softRed);
+  --color-fill-hover: var(--system-color-lightRed);
+}
+.btn-edit {
+  --color-text: var(--color-editText, var(--system-color-labelText));
+  --color-fill: var(--system-color-labelFill);
+  --color-fill-hover: var(--system-color-labelHover);
+}
+.btn-draft {
+  --color-text: var(--color-labelText, hsl(231, 38%, 80%));
+  --color-fill: hsl(231, 20%, 27%);
+  --color-fill-hover: var(--fill-items-box, hsl(228, 29%, 7%));
+}
+.large-btn {
+  --min-padding: var(--btn-padding, initial);
+  --color-text: var(--color-labelText, var(--system-color-darkBlue));
+  --color-fill: var(--fill-items-box, hsl(225, 24%, 56%));
+  --color-fill-hover: var(--fill-amount-box, hsl(231, 73%, 93%));
+  --prefix-color: currentColor;
+  inline-size: 100%;
+}
+
+.relative {
+  position: relative;
+}
+.label-text, label {
+  color: var(--label-color, var(--system-color-labelText));
+  font-weight: var(--label-weight, inherit);
+}
+.content-bold {
+  color: var(--system-color-text);
+  font-weight: bold;
+}
+
+:is(.icon-start, .theme-switch)::before, .icon-end::after {
+  content: "";
+  min-inline-size: var(--icon-size, 1.5em);
+  aspect-ratio: var(--icon-ratio, 1);
+  display: inline-block;
+  background-color: var(--icon-fill, currentColor);
+  transform: var(--icon-transform, none);
+  clip-path: var(--icon-clip, none);
+  border-radius: var(--icon-radius, 0px);
+}
+.icon-start:is(:enabled, a):is(:hover,:focus-visible)::before,
+.icon-end:is(a, :enabled):is(:hover,:focus-visible)::after {
+  --icon-fill: var(--icon-fill-hover, currentColor);
+  --icon-transform: var(--icon-hoverTransform, inherit);
+}
+[data-icon]:disabled {
+  --icon-fill: currentColor;
+  opacity: 0.6;
+  color: var(--system-color-disabled);
+}
+[data-icon="arrow_right"] {
+  --icon-clip: url(#arrow_left);
+  --icon-transform: rotate(180deg);
+  --icon-hoverTransform: rotate(180deg) translateX(0.5em);
+}
+[data-icon="arrow_left"] {
+  --icon-hoverTransform: translateX(0.5em);
+  --icon-clip: url(#arrow_left);
+}
+[data-icon*="arrow"] {
+  --icon-fill: var(--system-color-softBlue);
+}
+[data-icon="arrow_down"] {
+  --min-padding: 0.75em 1.5em 0.75em 0;
+  --r-space: 0.1em;
+  --icon-clip: url(#arrow_down);
+  cursor: pointer;
+}
+.opt-filter:is(:hover, :focus-visible, :focus-within) [data-icon="arrow_down"] {
+  --icon-transform: rotateZ(180deg);
+}
+[data-icon="add-circle"] {
+  --min-padding: 0.75em clamp(0.5em, 2vw, 1.5em) 0.75em 0.5em;
+  --icon-siize: 2em;
+  --icon-clip: url(#add-circle);
+}
+[data-icon="file-download"] {
+    --icon-clip: url(#file-download);
+    --icon-size: 2.5em;
+    --icon-fill: var(--system-color-labelText);
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: 0;
+}
+[data-status="draft"] [data-icon="file-download"] {
+    display: none;
+}
+[data-icon="warning"] {
+  --icon-clip: url(#warning);
+}
+[data-icon="delete"] {
+  --icon-clip: url(#delete);
+}
+[data-status="pending"] {
+  --status-fill: var(--system-color-pureOrange);
+  --status-text: var(--system-color-darkPurple);
+}
+[data-status="paid"] {
+  --status-text: var(--system-color-darkPurple);
+  --status-fill: var(--system-color-limeGreen);
+}
+[data-status="draft"] {
+  --status-text: var(--system-color-info);
+  --status-fill: var(--system-color-infoFill);
+}
+[data-prefix]:not(:empty)::before {
+  content: var(--prefix, attr(data-prefix));
+  color: var(--prefix-color, var(--system-color-captionText));
+}
+[data-suffix]:not(:empty):after {
+  content: var(--suffix, attr(data-suffix));
+  color: var(--suffix-color, currentColor);
+}
+#logo {
+  width: 72px;
+  aspect-ratio: 1;
+  border-radius: 0 1.25em 1.25em 0;
+  position: relative;
+  background-color: var(--system-color-softBlue);
+}
+#logo::after {
+  content: "";
+  position: absolute;
+  inline-size: 40%;
+  aspect-ratio: 1;
+  background-color: var(--deco-fill, transparent);
+  inset: 0;
+  margin: auto;
+  background-image: conic-gradient(from -30deg at center, transparent 60deg, #fff 60deg);
+  border-radius: 50%;
+}
+#logo::before {
+  content: "";
+  inline-size: 100%;
+  aspect-ratio: 2;
+  background-color: var(--deco-fill, var(--system-color-lightBlue));
+  position: absolute;
+  inset-block-end: 0;
+  border-radius: 1.25em 0 1.25em 0;
+}
+#status-form {
+  --min-padding: clamp(0.5em, 4vi, 1.5em);
+  font-weight: bold;
+  border-radius: 0.5em;
+  box-shadow: 0 4px 8px 0 var(--system-color-shadow);
+  background-color: var(--system-color-blank);
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: -50%;
+  min-inline-size: min(12rem, 50vi);
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(-3rem);
+  clip-path: inset(50%);
+}
+.opt-filter:is(:hover, :focus-visible, :focus-within) #status-form {
+  opacity: 1;
+  transform: none;
+  clip-path: none;
+}
+.status-option {
+  --icon-fill: none;
+  display: inline-block;
+  position: relative;
+  isolation: isolate;
+  inline-size: 1.5rem;
+  aspect-ratio: 1;
+}
+.status-option > * {
+  position: absolute;
+  inline-size: 100%;
+  aspect-ratio: 1;
+}
+.status-option > svg {
+  background-color: var(--fill, var(--system-color-checkboxFill));
+  border-radius: 0.25rem;
+  z-index: -1;
+  stroke: #fff;
+  stroke-dashoffset: 1;
+  stroke-dasharray: 1;
+  padding: 0.15em;
+  border: var(--checkbox-border, none);
+}
+.status-option > input:checked + svg {
+  --fill: var(--system-color-softBlue);
+  stroke-dashoffset: 0;
+}
+.status-option > input[type="checkbox"] {
+  margin: 0;
+  opacity: 0;
+}
+.theme-switch:is(:focus-visible, :hover) {
+  --icon-fill: var(--system-color-lightPurple);
+}
+.theme-switch {
+    --icon-size: 32px;
+    --icon-clip: var(--theme-clip);
+    border-inline-end: 1px solid var(--system-color-grayishBlue);
+}
+[data-theme="light"] {
+    --theme-clip: url(#night_mode);
+}
+.banner {
+  --alignment: stretch;
+  --icon-fill: hsl(231, 38%, 80%);
+  --min-padding: 0 1.5em;
+  --row-align: stretch;
+  background-color: var(--system-color-darkPurple);
+  position: relative;
+  z-index: 2;
+}
+.invoices {
+  --item-alignment: center;
+  overflow: hidden auto;
+}
+.invoices:empty {
+  display: none;
+}
+*:not(:empty) + .empty {
+  display: none;
+}
+.empty {
+  --min-padding: 2em 1.5em 0;
+  text-align: center;
+}
+.empty > p {
+  max-inline-size: 25ch;
+  white-space: pre-wrap;
+}
+
+.invoice__details {
+  --min-padding: clamp(0.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em);
+  --invoice-grid: "ref ." "date total" "name total" "status status"/1fr 1fr;
+  --s-space: clamp(0.5em, 2vb, 1.5em);
+  padding: 0.5em clamp(0.5em, 4vmin, 1.5em) 3.5em;
+}
+.invoice__details::after {
+  content: "";
+  display: var(--deco-display, block);
+  block-size: clamp(5em, 10vmin, 8em);
+}
+.item-grid {
+    --invoice-grid: "ref ref ref ref" "date name total status" / minmax(48px, .25fr) minmax(8ch, .5fr) minmax(8ch, .5fr) auto;
+    --invoice-gap: 0.5em;
+    --icon-fill-hover: var(--system-color-softRed);
+    --icon-fill: var(--system-color-captionText);
+    --min-padding: 0.5em;
+    --input-padding: 0.5em;
+    --s-space: var(--c-space, clamp(0.5em, 2vb, 1.5em));
+}
+.item-grid output {
+    font-weight: bold;
+    color: var(--system-color-captionText);
+    block-size: 2em;
+    padding: var(--input-padding);
+}
+.item-grid.input-step {
+    padding: 0;
+}
+.invoice__table {
+    --prefix-color: currentColor;
+    text-transform: capitalize;
+}
+.invoice__table [role="row"] {
+    --invoice-grid: "ref ref total" "date name total"/auto 1fr;
+    --s-space: 1em;
+    gap: 1ch;
+}
+.invoice__desc {
+    --row-align: start;
+    --row-dir: column;
+    gap: 1em;
+}
+.blank-box {
+    --radius: 0.5rem;
+    --color-fill: var(--system-color-blank);
+}
+
+:is([data-status="paid"], [data-status="draft"]) .paid,
+[data-status="paid"] .btn-edit {
+    display: none;
+}
+.items-box {
+    --radius: 0.5rem 0.5rem 0 0;
+    --color-fill: var(--fill-items-box, hsl(231, 67%, 99%));
+}
+.amount-box {
+    --f-size: 1.5em;
+    --radius: 0 0 0.5rem 0.5rem;
+    --color-fill: var(--fill-amount-box, #252946);
+    --system-color-text: #fff;
+    --alignment: center;
+    color: #fff;
+    container: amount/inline-size;
+}
+.status-box {
+    --radius: 0.5rem;
+    --min-padding: var(--status-padding);
+    --color-text: var(--status-text, inherit);
+    --color-fill: var(--status-fill, inherit);
+    --icon-size: 0.5em;
+    --icon-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+.invoice__status {
+    --status-padding: 0.75rem clamp(0.5em, 2cqi, 1.5em);
+    --r-space: 0.5em;
+    color: var(--system-color-captionText);
+    text-transform: capitalize;
+}
+.invoice__status > :first-child {
+    justify-content: var(--inline-alignment, space-between);
+}
+.invoice__actions {
+    position: fixed;
+    inset-block-end: 0;
+    inset-inline: 0;
+    container: action/inline-size;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.5em, 4vmin, 1em);
+}
+step-by-step {
+    position: relative;
+    display: block;
+}
+step-by-step > * {
+    transform: translateX(calc((var(--i) - var(--current)) * 100%));
+}
+step-by-step > .step-out {
+    position: fixed;
+    z-index: -1;
+    visibility: hidden;
+    opacity: 0;
+}
+[data-drawer="show"] .drawer {
+    --x-offset: 0px;
+    visibility: visible;
+}
+.drawer {
+    --translateY: var(--y-offset, 72px);
+    --y-overflow: hidden;
+    --c-space: clamp(0.5em, 2vb, 1.5em);
+    position: fixed;
+    transform: translate(var(--x-offset, -100%), var(--translateY));
+    block-size: calc(100% - var(--translateY));
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    isolation: isolate;
+    text-transform: capitalize;
+    inline-size: 100%;
+    z-index: 1;
+    visibility: hidden;
+}
+.drawer h2 {
+    --prefix-color: currentColor;
+    --prefix: var(--heading-text, unset);
+}
+.drawer[data-edit] {
+    --ref-display:inline;
+}
+.drawer[data-edit]:not([data-status="draft"]) {
+    --drafter-display: none;
+}
+.drawer > div {
+    --prefix-color: currentColor;
+    --min-padding: 0.75em clamp(0.5em, 3cqi, 1.5em);
+    display: flex;
+    gap: 0.5em;
+    justify-content: end;
+    container: actions/inline-size;
+    background-color: var(--system-color-fillPrimary);
+}
+.drawer .btn-draft {
+    margin-inline-start: auto;
+    display: var(--drafter-display, initial);
+}
+.step-indicator {
+    --deco-size: 1.7em;
+    --bdr-width: 2px;
+    --deco-color: var(--system-color-labelText);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    font-size: 0.8em;
+}
+.step-indicator p,
+.invoice__table [role="rowheader"] {
+    position: var(--content-position, absolute);
+    clip-path: var(--content-clip, inset(50%));
+}
+.step-indicator > .step-active {
+    --deco-color: var(--system-color-darkPurple);
+    --deco-bg: var(--deco-color);
+    --deco-colorText: #fafafa;
+}
+.step-indicator > * {
+    padding-block: var(--b-padding, 0 2em);
+    counter-increment: indicator;
+    position: relative;
+    text-align: center;
+}
+.step-indicator > *:first-child {
+    --deco-img: linear-gradient(var(--gradient-dir, to right), transparent calc(var(--deco-size) + 2px), var(--deco-color) 0);
+    --deco-margin: 0 auto;
+    text-align: start;
+}
+.step-indicator > *:last-child {
+    --deco-img: linear-gradient(var(--gradient-dir, to right), var(--deco-color) calc(100% - var(--deco-size) - 4px), transparent 0);
+    --deco-margin: auto 0;
+    text-align: end;
+}
+.step-indicator > *:not(:last-child, :first-child) {
+    padding-inline: var(--i-padding, 0.5em);
+}
+.step-indicator > *::after {
+    content: counters(indicator, ".");
+    color: var(--deco-colorText, currentColor);
+    position: absolute;
+    display: inline-grid;
+    place-content: center;
+    border: var(--bdr-width) solid var(--deco-color);
+    border-radius: 50%;
+    inline-size: var(--deco-size);
+    aspect-ratio: 1;
+    inset: var(--inset-after, auto 0 0);
+    margin-inline: var(--deco-margin, auto);
+    background-color: var(--deco-bg, transparent);
+}
+.step-indicator > *::before {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    block-size: 2px;
+    inset: var(--inset-before, auto 0 calc(0.85em - 1px));
+    background-image: var(--deco-img, linear-gradient(
+    var(--gradient-dir, to right),
+    var(--deco-color) calc(50% - 0.85em - 2px),
+    transparent 0 calc(50% + 0.85em + 2px), var(--deco-color) 0)
+    );
+}
+.drawer .btn-draft {
+    margin-inline-start: auto;
+    display: var(--drafter-display, initial);
+}
+.invoice__ref {
+    --prefix-color: initial;
+    --prefix: initial;
+    text-transform: uppercase;
+    display: var(--ref-display, none);
+}
+.input-step > :is(div, date-picker) {
+    display: flex;
+    flex-flow: column-reverse nowrap;
+}
+.input-step {
+    container: input-step/inline-size;
+    padding: 0.5rem;
+}
+.input-step > legend {
+    font-size: clamp(1.2em, 4cqi, 1.5em);
+    color: var(--system-color-softBlue);
+}
+:is(input, select) {
+    font-weight: bold;
+    font-size: inherit;
+    color: var(--system-color-text);
+    padding: var(--input-padding, 0.75em 1.25em);
+    background-color: var(--system-color-blank);
+    border: 1px solid var(--input-bd-clr, var(--system-color-lightPurple));
+    border-radius: 0.25em;
+}
+:is(input, select):is(:hover, :focus) {
+    --input-bd-clr: var(--system-color-softBlue);
+}
+:is(input, select):invalid:not([data-new]) {
+    --input-bd-clr: var(--system-color-softRed);
+}
+:is(input, select):invalid:not([data-new]) ~ label {
+    color: var(--system-color-softRed);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+:is(input, select):invalid:not([data-new]) ~ label::after {
+    content: attr(data-error);
+    font-size: 0.7em;
+    text-transform: none;
+}
+date-picker {
+    position: relative;
+    isolation: isolate;
+}
+date-picker[data-show] {
+    --calendar-display: grid;
+}
+date-picker [disabled] {
+    opacity: 0.6;
+}
+date-picker .control::before {
+    content: "";
+    inline-size: 1.5rem;
+    aspect-ratio: 1;
+    background-color: var(--deco-fill, var(--system-color-softBlue));
+    clip-path: url(#arrow_left);
+    display: inline-block;
+}
+date-picker [data-action*="next"]::before {
+    transform: rotateZ(180deg);
+}
+date-picker .today {
+    --label-color: var(--system-color-softRed);
+}
+date-picker .selected {
+    --label-color: var(--system-color-lightBlue);
+}
+date-picker button {
+    font-weight: inherit;
+    background-color: transparent;
+    color: var(--label-color, var(--color-labelText, #0d0f17));
+}
+date-picker .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    grid-column: -1/1;
+}
+.calendar-grid * {
+    grid-area: auto;
+}
+date-picker > .calendar-grid {
+    font-weight: bold;
+    display: var(--calendar-display, none);
+    grid-template-columns: repeat(7, auto);
+    position: absolute;
+    inset-block-start: var(--bottom, calc(100% + .5rem));
+    background-color: var(--system-color-blank);
+    border-radius: .5rem;
+    padding: .35em .75em 1em;
+    gap: .25em;
+    box-shadow: 0 4px 8px 0 var(--system-color-shadow);
+}
+noscript[data-status] {
+    --min-padding: 1em;
+    --radius: 0.5em;
+    --color-text: var(--status-text, currentColor);
+    --color-text-hover: var(--system-color-darkPurple);
+    --r-space: 0.5em;
+    margin-block-start: 0.5em;
+    margin-inline: 0.5em;
+    background-color: var(--system-color-lightRed);
+}
+dialog[open] {
+    transform: scale(1);
+}
+dialog menu.row {
+    --i-alignment: end;
+}
+dialog {
+    --min-padding: clamp(0.5em, 4cqi, 1.5em);
+    --f-size: 1.2em;
+    color: var(--color-text, var(--system-color-darkBlue));
+    container: dialog/inline-size;
+    inline-size: min(480px, 80vi);
+    transform: scale(0);
+    border: none;
+    z-index: 4;
+}
+dialog::backdrop {
+    background-color: var(--system-color-backdropFill);
+}
+dialog h3 {
+    text-transform: capitalize;
+    color: var(--system-color-text);
+}
+@keyframes shake {
+    20%, 60%, to {
+        transform: translateX(20%);
+    }
+    from, 40%, 80% {
+        transform: translateX(-20%);
+    }
+}
+@media screen and (min-width: 480px) {
+    .sm-hide:not([class$="grid"]) {
+        display: initial;
+    }
+    .invoice__desc {
+        --invoice-grid: "ref ref ref" "date total status" "name total ."/1fr 1fr 1fr;
+    }
+    .invoice__desc > :first-child {
+        --row-dir: row;
+        justify-content: space-between;
+    }
+    .invoice__table :is([role="row"], [role="rowheader"]) {
+        --invoice-grid: "ref date name total"/1.5fr 0.5fr 1fr 1fr;
+        --suffix: "";
+    }
+    .invoice__table :is([role="columnheader"], [role="gridcell"]):where(* + *) {
+        text-align: end;
+    }
+    .invoice__table [role="rowheader"] {
+        position:initial;
+        clip-path: none;
+    }
+
+    .invoice__status {
+        --inline-alignment: start;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5em;
+    }
+    .invoice__actions {
+        padding: 0;
+        z-index: 0;
+        position: initial;
+        justify-content: end;
+        flex-grow: 2;
+    }
+    .invoice__details {
+        --deco-display: none;
+    }
+    .drawer {
+        inline-size: clamp(480px, 69vi, 616px);
+        border-radius: 0 1.25em 1.25em 0;
+    }
+    .item-grid {
+        --invoice-grid: "ref date name total status" / minmax(min(214px, 30%), 1fr) minmax(48px, .25fr) minmax(min(20%, 100px),.35fr) minmax(min(20%, 100px), .35fr) 2rem;
+    }
+    .item-grid:not(:first-of-type) label {
+        clip-path: inset(50%);
+        position: absolute;
+    }
+    [data-drawer="show"] .drawer {
+        visibility: visible;
+    }
+    [data-drawer="show"] main::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-color: var(--system-color-backdropFill);
+    }
+    .step-indicator {
+        --content-clip: none;
+        --content-position: static;
+    }
+}
+@media screen and (min-width: 768px) {
+    .banner {
+        --direction: column;
+        --min-padding: 1.5em 0;
+        --row-dir: column;
+        grid-area: nav;
+        border-radius: 0 1.25em 1.25em 0;
+    }
+    .banner .theme-switch {
+        border-inline: none;
+        border-block-end: 1px solid var(--system-color-grayishBlue);
+    }
+    .drawer {
+        --y-offset: 0px;
+        --min-padding: 1.5em 1.5em 1.5em calc(72px + 1.5em);
+    }
+    #app-wrapper {
+        display: grid;
+        grid-template: "nav . . ." 72px "nav . main ." calc(100lvb - 72px)/72px 1fr minmax(clamp(618px, 60vi, 719px), 2fr) 1fr;
+    }
+    #app-wrapper > main {
+        grid-area: main;
+    }
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --color-text: var(--system-color-lightGrayishBlue);
+        --color-blank: var(--system-color-darkPurple);
+        --color-labelText: var(--system-color-lightPurple);
+        --color-labelFill: var(--system-color-grayishBlue);
+        --color-labelHover: #fff;
+        --color-shadow: rgba(224,228,250,0.1);
+        --page-bg: #141624;
+        --color-checkboxFill: var(--page-bg);
+        --color-editText: hsl(231, 38%, 80%);
+        --color-captionText: var(--color-editText);
+        --input-bd-clr: #252946;
+        --color-info: var(--system-color-grayishBlue);
+        --color-infoFill: var(--system-color-lightPurple);
+        --fill-items-box: #252946;
+        --fill-amount-box: #0d0f17;
+        --color-disabled: rgba(251,251,254,0.6);
+        --theme-clip: url(#night_mode);
+    }
+}
+
+@media(prefers-reduced-motion: no-preference) {
+    .step-indicator li::before, .step-indicator li::after {
+        transition: color .35s ease-in, background-color, .35s ease-out;
+    }
+    :is(.drawer, input, select, [class*="btn"]),
+    :is(.theme-switch, .icon-start)::before,
+    #status-form,
+    .icon-end::after {
+        transition: all .35s cubic-bezier(.25, .1, .3, 1.5);
+    }
+    step-by-step > * {
+        transition: transform .35s ease-out;
+    }
+    dialog.blank-box {
+        transition: transform .35s cubic-bezier(.25, .1, .3, 1.5);
+    }
+    :is(input, select):invalid:not([data-new]) {
+        animation: shake .35s cubic-bezier(.25, .1, .3, .15);
+    }
+}
