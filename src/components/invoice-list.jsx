@@ -1,5 +1,6 @@
 import {createEffect, For} from "solid-js";
 import styles from "../App.module.css";
+import image from "../assets/Email campaign_Flatline 2.svg?url";
 
 function InvoiceList(props) {
     let list;
@@ -27,7 +28,7 @@ function InvoiceList(props) {
            </For>
         </div>
         <div class="empty box center stack">
-               <img src="/src/assets/Email campaign_Flatline 2.svg" alt="An Illustration of a woman in purple shirt holding a speaker for an email campaign" width="194" height="160"/>
+               <img src={image} alt="An Illustration of a woman in purple shirt holding a speaker for an email campaign" width="194" height="160"/>
                <h3 style="--space: 2em;" class="heading-m">There is nothing here</h3>
                <p class="subtitle-text">Create an invoice by clicking the <strong>New <span class="sm-hide">Invoice</span></strong> button and get started</p>
         </div>
