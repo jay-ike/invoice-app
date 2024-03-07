@@ -1,14 +1,130 @@
+.invoice__status {
+    --status-padding: 0.75rem clamp(0.5em, 2cqi, 1.5em);
+    --r-space: 0.5em;
+    color: var(--system-color-captionText);
+    text-transform: capitalize;
+}
+
+.invoice__status> :first-child {
+    justify-content: var(--inline-alignment, space-between);
+}
+
+.invoice__actions {
+    position: fixed;
+    inset-block-end: 0;
+    inset-inline: 0;
+    container: action/inline-size;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.5em, 4vmin, 1em);
+}
+
+.invoice__table {
+    --prefix-color: currentColor;
+    text-transform: capitalize;
+}
+
+.invoice__table [role="row"] {
+    --invoice-grid: "ref ref total" "date name total" /auto 1fr;
+    --s-space: 1em;
+    gap: 1ch;
+}
+
+.invoice__table [role="rowheader"] {
+    position: var(--content-position, absolute);
+    clip-path: var(--content-clip, inset(50%));
+}
+
+.invoice__desc {
+    --row-align: start;
+    --row-dir: column;
+    gap: 1em;
+}
+
+.invoice__details {
+    --min-padding: clamp(0.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em);
+    --invoice-grid: "ref ." "date total" "name total" "status status" /1fr 1fr;
+    --s-space: clamp(0.5em, 2vb, 1.5em);
+    padding: 0.5em clamp(0.5em, 4vmin, 1.5em) 3.5em;
+}
+
+.invoice__details::after {
+    content: "";
+    display: var(--deco-display, block);
+    block-size: clamp(5em, 10vmin, 8em);
+}
+.items-box {
+    --radius: 0.5rem 0.5rem 0 0;
+    --color-fill: var(--fill-items-box, hsl(231, 67%, 99%));
+}
+.amount-box {
+    --f-size: 1.5em;
+    --radius: 0 0 0.5rem 0.5rem;
+    --color-fill: var(--fill-amount-box, #252946);
+    --system-color-text: #fff;
+    --alignment: center;
+    color: #fff;
+    container: amount/inline-size;
+}
+
+@media screen and (min-width: 480px) {
+    .invoice__desc {
+        --invoice-grid: "ref ref ref" "date total status" "name total ." /1fr 1fr 1fr;
+    }
+
+    .invoice__desc> :first-child {
+        --row-dir: row;
+        justify-content: space-between;
+    }
+
+    .invoice__table :is([role="row"], [role="rowheader"]) {
+        --invoice-grid: "ref date name total" /1.5fr 0.5fr 1fr 1fr;
+        --suffix: "";
+    }
+
+    .invoice__table :is([role="columnheader"], [role="gridcell"]):where(* + *) {
+        text-align: end;
+    }
+
+    .invoice__table [role="rowheader"] {
+        position: initial;
+        clip-path: none;
+    }
+
+    .invoice__status {
+        --inline-alignment: start;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5em;
+    }
+
+    .invoice__actions {
+        padding: 0;
+        z-index: 0;
+        position: initial;
+        justify-content: end;
+        flex-grow: 2;
+    }
+
+    .invoice__details {
+        --deco-display: none;
+    }
+}
+
 @media print {
     @page {
         size: A4;
         margin: 0in;
     }
+
     body {
         --system-color-purpleBlue: hsl(251, 92%, 38%);
         --system-color-darkPurple: hsl(231, 20%, 27%);
         --system-text-large: 20pt;
         --system-text-medium: 15pt;
         --alignment: start;
+        --system-color-fillPrimary: white;
         font-size: 13pt;
         color: hsl(233, 30%, 11%);
         print-color-adjust: exact;
@@ -16,64 +132,111 @@
         padding: 24pt;
         line-height: 1.5;
     }
+
+    [data-print] {
+        --prefix: attr(data-print);
+        --prefix-color: currentColor;
+        --weight: 500;
+    }
+    .invoice__desc {
+        --row-dir: column-reverse;
+        --label-color: currentColor;
+        --invoice-grid: "ref . total" "ref . status" "date name ." / max-content 1fr max-content;
+    }
+
+    .invoice__desc > div:nth-child(2),
+    .invoice__desc > div:nth-child(3) {
+        --system-color-purpleBlue: #000;
+        display: flex;
+        gap: .25em;
+        color: hsl(251, 92%, 38%);
+    }
+    .invoice__details,
+    .invoice__details > :last-child {
+        padding: 0;
+    }
+
+    :is(header, .drawer, .invoice__status, dialog, .invoice__details > a, iframe) {
+        display: none;
+    }
+
     span {
         font-size: var(--f-size);
         text-transform: var(--transform);
         color: var(--clr);
     }
-    tbody tr {
-        position: relative;
-        background-color: hsl(240, 27%, 90%);
-    }
-    th {
-        text-transform: capitalize;
-        text-align: start;
-    }
-    :is(thead, tfoot) {
+
+    :is([role="columnheader"], .amount-box) {
         --cell-padding: 16pt;
         font-size: var(--system-text-medium);
     }
-    thead {
+
+    [role="rowheader"] {
         background-color: var(--system-color-purpleBlue);
         color: #fff;
         font-size: 15pt;
     }
-    tfoot {
-        background-color: var(--system-color-darkPurple);
-        color: #fff;
+
+    [role="gridcell"] {
+        font-size: 13pt;
+        font-weight: normal;
     }
-    table {
-        inline-size: 100%;
-        border-collapse: collapse;
+
+    .invoice__table :is([role="row"], [role="rowheader"]) {
+        --invoice-grid: "ref date name total" /1.5fr 0.5fr 1fr 1fr;
+        --suffix: "";
+    }
+
+    .invoice__table {
+        --content-position: static;
+        --content-clip: none;
+        --min-padding: 0;
+        --fill-items-box: #0000;
+        --label-color: currentColor;
+        --radius: 0;
         clip-path: inset(0 round 8pt);
     }
-    :is(td, th) {
+    .amount-box {
+        --system-color-purpleBlue: #fff;
+        background-color: var(--system-color-darkPurple);
+    }
+
+    .content-bold {
+        font-weight: normal;
+    }
+
+    :is([role="gridcell"], [role="columnheader"], .amount-box > *) {
         padding: var(--cell-padding, 12pt 16pt);
     }
-    :is(tr > :not(:first-child)) {
+
+    :is([role^="gridcell"], [role="columnheader"]):not(:first-child) {
         --cell-padding: 12pt 16pt 12pt 0;
         text-align: end;
     }
-    tfoot td:last-child {
+
+    .amount-box :last-child {
         font-size: var(--system-text-large);
         font-weight: 900;
     }
-    tbody > tr:not(:first-child) > :first-child::before {
-        content: "";
-        position: absolute;
-        block-size: 2pt;
-        background-color: hsl(231, 20%, 61%);
-        inset-block-start: 0;
-        inset-inline: 0;
+
+    [role="row"]:not(:first-child) {
+        border-block-start: solid 2pt hsl(231, 20%, 61%);
     }
+
+    [role="grid"] {
+        --s-space: 0;
+    }
+
     :is(ul, dl) {
         font-weight: 500;
     }
-    :is(dt, span) {
+
+    :is(dt:not([class="row"]  *), span) {
         font-weight: 500;
         color: var(--system-color-purpleBlue);
         text-transform: capitalize;
     }
+
     .description {
         --f-size: var(--system-text-medium);
     }

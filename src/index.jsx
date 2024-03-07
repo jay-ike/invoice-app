@@ -30,10 +30,6 @@ const routes = [
         component: lazy(() => import("./App.jsx")),
         load: loadInvoices,
         path: "/"
-    },
-    {
-        component: lazy(() => import("./Invoice-Print.jsx")),
-        path: "/invoice-preview"
     }
 ];
 

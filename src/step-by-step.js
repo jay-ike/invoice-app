@@ -20,7 +20,7 @@ class Stepper extends HTMLElement {
             );
         }
         if (constructor === undefined) {
-            window.customElements.define(name, Datepicker);
+            window.customElements.define(name, Stepper);
         }
     }
 

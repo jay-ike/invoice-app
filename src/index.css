@@ -376,10 +376,12 @@ button {
 [data-prefix]:not(:empty)::before {
   content: var(--prefix, attr(data-prefix));
   color: var(--prefix-color, var(--system-color-captionText));
+  font-weight: var(--weight, var(--prefix-weight, inherit));
 }
 [data-suffix]:not(:empty):after {
   content: var(--suffix, attr(data-suffix));
   color: var(--suffix-color, currentColor);
+  font-weight: var(--weight, var(--suffix-weight, inherit));
 }
 #logo {
   width: 72px;
@@ -498,17 +500,7 @@ button {
   white-space: pre-wrap;
 }
 
-.invoice__details {
-  --min-padding: clamp(0.5em, 2vb, 1em) clamp(0.5em, 4cqi, 1.5em);
-  --invoice-grid: "ref ." "date total" "name total" "status status"/1fr 1fr;
-  --s-space: clamp(0.5em, 2vb, 1.5em);
-  padding: 0.5em clamp(0.5em, 4vmin, 1.5em) 3.5em;
-}
-.invoice__details::after {
-  content: "";
-  display: var(--deco-display, block);
-  block-size: clamp(5em, 10vmin, 8em);
-}
+
 .item-grid {
     --invoice-grid: "ref ref ref ref" "date name total status" / minmax(48px, .25fr) minmax(8ch, .5fr) minmax(8ch, .5fr) auto;
     --invoice-gap: 0.5em;
@@ -527,20 +519,6 @@ button {
 .item-grid.input-step {
     padding: 0;
 }
-.invoice__table {
-    --prefix-color: currentColor;
-    text-transform: capitalize;
-}
-.invoice__table [role="row"] {
-    --invoice-grid: "ref ref total" "date name total"/auto 1fr;
-    --s-space: 1em;
-    gap: 1ch;
-}
-.invoice__desc {
-    --row-align: start;
-    --row-dir: column;
-    gap: 1em;
-}
 .blank-box {
     --radius: 0.5rem;
     --color-fill: var(--system-color-blank);
@@ -549,19 +527,6 @@ button {
 :is([data-status="paid"], [data-status="draft"]) .paid,
 [data-status="paid"] .btn-edit {
     display: none;
-}
-.items-box {
-    --radius: 0.5rem 0.5rem 0 0;
-    --color-fill: var(--fill-items-box, hsl(231, 67%, 99%));
-}
-.amount-box {
-    --f-size: 1.5em;
-    --radius: 0 0 0.5rem 0.5rem;
-    --color-fill: var(--fill-amount-box, #252946);
-    --system-color-text: #fff;
-    --alignment: center;
-    color: #fff;
-    container: amount/inline-size;
 }
 .status-box {
     --radius: 0.5rem;
@@ -575,25 +540,6 @@ button {
     gap: 0.25em;
     text-transform: capitalize;
     font-weight: bold;
-}
-.invoice__status {
-    --status-padding: 0.75rem clamp(0.5em, 2cqi, 1.5em);
-    --r-space: 0.5em;
-    color: var(--system-color-captionText);
-    text-transform: capitalize;
-}
-.invoice__status > :first-child {
-    justify-content: var(--inline-alignment, space-between);
-}
-.invoice__actions {
-    position: fixed;
-    inset-block-end: 0;
-    inset-inline: 0;
-    container: action/inline-size;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    gap: clamp(0.5em, 4vmin, 1em);
 }
 step-by-step {
     position: relative;
@@ -658,8 +604,7 @@ step-by-step > .step-out {
     grid-template-columns: repeat(4, 1fr);
     font-size: 0.8em;
 }
-.step-indicator p,
-.invoice__table [role="rowheader"] {
+.step-indicator p {
     position: var(--content-position, absolute);
     clip-path: var(--content-clip, inset(50%));
 }
@@ -859,42 +804,7 @@ dialog h3 {
     .sm-hide:not([class$="grid"]) {
         display: initial;
     }
-    .invoice__desc {
-        --invoice-grid: "ref ref ref" "date total status" "name total ."/1fr 1fr 1fr;
-    }
-    .invoice__desc > :first-child {
-        --row-dir: row;
-        justify-content: space-between;
-    }
-    .invoice__table :is([role="row"], [role="rowheader"]) {
-        --invoice-grid: "ref date name total"/1.5fr 0.5fr 1fr 1fr;
-        --suffix: "";
-    }
-    .invoice__table :is([role="columnheader"], [role="gridcell"]):where(* + *) {
-        text-align: end;
-    }
-    .invoice__table [role="rowheader"] {
-        position:initial;
-        clip-path: none;
-    }
-
-    .invoice__status {
-        --inline-alignment: start;
-        display: flex;
-        justify-content: space-between;
-        gap: 0.5em;
-    }
-    .invoice__actions {
-        padding: 0;
-        z-index: 0;
-        position: initial;
-        justify-content: end;
-        flex-grow: 2;
-    }
-    .invoice__details {
-        --deco-display: none;
-    }
-    .drawer {
+   .drawer {
         inline-size: clamp(480px, 69vi, 616px);
         border-radius: 0 1.25em 1.25em 0;
     }
