@@ -6,6 +6,7 @@ import stepByStep from "./step-by-step.js";
 import datePicker from "./datepicker.js";
 import utils from "./utils.js";
 
+import "solid-devtools";
 import './index.css';
 
 async function load({params}) {

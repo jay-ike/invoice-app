@@ -2,6 +2,7 @@
   "name": "invoice-app",
   "version": "1.0.0",
   "description": "An Invoicing application from frontendMentor",
+  "type": "module",
   "scripts": {
     "start": "vite",
     "dev": "vite",
@@ -10,7 +11,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "solid-devtools": "^0.29.2",
+    "solid-devtools": "^0.29.3",
     "vite": "^5.0.11",
     "vite-plugin-solid": "^2.8.2"
   },
