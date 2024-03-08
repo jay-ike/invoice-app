@@ -10,8 +10,9 @@ import "solid-devtools";
 import './index.css';
 
 async function load({params}) {
+    const {id = ""} = params;
     const db = await utils.invoiceStorage();
-    const invoice = await db.getById(params.id);
+    const invoice = await db.getById(id.toUpperCase());
     return {db, invoice};
 }
 async function loadInvoices() {

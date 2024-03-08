@@ -16,7 +16,7 @@ function InvoiceList(props) {
                 {
                     (invoice) => (
                         <article class="blank-box invoice-grid" aria-label={"invoice number " + invoice.reference}>
-                             <a href={"/invoice/" + invoice.reference} data-prefix="#">{invoice.reference}</a>
+                             <a href={"/invoice/" + invoice.reference.toLowerCase()} data-prefix="#">{invoice.reference}</a>
                              <p class="label-text" data-prefix="due ">{invoice.dueDate ?? "not assigned"}</p>
                              <p class="label-text">{invoice.clientName}</p>
                              <p>{invoice.totalAmount}</p>

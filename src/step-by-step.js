@@ -12,14 +12,14 @@ class Stepper extends HTMLElement {
             console.warn("custom elements are not supported in this browser");
             return;
         }
-        constructor = window.customElements.get(name);
-        if (constructor !== undefined && constructor !== Stepper.constructor) {
+        constructor = window.customElements.getName(Stepper);
+        if (constructor !== null && constructor !== name) {
             console.warn(
-                "a custom element with the same name " +
-                "but different constructor already exists"
+                "a custom element with the name " + name +
+                " but different constructor already exists"
             );
         }
-        if (constructor === undefined) {
+        if (constructor === null) {
             window.customElements.define(name, Stepper);
         }
     }

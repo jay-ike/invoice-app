@@ -125,6 +125,9 @@
         --system-text-medium: 15pt;
         --alignment: start;
         --system-color-fillPrimary: white;
+        --system-color-blank: white;
+        --color-text: #000;
+        --system-color-text: #000;
         font-size: 13pt;
         color: hsl(233, 30%, 11%);
         print-color-adjust: exact;

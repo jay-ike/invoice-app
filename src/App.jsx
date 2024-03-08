@@ -1,8 +1,5 @@
 import { createEffect, createMemo, createResource, createSignal, Show } from "solid-js";
-import Nav from "./components/header.jsx";
-import InvoiceAdder from "./components/invoice-adder.jsx";
-import Drawer from "./components/drawer.jsx";
-import InvoiceList from "./components/invoice-list.jsx";
+import {Drawer, InvoiceAdder, InvoiceList, Loader, Nav} from "./components"
 
 function App(props) {
     const [storage, { mutate }] = createResource(getStorage);
@@ -50,7 +47,7 @@ function App(props) {
             <main>
                 <section className="column box">
                     <InvoiceAdder allInvoices={shownInvoices} onNewInvoice={() => showDrawer(true)} invoiceFiltered={setFilter} />
-                    <Show when={storage()?.invoices} fallback={<div className="center"><p>loading...</p></div>}>
+                    <Show when={storage()?.invoices} fallback={<Loader message={"loading Invoices ..."} />}>
                         <InvoiceList invoices={shownInvoices} />
                     </Show>
                 </section>

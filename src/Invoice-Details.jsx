@@ -6,8 +6,7 @@ import {
     For,
     Show
 } from "solid-js";
-import Nav from "./components/header.jsx";
-import Drawer from "./components/drawer.jsx";
+import {Drawer, Loader, Nav} from "./components";
 import style from "./invoice-preview.module.css";
 
 function InvoiceDetails(props) {
@@ -64,7 +63,7 @@ function InvoiceDetails(props) {
             <main>
                 <section class={"box " + style["invoice__details"] + " column relative"}>
                     <a ref={elements.backLink} href="/" class="row back-btn icon-start" data-icon="arrow_left">Go back</a>
-                    <Show when={storage()?.invoice} fallback={<div className="center"><p>loading...</p></div>}>
+                    <Show when={storage()?.invoice} fallback={<Loader message="Gathering informations ..." />}>
                         <>
                             <div class={style["invoice__status"] + " blank-box"} data-status={storage().invoice.status ?? ""}>
                                 <dl class="row">
